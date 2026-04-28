@@ -1,0 +1,13 @@
+<.def tag="card" param:title="String">
+  <style>
+    .card { border: 1px solid #ccc; padding: 1rem; }
+    .card > h2 { color: navy; margin-top: 0; }
+    .card:hover { border-color: black; }
+  </style>
+  <div class="card">
+    <h2>{title}</h2>
+    <.slot/>
+  </div>
+</.def>
+
+<card title="Hello"><p>body content</p></card>

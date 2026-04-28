@@ -1,0 +1,15 @@
+<.def tag="card" param:title="String">
+  <div class="card"><h2>{title}</h2><.slot/></div>
+</.def>
+
+<.def tag="todo-list" param:items="Array(String)">
+  <.if cond={items.empty?}><p class="empty">Nothing to do.</p></.if>
+  <ul :if={!items.empty?}>
+    <.for each={item in items}><li>{item}</li></.for>
+  </ul>
+</.def>
+
+<h1>Hello, {name}!</h1>
+<card title="Today">
+  <todo-list items={items}/>
+</card>

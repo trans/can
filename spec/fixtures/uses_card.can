@@ -1,0 +1,3 @@
+<card title="Hi">
+  <p>hello from {name}</p>
+</card>
