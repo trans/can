@@ -108,6 +108,10 @@ module Can
         raise "<:#{n.name}> slot-fill is only valid as a child of a component invocation"
       when AST::Import
         raise "<.import/> is only allowed at the top level of a template"
+      when AST::ElseMark
+        raise "<.else/> can only appear inside a <.if> body"
+      when AST::ElseIfMark
+        raise "<.elseif/> can only appear inside a <.if> body"
       else
         raise "codegen: unhandled node #{n.class.name}"
       end
@@ -414,11 +418,25 @@ module Can
       @out << n.condition
       @out << ")\n"
       with_scope { n.then_body.each { |c| emit_node(c) } }
-      unless n.else_body.empty?
-        @out << "else\n"
-        with_scope { n.else_body.each { |c| emit_node(c) } }
-      end
+      emit_else_branch(n.else_body)
       @out << "end\n"
+    end
+
+    # Emits the else-branch of an If, collapsing a single nested If in the
+    # else_body into a Crystal `elsif` chain so generated code stays flat.
+    private def emit_else_branch(else_body : Array(AST::Node)) : Nil
+      return if else_body.empty?
+
+      if else_body.size == 1 && (nested = else_body.first).is_a?(AST::If)
+        @out << "elsif ("
+        @out << nested.condition
+        @out << ")\n"
+        with_scope { nested.then_body.each { |c| emit_node(c) } }
+        emit_else_branch(nested.else_body)
+      else
+        @out << "else\n"
+        with_scope { else_body.each { |c| emit_node(c) } }
+      end
     end
 
     private def emit_for(n : AST::For) : Nil

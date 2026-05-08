@@ -177,6 +177,37 @@ describe Can::Parser do
     end
   end
 
+  describe "<.if> with <.else/> and <.elseif/>" do
+    it "splits the body at <.else/>" do
+      i = single(%(<.if cond={x}>a<.else/>b</.if>)).as(Can::AST::If)
+      i.condition.should eq("x")
+      i.then_body[0].as(Can::AST::Text).content.should eq("a")
+      i.else_body[0].as(Can::AST::Text).content.should eq("b")
+    end
+
+    it "builds nested Ifs for <.elseif/> chains" do
+      i = single(%(<.if cond={x}>a<.elseif cond={y}/>b<.else/>c</.if>)).as(Can::AST::If)
+      i.condition.should eq("x")
+      i.then_body[0].as(Can::AST::Text).content.should eq("a")
+      nested = i.else_body[0].as(Can::AST::If)
+      nested.condition.should eq("y")
+      nested.then_body[0].as(Can::AST::Text).content.should eq("b")
+      nested.else_body[0].as(Can::AST::Text).content.should eq("c")
+    end
+
+    it "errors on a stray sentinel after <.else/>" do
+      expect_raises(Can::ParseError, /after a previous <\.else/) do
+        Can::Parser.parse(%(<.if cond={x}>a<.else/>b<.else/>c</.if>))
+      end
+    end
+
+    it "errors on <.elseif/> without cond" do
+      expect_raises(Can::ParseError, /requires 'cond'/) do
+        Can::Parser.parse(%(<.if cond={x}>a<.elseif/>b</.if>))
+      end
+    end
+  end
+
   describe "<.let> / <.slot> / <.import>" do
     it "parses <.let>" do
       l = single(%(<.let name="x" value={1 + 2}>{x}</.let>)).as(Can::AST::Let)

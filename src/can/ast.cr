@@ -147,6 +147,20 @@ module Can
       end
     end
 
+    # Transient parser-only nodes: `<.else/>` and `<.elseif cond={…}/>` are
+    # sentinels emitted by the parser and consumed by `build_if`, which
+    # restructures the body into nested `If` nodes. They never reach codegen
+    # in well-formed templates; if they do, codegen raises a "stray" error.
+    class ElseMark < Node
+    end
+
+    class ElseIfMark < Node
+      property condition : String
+
+      def initialize(@condition : String, @line = 0, @column = 0)
+      end
+    end
+
     class Import < Node
       property from : String
 

@@ -316,6 +316,8 @@ module Can
       case name
       when "def"     then build_def(attrs, body, l, c)
       when "if"      then build_if(attrs, body, l, c)
+      when "else"    then build_else_mark(attrs, body, l, c)
+      when "elseif"  then build_elseif_mark(attrs, body, l, c)
       when "for"     then build_for(attrs, body, l, c)
       when "let"     then build_let(attrs, body, l, c)
       when "slot"    then build_slot(attrs, l, c)
@@ -349,7 +351,46 @@ module Can
 
     private def build_if(attrs, body, l, c) : AST::If
       cond = required_expr(attrs, "cond", "<.if>", l, c)
-      AST::If.new(cond, body, [] of AST::Node, l, c)
+      then_body, else_body = split_if_body(body)
+      AST::If.new(cond, then_body, else_body, l, c)
+    end
+
+    private def build_else_mark(attrs, body, l, c) : AST::ElseMark
+      raise_at "<.else/> takes no attributes", l, c unless attrs.empty?
+      raise_at "<.else/> must be self-closing", l, c unless body.empty?
+      AST::ElseMark.new(l, c)
+    end
+
+    private def build_elseif_mark(attrs, body, l, c) : AST::ElseIfMark
+      cond = required_expr(attrs, "cond", "<.elseif>", l, c)
+      raise_at "<.elseif/> must be self-closing", l, c unless body.empty?
+      AST::ElseIfMark.new(cond, l, c)
+    end
+
+    # Splits an <.if> body at <.else/> and <.elseif/> sentinels into the
+    # then-branch and a possibly-nested else-branch. Multiple <.else/>s or
+    # branches after the first <.else/> raise.
+    private def split_if_body(body : Array(AST::Node)) : {Array(AST::Node), Array(AST::Node)}
+      marker_idx = body.index { |n| n.is_a?(AST::ElseMark) || n.is_a?(AST::ElseIfMark) }
+      return {body, [] of AST::Node} unless marker_idx
+
+      then_body = body[0...marker_idx]
+      marker = body[marker_idx]
+      rest = body[(marker_idx + 1)..]
+
+      case marker
+      when AST::ElseMark
+        if stray = rest.find { |n| n.is_a?(AST::ElseMark) || n.is_a?(AST::ElseIfMark) }
+          raise_at "<.else/> or <.elseif/> appears after a previous <.else/>", stray.line, stray.column
+        end
+        {then_body, rest}
+      when AST::ElseIfMark
+        nested_then, nested_else = split_if_body(rest)
+        nested_if = AST::If.new(marker.condition, nested_then, nested_else, marker.line, marker.column)
+        {then_body, [nested_if] of AST::Node}
+      else
+        raise "unreachable"
+      end
     end
 
     private def build_for(attrs, body, l, c) : AST::For

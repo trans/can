@@ -65,6 +65,25 @@ describe Can::Codegen do
       out.should contain("end")
     end
 
+    it "emits <.if>/<.else/> as Crystal if/else/end" do
+      out = gen(%(<.if cond={x}>yes<.else/>no</.if>))
+      out.should contain("if (x)")
+      out.should contain("else")
+      out.should contain("end")
+    end
+
+    it "emits <.elseif/> chains as Crystal elsif" do
+      out = gen(%(<.if cond={a}>1<.elseif cond={b}/>2<.elseif cond={c}/>3<.else/>4</.if>))
+      out.should contain("if (a)")
+      out.should contain("elsif (b)")
+      out.should contain("elsif (c)")
+      out.should contain("else")
+    end
+
+    it "rejects a stray <.else/> outside <.if>" do
+      expect_raises(Exception, /only appear inside/) { gen("<.else/>") }
+    end
+
     it "emits <.for> as .each with the bound var" do
       out = gen(%(<.for each={item in items}>{item}</.for>))
       out.should contain("(items).each do |item|")
@@ -159,6 +178,22 @@ describe Can::Codegen do
 
     it "renders <.if> skipping the false branch" do
       render(%(<.if cond={false}><p>no</p></.if>)).should eq("")
+    end
+
+    it "renders the else branch when condition is false" do
+      render(%(<.if cond={false}><p>yes</p><.else/><p>no</p></.if>)).should eq("<p>no</p>")
+    end
+
+    it "renders an elseif chain, picking the first match" do
+      out = render(%(<.if cond={n == 1}>one<.elseif cond={n == 2}/>two<.elseif cond={n == 3}/>three<.else/>other</.if>),
+        prelude: %(n = 2))
+      out.should eq("two")
+    end
+
+    it "falls through an elseif chain to else" do
+      out = render(%(<.if cond={n == 1}>one<.elseif cond={n == 2}/>two<.else/>other</.if>),
+        prelude: %(n = 99))
+      out.should eq("other")
     end
 
     it "renders <.for>" do
