@@ -111,6 +111,18 @@ describe "Can.template" do
     out.should_not contain("<ul>")
   end
 
+  it "supports a single-file template with top-level <.def> defined inside a method" do
+    out = render_with_macro <<-CR
+      name = "Thomas"
+      tags = ["one", "two", "three"]
+      Can.template "spec/fixtures/inline_components.can"
+      CR
+    out.should contain("<p>Hello, Thomas.</p>")
+    out.should contain("[one]")
+    out.should contain("[two]")
+    out.should contain("[three]")
+  end
+
   it "scopes CSS and stamps the data-attr on elements end-to-end" do
     out = render_with_macro <<-CR
       Can.template "spec/fixtures/styled_card.can"

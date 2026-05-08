@@ -322,8 +322,21 @@ describe Can::Codegen do
     end
 
     it "rejects <.slot/> inside an inline def" do
-      expect_raises(NotImplementedError, /inline/) do
+      expect_raises(NotImplementedError, /class\/module scope/) do
         Can::Codegen.compile(%(<div><.def tag="x"><.slot/></.def></div>))
+      end
+    end
+
+    it "lowers a top-level <.def> to a Proc when scope is :method" do
+      out = Can::Codegen.compile(%(<.def tag="hello">hi</.def><hello/>), :method)
+      out.should contain("__can_hello = ->(io : IO")
+      out.should contain("__can_hello.call(io)")
+      out.should_not contain("def hello(")
+    end
+
+    it "errors with file-split guidance for slot-bearing top-level def in :method scope" do
+      expect_raises(NotImplementedError, /move this <\.def> into a separate \.can file/) do
+        Can::Codegen.compile(%(<.def tag="card"><div><.slot/></div></.def><card>x</card>), :method)
       end
     end
 

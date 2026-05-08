@@ -1,0 +1,22 @@
+<.def tag="pill" param:value="String"><span>✨ {value}</span></.def>
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>{name}</title>
+</head>
+<body>
+  <h1>Hi, I'm {name}</h1>
+  <p>Some things I'm working on:</p>
+
+  <.for each={project in projects}>
+    <card title={project.name}>
+      <p>{project.description}</p>
+      <tag-list>
+        <.for each={t in project.tags}><pill value={t}/></.for>
+      </tag-list>
+    </card>
+  </.for>
+</body>
+</html>

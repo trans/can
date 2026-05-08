@@ -51,19 +51,20 @@ module Can
     }
 
     @out : IO
+    @scope : Symbol
     @inline_def_scopes : Array(Set(String))
     @in_top_level_def : Bool = false
     @current_component_attr : String? = nil
 
-    def self.compile(template : AST::Template) : String
-      String.build { |sb| new(sb).emit_template(template) }
+    def self.compile(template : AST::Template, scope : Symbol = :class) : String
+      String.build { |sb| new(sb, scope).emit_template(template) }
     end
 
-    def self.compile(source : String) : String
-      compile(Parser.parse(source))
+    def self.compile(source : String, scope : Symbol = :class) : String
+      compile(Parser.parse(source), scope)
     end
 
-    def initialize(@out : IO)
+    def initialize(@out : IO, @scope : Symbol = :class)
       @inline_def_scopes = [Set(String).new]
     end
 
@@ -73,13 +74,18 @@ module Can
 
     private def emit_top_level(n : AST::Node) : Nil
       case n
-      when AST::Def    then emit_top_level_def(n)
+      when AST::Def
+        # At class scope, lower to a real method. At method scope, Crystal
+        # forbids nested `def`, so we lower to a local Proc — same shape as
+        # an inline def. Slot-bearing components are class-scope-only and
+        # error clearly when met in method scope.
+        @scope == :method ? emit_inline_def(n) : emit_top_level_def(n)
       when AST::Import then emit_import(n)
       when AST::Text
-        # Whitespace between top-level <.def>s shouldn't try to emit to
-        # `io`, since a components-only template may be expanded at class
-        # scope where no `io` binding exists.
-        return if n.content.blank?
+        # At class scope there's no `io` to write to, so dropping
+        # whitespace between top-level defs lets a components-only file
+        # expand cleanly.
+        return if @scope == :class && n.content.blank?
         emit_node(n)
       else
         emit_node(n)
@@ -363,7 +369,9 @@ module Can
     private def emit_inline_def(n : AST::Def) : Nil
       if uses_any_slot?(n.body)
         raise NotImplementedError.new(
-          "inline <.def tag=\"#{n.tag}\"> contains <.slot/>; only top-level <.def> can host slots"
+          "<.def tag=\"#{n.tag}\"> contains <.slot/>. " \
+          "Slot-bearing components must be defined at class/module scope — " \
+          "move this <.def> into a separate .can file loaded outside any method body."
         )
       end
 

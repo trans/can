@@ -16,7 +16,11 @@ module Can
   #     Can.template_inline "<p>Hello, {name}!</p>"
   #     io.to_s # => "<p>Hello, Thomas!</p>"
   macro template_inline(source)
-    {{ run("./can/cli/compile_template", "inline", source).id }}
+    {% if @def %}
+      {{ run("./can/cli/compile_template", "inline", source, "method").id }}
+    {% else %}
+      {{ run("./can/cli/compile_template", "inline", source, "class").id }}
+    {% end %}
   end
 
   # Same as `template_inline`, but reads the template from a file path
@@ -26,7 +30,15 @@ module Can
   #     io = IO::Memory.new
   #     user = current_user
   #     Can.template "pages/home.can"
+  #
+  # When called inside a method body, top-level `<.def>` blocks are lowered
+  # to local `Proc`s (since Crystal forbids nested `def`s). Slot-bearing
+  # components must therefore be defined at class/module scope.
   macro template(path)
-    {{ run("./can/cli/compile_template", "file", path).id }}
+    {% if @def %}
+      {{ run("./can/cli/compile_template", "file", path, "method").id }}
+    {% else %}
+      {{ run("./can/cli/compile_template", "file", path, "class").id }}
+    {% end %}
   end
 end

@@ -1,0 +1,4 @@
+<.def tag="badge" param:label="String">[{label}]</.def>
+
+<p>Hello, {name}.</p>
+<.for each={t in tags}><badge label={t}/></.for>
