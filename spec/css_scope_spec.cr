@@ -112,6 +112,32 @@ describe Can::CssScoper do
     end
   end
 
+  describe ":slotted()" do
+    it "strips :slotted(...) and leaves the inner selector unscoped" do
+      scope(".tags > :slotted(*) { color: red }").should eq(
+        ".tags[data-c] > * { color: red }"
+      )
+    end
+
+    it "supports :slotted(.class)" do
+      scope(".host :slotted(.item) { padding: 0 }").should eq(
+        ".host[data-c] .item { padding: 0 }"
+      )
+    end
+
+    it "preserves trailing pseudo-classes after :slotted(...)" do
+      scope(".host > :slotted(span):hover { color: blue }").should eq(
+        ".host[data-c] > span:hover { color: blue }"
+      )
+    end
+
+    it "handles nested parens inside :slotted(...)" do
+      scope(".host > :slotted(:not(.x)) { color: red }").should eq(
+        ".host[data-c] > :not(.x) { color: red }"
+      )
+    end
+  end
+
   describe "comments and strings" do
     it "preserves comments outside selectors" do
       scope("/* hi */ .card { color: red }").should contain("/* hi */")

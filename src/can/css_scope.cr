@@ -264,7 +264,22 @@ module Can
 
     # Augments a single compound selector by inserting `@suffix` before the
     # first `:` (pseudo-class/element) at depth 0; otherwise appends.
+    #
+    # Special case: `:slotted(X)` strips the wrapper and emits X verbatim,
+    # leaving the surrounding host selector to do the scoping. This lets
+    # CSS reach into slot content (which carries the caller's data-attr,
+    # not the component's) via a structural relationship.
     private def augment_compound(compound : String) : String
+      return compound if compound.empty?
+
+      if compound.starts_with?(":slotted(")
+        if close = matching_close_paren(compound, ":slotted".size)
+          inner = compound[":slotted(".size...close]
+          rest = compound[(close + 1)..]
+          return "#{inner}#{rest}"
+        end
+      end
+
       paren_depth = 0
       compound.each_char_with_index do |c, i|
         case c
@@ -277,6 +292,22 @@ module Can
         end
       end
       compound + @suffix
+    end
+
+    private def matching_close_paren(s : String, open_idx : Int32) : Int32?
+      depth = 0
+      i = open_idx
+      while i < s.size
+        case s[i]
+        when '('
+          depth += 1
+        when ')'
+          depth -= 1
+          return i if depth == 0
+        end
+        i += 1
+      end
+      nil
     end
 
     # ===== Trivia / string / comment helpers =====

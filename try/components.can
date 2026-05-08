@@ -13,7 +13,7 @@
 <.def tag="tag-list">
   <style>
     .tags { display: flex; gap: 0.25rem; flex-wrap: wrap; margin-top: 0.5rem; }
-    .tags > * { background: #f0f0f0; padding: 0.1rem 0.5rem; border-radius: 3px; font-size: 0.85em; }
+    .tags > :slotted(*) { background: #f0f0f0; padding: 0.1rem 0.5rem; border-radius: 3px; font-size: 0.85em; }
   </style>
   <div class="tags"><.slot/></div>
 </.def>
