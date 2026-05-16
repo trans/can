@@ -7,6 +7,39 @@ require "./can/codegen"
 module Can
   VERSION = "0.1.0"
 
+  # Marks a string as pre-escaped/trusted. Interpolations that evaluate to a
+  # `SafeString` are emitted verbatim instead of HTML-escaped.
+  struct SafeString
+    getter value : String
+
+    def initialize(@value : String)
+    end
+
+    def to_s(io : IO) : Nil
+      io << @value
+    end
+
+    def to_s : String
+      @value
+    end
+  end
+
+  # Wraps content as trusted/pre-escaped. Composes with `<.raw>` — both end
+  # up writing the string verbatim.
+  def self.raw(s : String) : SafeString
+    SafeString.new(s)
+  end
+
+  # Runtime escape used by codegen for every non-raw `{expr}`. Skips
+  # HTML-escaping when the value is already a `SafeString`.
+  def self.write_escaped(io : IO, value) : Nil
+    if value.is_a?(SafeString)
+      io << value.value
+    else
+      io << ::HTML.escape(value.to_s)
+    end
+  end
+
   # Compiles a template literal at macro expansion time and splices the
   # generated Crystal source in-place. The generated code writes HTML to a
   # local `io` (which the caller is responsible for having in scope).

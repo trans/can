@@ -1,15 +1,5 @@
 require "./spec_helper"
 
-CAN_SRC_DIR  = File.expand_path("../src", __DIR__)
-PROJECT_ROOT = File.expand_path("..", __DIR__)
-
-# Crystal honors $CRYSTAL_PATH for require lookup; if set it replaces the
-# default so we have to query and prepend.
-CRYSTAL_PATH_FOR_TESTS = begin
-  default = `crystal env CRYSTAL_PATH`.strip
-  default.empty? ? CAN_SRC_DIR : "#{CAN_SRC_DIR}:#{default}"
-end
-
 # Compiles and runs a small Crystal program that exercises the macro layer.
 # `body` is spliced into a wrapper that requires can, sets up `io`, and prints
 # the rendered output to stdout.

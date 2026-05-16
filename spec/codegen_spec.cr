@@ -10,7 +10,7 @@ end
 private def render(src : String, prelude : String = "") : String
   body = Can::Codegen.compile(src)
   script = <<-CRYSTAL
-    require "html"
+    require "can"
     io = IO::Memory.new
     #{prelude}
     #{body}
@@ -21,7 +21,11 @@ private def render(src : String, prelude : String = "") : String
   begin
     output = IO::Memory.new
     err = IO::Memory.new
-    status = Process.run("crystal", ["run", "--no-color", tmp.path], output: output, error: err)
+    status = Process.run(
+      "crystal", ["run", "--no-color", tmp.path],
+      env: {"CRYSTAL_PATH" => CRYSTAL_PATH_FOR_TESTS},
+      output: output, error: err
+    )
     unless status.success?
       raise "crystal run failed:\n#{err}\n--- script ---\n#{script}"
     end
@@ -37,8 +41,14 @@ describe Can::Codegen do
       gen("hello").should contain(%(io << "hello"))
     end
 
-    it "emits interpolation with HTML.escape" do
-      gen("{name}").should contain("io << ::HTML.escape((name).to_s)")
+    it "emits interpolation via Can.write_escaped" do
+      gen("{name}").should contain("::Can.write_escaped(io, (name))")
+    end
+
+    it "emits raw interpolation without the escape helper inside <.raw>" do
+      out = gen("<.raw>{name}</.raw>")
+      out.should contain("io << (name).to_s")
+      out.should_not contain("::Can.write_escaped")
     end
 
     it "emits an element open and close" do
@@ -52,7 +62,7 @@ describe Can::Codegen do
     it "emits expression attributes wrapped in escape" do
       out = gen(%(<input value={x}/>))
       out.should contain(%(io << " value=\\""))
-      out.should contain("io << ::HTML.escape((x).to_s)")
+      out.should contain("::Can.write_escaped(io, (x))")
     end
 
     it "emits boolean attribute as bare name" do
@@ -234,6 +244,29 @@ describe Can::Codegen do
 
     it "renders a self-closing tag" do
       render(%(<img src="x.png"/>)).should eq(%(<img src="x.png"/>))
+    end
+
+    it "renders <.raw> content without escaping" do
+      out = render(%(<div><.raw>{html}</.raw></div>), prelude: %(html = "<b>bold</b>"))
+      out.should eq("<div><b>bold</b></div>")
+    end
+
+    it "still escapes interpolations outside <.raw>" do
+      out = render(%(<div>{x}</div>), prelude: %(x = "<b>"))
+      out.should eq("<div>&lt;b&gt;</div>")
+    end
+
+    it "treats Can.raw values as already-escaped" do
+      out = render(%(<div>{x}</div>), prelude: %(x = Can.raw("<b>bold</b>")))
+      out.should eq("<div><b>bold</b></div>")
+    end
+
+    it "doesn't penetrate <.raw> into a def body's interpolations" do
+      out = render <<-CAN, prelude: %(html = "<i>i</i>")
+        <.def tag="echo" param:s="String"><p>{s}</p></.def>
+        <.raw><echo s={html}/></.raw>
+        CAN
+      out.should contain("<p>&lt;i&gt;i&lt;/i&gt;</p>")
     end
   end
 

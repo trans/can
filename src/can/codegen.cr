@@ -54,6 +54,7 @@ module Can
     @scope : Symbol
     @inline_def_scopes : Array(Set(String))
     @in_top_level_def : Bool = false
+    @in_raw : Bool = false
     @current_component_attr : String? = nil
 
     def self.compile(template : AST::Template, scope : Symbol = :class) : String
@@ -102,6 +103,7 @@ module Can
       when AST::Let           then emit_let(n)
       when AST::Slot          then emit_slot(n)
       when AST::Def           then emit_inline_def(n)
+      when AST::Raw           then emit_raw(n)
       when AST::Comment       then emit_comment(n)
       when AST::Doctype       then emit_doctype(n)
       when AST::SlotFill
@@ -313,9 +315,12 @@ module Can
       @in_top_level_def = true
       previous_attr = @current_component_attr
       @current_component_attr = attr
+      prev_raw = @in_raw
+      @in_raw = false
       with_scope do
         n.body.each { |c| emit_node(c) }
       end
+      @in_raw = prev_raw
       @current_component_attr = previous_attr
       @in_top_level_def = false
 
@@ -388,9 +393,12 @@ module Can
       end
       @out << ") {\n"
 
+      prev_raw = @in_raw
+      @in_raw = false
       with_scope do
         n.body.each { |c| emit_node(c) }
       end
+      @in_raw = prev_raw
 
       @out << "nil\n}\n"
 
@@ -473,9 +481,25 @@ module Can
     end
 
     private def emit_escaped_expr(expr : String) : Nil
-      @out << "io << ::HTML.escape(("
-      @out << expr
-      @out << ").to_s)\n"
+      if @in_raw
+        @out << "io << ("
+        @out << expr
+        @out << ").to_s\n"
+      else
+        @out << "::Can.write_escaped(io, ("
+        @out << expr
+        @out << "))\n"
+      end
+    end
+
+    private def emit_raw(n : AST::Raw) : Nil
+      prev = @in_raw
+      @in_raw = true
+      begin
+        n.body.each { |c| emit_node(c) }
+      ensure
+        @in_raw = prev
+      end
     end
 
     private def tag_to_method_name(tag : String) : String

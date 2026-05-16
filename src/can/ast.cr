@@ -168,6 +168,16 @@ module Can
       end
     end
 
+    # <.raw>…</.raw> — every {expr} interpolation directly inside this body
+    # is emitted verbatim (no HTML escape). Doesn't penetrate into <.def>
+    # bodies nested within (those have their own escape context).
+    class Raw < Node
+      property body : Array(Node)
+
+      def initialize(@body = [] of Node, @line = 0, @column = 0)
+      end
+    end
+
     class Comment < Node
       property content : String
 

@@ -237,6 +237,17 @@ describe Can::Parser do
       end
     end
 
+    it "parses <.raw>" do
+      r = single(%(<.raw>{html}</.raw>)).as(Can::AST::Raw)
+      r.body[0].as(Can::AST::Interpolation).expression.should eq("html")
+    end
+
+    it "errors on attributes on <.raw>" do
+      expect_raises(Can::ParseError, /takes no attributes/) do
+        Can::Parser.parse(%(<.raw foo="bar">x</.raw>))
+      end
+    end
+
     it "parses <.import>" do
       i = single(%(<.import from="components/card"/>)).as(Can::AST::Import)
       i.from.should eq("components/card")

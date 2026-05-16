@@ -322,8 +322,14 @@ module Can
       when "let"     then build_let(attrs, body, l, c)
       when "slot"    then build_slot(attrs, l, c)
       when "import"  then build_import(attrs, l, c)
+      when "raw"     then build_raw(attrs, body, l, c)
       else                raise_at "unknown special form <.#{name}>", l, c
       end
+    end
+
+    private def build_raw(attrs, body, l, c) : AST::Raw
+      raise_at "<.raw> takes no attributes", l, c unless attrs.empty?
+      AST::Raw.new(body, l, c)
     end
 
     private def build_def(attrs, body, l, c) : AST::Def
