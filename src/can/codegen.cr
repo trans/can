@@ -302,7 +302,8 @@ module Can
 
       @out << "def " << method << "(io : IO"
       n.params.each do |p|
-        @out << ", " << p.name << " : " << p.type
+        @out << ", " << p.name
+        @out << " : " << p.type unless p.type.empty?
         if d = p.default
           @out << " = " << d
         end
@@ -381,6 +382,13 @@ module Can
           "<.def tag=\"#{n.tag}\"> contains <.slot/>. " \
           "Slot-bearing components must be defined at class/module scope — " \
           "move this <.def> into a separate .can file loaded outside any method body."
+        )
+      end
+
+      if n.params.any?(&.default)
+        raise NotImplementedError.new(
+          "<.def tag=\"#{n.tag}\"> has param defaults; Crystal Procs don't support defaults, " \
+          "so defaults are top-level-only. Move this <.def> to class/module scope."
         )
       end
 

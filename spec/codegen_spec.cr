@@ -109,6 +109,11 @@ describe Can::Codegen do
       out.should contain(%(io << "y"))
     end
 
+    it "emits a param default and omits the type annotation when defaulted" do
+      out = gen(%(<.def tag="card" param:title="String" param:level={2_i32}>y</.def>))
+      out.should contain("def card(io : IO, title : String, level = 2_i32, &block : IO -> _) : Nil")
+    end
+
     it "emits <.slot/> as block.call(io) inside a top-level def" do
       gen(%(<.def tag="x"><.slot/></.def>)).should contain("block.call(io)")
     end
@@ -281,6 +286,22 @@ describe Can::Codegen do
       out.should contain(%(<div class="card"><h2>Hi</h2>))
       out.should contain("<p>body</p>")
       out.should contain("</div>")
+    end
+
+    it "uses param defaults when not overridden" do
+      out = render <<-CAN
+        <.def tag="badge" param:label="String" param:emoji={"✨"}><span>{emoji} {label}</span></.def>
+        <badge label="crystal"/>
+        <badge label="ruby" emoji="💎"/>
+        CAN
+      out.should contain("<span>✨ crystal</span>")
+      out.should contain("<span>💎 ruby</span>")
+    end
+
+    it "rejects defaults on inline <.def>" do
+      expect_raises(NotImplementedError, /defaults are top-level-only/) do
+        Can::Codegen.compile(%(<div><.def tag="x" param:n={0_i32}>{n}</.def><x/></div>))
+      end
     end
 
     it "renders a component with multiple params" do

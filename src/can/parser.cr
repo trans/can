@@ -343,10 +343,14 @@ module Can
         next if a.name == "tag"
         if a.name.starts_with?("param:")
           pn = a.name[6..]
-          unless a.is_a?(AST::StringAttr)
-            raise_at "param:#{pn} must be a literal type expression in quotes", a.line, a.column
+          case a
+          when AST::StringAttr
+            params << AST::Param.new(pn, a.value, nil, a.line, a.column)
+          when AST::ExprAttr
+            params << AST::Param.new(pn, "", a.expression, a.line, a.column)
+          else
+            raise_at "param:#{pn} must be a string type (\"Type\") or default expression ({value})", a.line, a.column
           end
-          params << AST::Param.new(pn, a.value, nil, a.line, a.column)
         else
           raise_at "unknown attribute on <.def>: #{a.name}", a.line, a.column
         end

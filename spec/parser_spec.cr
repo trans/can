@@ -124,6 +124,21 @@ describe Can::Parser do
       d = single(%(<.def tag="card" param:title="String" param:level="Int32"><h2>{title}</h2></.def>)).as(Can::AST::Def)
       d.params.map(&.name).should eq(["title", "level"])
       d.params.map(&.type).should eq(["String", "Int32"])
+      d.params.map(&.default).should eq([nil, nil])
+    end
+
+    it "parses a param with a default expression" do
+      d = single(%(<.def tag="card" param:level={2_i32}>x</.def>)).as(Can::AST::Def)
+      d.params.size.should eq(1)
+      d.params[0].name.should eq("level")
+      d.params[0].type.should eq("")
+      d.params[0].default.should eq("2_i32")
+    end
+
+    it "parses a mix of required and defaulted params" do
+      d = single(%(<.def tag="row" param:label="String" param:n={0_i32} param:items={[] of String}>x</.def>)).as(Can::AST::Def)
+      d.params.map(&.name).should eq(["label", "n", "items"])
+      d.params.map(&.default).should eq([nil, "0_i32", "[] of String"])
     end
 
     it "errors without a tag" do
