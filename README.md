@@ -1,10 +1,11 @@
-# can
+# Can
 
 A server-side web component system for Crystal. Write components as HTML;
 render them to a string. Each component's `<style>` is scoped to the
 elements it owns.
 
-In the XSLT lineage — components are a special form *inside the template
+The name is short for *canned templates*. Sits in the XSLT and Zope
+TAL/METAL lineage — components are a special form *inside the template
 language* rather than imported from a Crystal class library. The HTML
 itself is the program.
 
