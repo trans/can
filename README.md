@@ -32,7 +32,7 @@ Add to your `shard.yml`:
 ```yaml
 dependencies:
   can:
-    github: your-github-user/can
+    github: trans/can
 ```
 
 Then `shards install`.
@@ -388,7 +388,7 @@ tests, so a full run takes around a minute.
 
 ## Contributors
 
-- [Thomas Sawyer](https://github.com/your-github-user) — creator and
+- [Thomas Sawyer](https://github.com/trans) — creator and
   maintainer
 
 ## License
