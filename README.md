@@ -300,6 +300,67 @@ are plain Crystal modules with regular unit tests.
 
 `Can.template_inline "…"` does the same with an inline source string.
 
+## Use with Kemal (or any IO-based server)
+
+`can` doesn't ship a Kemal adapter — it doesn't need one. A render
+method just writes HTML to an `IO`, and `env.response` is an `IO`. The
+recipe:
+
+```crystal
+require "kemal"
+require "can"
+
+class Pages
+  Can.template "templates/layout.can"   # class scope: layout def with slots
+
+  def home(name : String, todos : Array(String)) : String
+    String.build do |io|
+      Can.template "templates/home.can"
+    end
+  end
+end
+
+PAGES = Pages.new
+
+get "/" do |env|
+  env.response.content_type = "text/html"
+  name = env.params.query["name"]? || "stranger"
+  PAGES.home(name, ["buy milk", "write more crystal"])
+end
+
+Kemal.run
+```
+
+Where `layout.can` defines a top-level component with slots:
+
+```html
+<.def tag="layout" param:title="String">
+  <!DOCTYPE html>
+  <html>
+    <head><title>{title}</title></head>
+    <body>
+      <header><.slot name="heading"/></header>
+      <main><.slot/></main>
+    </body>
+  </html>
+</.def>
+```
+
+And `home.can` fills those slots:
+
+```html
+<layout title="Home">
+  <:heading><h1>Hi, {name}!</h1></:heading>
+  <p>List:</p>
+  <ul><.for each={t in todos}><li>{t}</li></.for></ul>
+</layout>
+```
+
+The same shape works for Grip, plain `HTTP::Server`, or anything else
+that exposes an `IO` for the response body. A runnable example lives at
+`try/kemal/` — `crystal run try/kemal/app.cr` from the project root,
+then open <http://localhost:3000/>.
+
 ## Limitations
 
 - A `<.def>` can't recursively call itself by its own tag yet — the name

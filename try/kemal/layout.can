@@ -1,0 +1,27 @@
+<.def tag="layout" param:title="String">
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; padding: 0 1rem; color: #222; }
+    header { border-bottom: 1px solid #eee; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+    nav a { margin-right: 1rem; }
+    nav a:hover { color: navy; }
+    footer { color: #888; font-size: 0.85em; margin-top: 2rem; }
+  </style>
+  <!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="utf-8"/>
+      <title>{title}</title>
+    </head>
+    <body>
+      <header>
+        <nav>
+          <a href="/">home</a>
+          <a href="/about">about</a>
+        </nav>
+        <.slot name="heading"/>
+      </header>
+      <main><.slot/></main>
+      <footer><small>Powered by <code>can</code></small></footer>
+    </body>
+  </html>
+</.def>

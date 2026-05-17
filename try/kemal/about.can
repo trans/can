@@ -1,0 +1,10 @@
+<layout title="About">
+  <:heading><h1>About</h1></:heading>
+  <p>A small demo of <code>can</code> wired up to a Kemal server.</p>
+  <p>
+    The <code>layout</code> component lives in <code>layout.can</code> and is
+    loaded at class scope so it can take slots. Each page <code>.can</code>
+    file is loaded inside its handler method, where its content is rendered
+    inside the layout via slot fills.
+  </p>
+</layout>

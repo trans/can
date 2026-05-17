@@ -1,0 +1,10 @@
+<layout title="Home">
+  <:heading><h1>Hi, {name}!</h1></:heading>
+  <p>This page is rendered by <code>can</code>, served by Kemal.</p>
+  <.if cond={!todos.empty?}>
+    <p>Today's list:</p>
+    <ul><.for each={todo in todos}><li>{todo}</li></.for></ul>
+    <.else/>
+    <p><em>Nothing on the list yet.</em></p>
+  </.if>
+</layout>
