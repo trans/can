@@ -9,6 +9,8 @@ TAL/METAL lineage — components are a special form *inside the template
 language* rather than imported from a Crystal class library. The HTML
 itself is the program.
 
+**[Live landing page →](https://trans.github.io/can/)** (built by `can` itself; source under [`docs/`](docs/))
+
 ```html
 <.def tag="card" param:title="String">
   <style>
