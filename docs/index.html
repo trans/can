@@ -47,6 +47,24 @@
       <main data-c-layout-c49919>
 
   <section>
+    <p>
+      <strong>can</strong> is a server-side template language for Crystal.
+      Components are defined inside the template as a special form, their
+      CSS is scoped automatically to their own elements, and the whole
+      template compiles into your binary at build time &mdash; no runtime
+      parsing, no client framework.
+    </p>
+    <p>
+      A template just writes HTML to an <code>IO</code>. The same
+      components render the same way whether you hand them to Kemal, Grip,
+      plain <code>HTTP::Server</code> for per-request SSR, or to a build
+      script that pipes output to a file. This page is the build-script
+      case &mdash; the <a href="https://github.com/trans/can/tree/main/try/kemal">Kemal
+      example</a> in the repo shows the per-request case.
+    </p>
+  </section>
+
+  <section>
     <h2>Components, isolated.</h2>
     <p>
       Three cards, each defined by a different component. Every one of them
@@ -297,11 +315,12 @@
   <section>
     <h2>Made of canned templates.</h2>
     <p>
-      This page is rendered by <code>can</code>. Every component you see
-      was defined in a <code>.can</code> file at build time — components,
-      slots, scoped CSS, all compiled into a single static HTML file. The
-      whole site is one <code>crystal&nbsp;run&nbsp;docs/build.cr</code>
-      away.
+      This particular page is one static HTML file produced by
+      <code>crystal&nbsp;run&nbsp;docs/build.cr</code> — every component
+      you see was defined in a <code>.can</code> file and compiled at
+      build time. The same components work unchanged inside a live HTTP
+      handler that writes to <code>env.response</code>; the build script
+      is just one way to consume the rendered output.
     </p>
   </section>
 
