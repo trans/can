@@ -1,0 +1,26 @@
+<layout title="can — server-side web components for Crystal">
+  <p>
+    <code>can</code> is a template language for Crystal where components are
+    defined <em>inside</em> the template as a special form, not imported
+    from a class library. Each component's <code>&lt;style&gt;</code> is
+    scoped automatically to the elements it renders. The name is short for
+    <em>canned templates</em>.
+  </p>
+
+  <h2>An example</h2>
+  <p>This is <code>spec/fixtures/styled_card.can</code> verbatim:</p>
+  <pre><code>{card_source}</code></pre>
+  <p>
+    The component's <code>.card &gt; h2</code> rule only matches that
+    card's heading — a generated <code>data-c-card-…</code> attribute is
+    stamped on each element the component renders and added to every CSS
+    selector, isolating the rule to one component without shadow DOM.
+  </p>
+
+  <h2>More</h2>
+  <p>
+    See the <a href="https://github.com/trans/can#readme">README</a> for
+    the full reference — interpolation, slots, control flow, scoped CSS,
+    macro pipeline, and integration with Kemal.
+  </p>
+</layout>

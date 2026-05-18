@@ -1,0 +1,81 @@
+
+  <style data-c-layout-12dd61>
+    /* The layout's own elements (body, header, footer, etc.) */
+    body[data-c-layout-12dd61] { font-family: system-ui, -apple-system, sans-serif;
+           max-width: 44rem; margin: 2rem auto; padding: 0 1rem;
+           color: #222; line-height: 1.55; }
+    header[data-c-layout-12dd61] { border-bottom: 1px solid #eee; padding-bottom: 0.75rem;
+             margin-bottom: 2rem; }
+    header[data-c-layout-12dd61] > h1[data-c-layout-12dd61] { margin: 0; font-size: 1.75rem; letter-spacing: -0.01em; }
+    header[data-c-layout-12dd61] > p[data-c-layout-12dd61] { color: #666; margin: 0.25rem 0 0; }
+    footer[data-c-layout-12dd61] { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #eee;
+             color: #888; font-size: 0.85em; }
+    footer[data-c-layout-12dd61] a[data-c-layout-12dd61] { color: #2563eb; text-decoration: none; }
+    footer[data-c-layout-12dd61] a[data-c-layout-12dd61]:hover { text-decoration: underline; }
+
+    /* Slot content (everything filled by the caller into <main>). */
+    main[data-c-layout-12dd61] h2   { margin-top: 2rem; font-size: 1.2rem; }
+    main[data-c-layout-12dd61] pre  { background: #f6f6f6; padding: 0.75rem 1rem;
+                          border-radius: 4px; overflow-x: auto;
+                          font-size: 0.85em; }
+    main[data-c-layout-12dd61] a    { color: #2563eb; text-decoration: none; }
+    main[data-c-layout-12dd61] a:hover { text-decoration: underline; }
+    main[data-c-layout-12dd61] code { font-family: ui-monospace, SFMono-Regular,
+                          Menlo, monospace; }
+  </style>
+  <!DOCTYPE html>
+  <html lang="en" data-c-layout-12dd61>
+    <head data-c-layout-12dd61>
+      <meta charset="utf-8" data-c-layout-12dd61/>
+      <meta name="viewport" content="width=device-width, initial-scale=1" data-c-layout-12dd61/>
+      <title data-c-layout-12dd61>can — server-side web components for Crystal</title>
+    </head>
+    <body data-c-layout-12dd61>
+      <header data-c-layout-12dd61>
+        <h1 data-c-layout-12dd61>can</h1>
+        <p data-c-layout-12dd61>Server-side web components for Crystal.</p>
+      </header>
+      <main data-c-layout-12dd61>
+  <p>
+    <code>can</code> is a template language for Crystal where components are
+    defined <em>inside</em> the template as a special form, not imported
+    from a class library. Each component's <code>&lt;style&gt;</code> is
+    scoped automatically to the elements it renders. The name is short for
+    <em>canned templates</em>.
+  </p>
+
+  <h2>An example</h2>
+  <p>This is <code>spec/fixtures/styled_card.can</code> verbatim:</p>
+  <pre><code>&lt;.def tag=&quot;card&quot; param:title=&quot;String&quot;&gt;
+  &lt;style&gt;
+    .card { border: 1px solid #ccc; padding: 1rem; }
+    .card &gt; h2 { color: navy; margin-top: 0; }
+    .card:hover { border-color: black; }
+  &lt;/style&gt;
+  &lt;div class=&quot;card&quot;&gt;
+    &lt;h2&gt;{title}&lt;/h2&gt;
+    &lt;.slot/&gt;
+  &lt;/div&gt;
+&lt;/.def&gt;
+
+&lt;card title=&quot;Hello&quot;&gt;&lt;p&gt;body content&lt;/p&gt;&lt;/card&gt;</code></pre>
+  <p>
+    The component's <code>.card &gt; h2</code> rule only matches that
+    card's heading — a generated <code>data-c-card-…</code> attribute is
+    stamped on each element the component renders and added to every CSS
+    selector, isolating the rule to one component without shadow DOM.
+  </p>
+
+  <h2>More</h2>
+  <p>
+    See the <a href="https://github.com/trans/can#readme">README</a> for
+    the full reference — interpolation, slots, control flow, scoped CSS,
+    macro pipeline, and integration with Kemal.
+  </p>
+</main>
+      <footer data-c-layout-12dd61>
+        <a href="https://github.com/trans/can" data-c-layout-12dd61>github.com/trans/can</a>
+      </footer>
+    </body>
+  </html>
+

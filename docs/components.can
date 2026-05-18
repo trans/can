@@ -1,0 +1,44 @@
+<.def tag="layout" param:title="String">
+  <style>
+    /* The layout's own elements (body, header, footer, etc.) */
+    body { font-family: system-ui, -apple-system, sans-serif;
+           max-width: 44rem; margin: 2rem auto; padding: 0 1rem;
+           color: #222; line-height: 1.55; }
+    header { border-bottom: 1px solid #eee; padding-bottom: 0.75rem;
+             margin-bottom: 2rem; }
+    header > h1 { margin: 0; font-size: 1.75rem; letter-spacing: -0.01em; }
+    header > p { color: #666; margin: 0.25rem 0 0; }
+    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #eee;
+             color: #888; font-size: 0.85em; }
+    footer a { color: #2563eb; text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+
+    /* Slot content (everything filled by the caller into <main>). */
+    main :slotted(h2)   { margin-top: 2rem; font-size: 1.2rem; }
+    main :slotted(pre)  { background: #f6f6f6; padding: 0.75rem 1rem;
+                          border-radius: 4px; overflow-x: auto;
+                          font-size: 0.85em; }
+    main :slotted(a)    { color: #2563eb; text-decoration: none; }
+    main :slotted(a):hover { text-decoration: underline; }
+    main :slotted(code) { font-family: ui-monospace, SFMono-Regular,
+                          Menlo, monospace; }
+  </style>
+  <!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="utf-8"/>
+      <meta name="viewport" content="width=device-width, initial-scale=1"/>
+      <title>{title}</title>
+    </head>
+    <body>
+      <header>
+        <h1>can</h1>
+        <p>Server-side web components for Crystal.</p>
+      </header>
+      <main><.slot/></main>
+      <footer>
+        <a href="https://github.com/trans/can">github.com/trans/can</a>
+      </footer>
+    </body>
+  </html>
+</.def>
