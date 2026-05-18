@@ -240,7 +240,9 @@ describe Can::Codegen do
     end
 
     it "renders an HTML comment" do
-      render("<!-- hi -->").should eq("<!-- hi -->")
+      # Wrapped in <div> so it's not at the top level (where class-scope
+      # codegen drops comments, since there's no io to write to).
+      render("<div><!-- hi --></div>").should eq("<div><!-- hi --></div>")
     end
 
     it "renders a doctype" do

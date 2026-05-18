@@ -88,6 +88,11 @@ module Can
         # expand cleanly.
         return if @scope == :class && n.content.blank?
         emit_node(n)
+      when AST::Comment
+        # Comments between top-level defs in a components-only file have
+        # nowhere to go — drop them silently at class scope.
+        return if @scope == :class
+        emit_node(n)
       else
         emit_node(n)
       end
