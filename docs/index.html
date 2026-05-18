@@ -1,66 +1,82 @@
 
   <!DOCTYPE html>
-  <html lang="en" data-c-layout-c49919>
-    <head data-c-layout-c49919>
-      <meta charset="utf-8" data-c-layout-c49919/>
-      <meta name="viewport" content="width=device-width, initial-scale=1" data-c-layout-c49919/>
-      <title data-c-layout-c49919>can — server-side web components for Crystal</title>
-      <style data-c-layout-c49919>
+  <html lang="en" data-c-layout-09eca2>
+    <head data-c-layout-09eca2>
+      <meta charset="utf-8" data-c-layout-09eca2/>
+      <meta name="viewport" content="width=device-width, initial-scale=1" data-c-layout-09eca2/>
+      <title data-c-layout-09eca2>can — server-side web components for Crystal</title>
+      <style data-c-layout-09eca2>
         /* Layout's own elements */
-        body[data-c-layout-c49919] { font-family: system-ui, -apple-system, sans-serif;
+        body[data-c-layout-09eca2] { font-family: system-ui, -apple-system, sans-serif;
                max-width: 52rem; margin: 0 auto; padding: 3rem 1.25rem 4rem;
                color: #1a1a1a; line-height: 1.55;
-               background: #fafafa; }
-        header[data-c-layout-c49919] { text-align: center; padding-bottom: 2rem; margin-bottom: 1rem; }
-        header[data-c-layout-c49919] > h1[data-c-layout-c49919] { margin: 0; font-size: 3rem; letter-spacing: -0.04em;
-                      font-weight: 800; }
-        header[data-c-layout-c49919] > p[data-c-layout-c49919]  { color: #555; margin: 0.4rem 0 0; font-size: 1.1rem; }
-        header[data-c-layout-c49919] > nav[data-c-layout-c49919] { margin-top: 1rem; }
-        header[data-c-layout-c49919] > nav[data-c-layout-c49919] > a[data-c-layout-c49919] {
-          display: inline-block; padding: 0.4rem 1rem;
-          color: #fff; background: #1a1a1a; border-radius: 999px;
-          font-size: 0.9rem; text-decoration: none; }
-        header[data-c-layout-c49919] > nav[data-c-layout-c49919] > a[data-c-layout-c49919]:hover { background: #2563eb; }
-
-        footer[data-c-layout-c49919] { margin-top: 4rem; padding-top: 1.5rem;
+               background: #fff; }
+        footer[data-c-layout-09eca2] { margin-top: 4rem; padding-top: 1.5rem;
                  border-top: 1px solid #e5e5e5; color: #888;
                  font-size: 0.85rem; text-align: center; }
-        footer[data-c-layout-c49919] a[data-c-layout-c49919] { color: #2563eb; text-decoration: none; }
+        footer[data-c-layout-09eca2] a[data-c-layout-09eca2] { color: #2563eb; text-decoration: none; }
 
         /* Slot content (everything in the page body) */
-        main[data-c-layout-c49919] section { margin-top: 3rem; }
-        main[data-c-layout-c49919] h2 { font-size: 1.4rem; margin: 0 0 0.25rem;
+        main[data-c-layout-09eca2] section { margin-top: 4rem; }
+        main[data-c-layout-09eca2] h2 { font-size: 1.4rem; margin: 0 0 0.25rem;
                             letter-spacing: -0.01em; }
-        main[data-c-layout-c49919] p  { color: #555; margin: 0 0 1rem; }
-        main[data-c-layout-c49919] code { font-family: ui-monospace, SFMono-Regular,
+        main[data-c-layout-09eca2] p  { color: #555; margin: 0 0 1rem; }
+        main[data-c-layout-09eca2] code { font-family: ui-monospace, SFMono-Regular,
                               Menlo, monospace; font-size: 0.9em;
                               background: #efefef; padding: 0.1rem 0.3rem;
                               border-radius: 3px; }
+        main[data-c-layout-09eca2] nav {
+          text-align: center; margin: 2rem 0 0;
+          padding: 1rem; background: #06b6d4; border-radius: 6px; }
+        main[data-c-layout-09eca2] .cta {
+          display: inline-block; padding: 0.4rem 1rem;
+          margin: 0 0.25rem;
+          color: #fff; background: #1a1a1a; border-radius: 999px;
+          font-size: 0.9rem; text-decoration: none; }
+        main[data-c-layout-09eca2] .cta:hover { background: #1f2937; }
       </style>
     </head>
-    <body data-c-layout-c49919>
-      <header data-c-layout-c49919>
-        <h1 data-c-layout-c49919>can</h1>
-        <p data-c-layout-c49919>Server-side web components for Crystal.</p>
-        <nav data-c-layout-c49919><a href="https://github.com/trans/can" data-c-layout-c49919>github &rarr;</a></nav>
-      </header>
-      <main data-c-layout-c49919>
+    <body data-c-layout-09eca2>
+      <main data-c-layout-09eca2>
+
+  
+  <style data-c-hero-4e2b43>
+    .hero[data-c-hero-4e2b43] { display: flex; align-items: center; gap: 1.75rem;
+            margin: 0; padding-top: 0.5rem; }
+    .hero[data-c-hero-4e2b43] > .logo[data-c-hero-4e2b43] { width: 26%; flex-shrink: 0; }
+    .hero[data-c-hero-4e2b43] > .body[data-c-hero-4e2b43] { flex: 1; }
+    .hero[data-c-hero-4e2b43] > .body[data-c-hero-4e2b43] img { display: block; width: 100%; height: auto; }
+    @media (max-width: 36rem) {
+      .hero[data-c-hero-4e2b43] { flex-direction: column; text-align: center; }
+      .hero[data-c-hero-4e2b43] > .logo[data-c-hero-4e2b43] { width: 60%; }
+    }
+  </style>
+  <header class="hero" data-c-hero-4e2b43>
+    <img src="logo.png" alt="can &mdash; server-side web components for Crystal" class="logo" data-c-hero-4e2b43/>
+    <div class="body" data-c-hero-4e2b43>
+    <img src="logo-text.png" alt="can"/>
+  </div>
+  </header>
+
+
+  <nav>
+    <a class="cta" href="https://github.com/trans/can">github &rarr;</a>
+    <a class="cta" href="api/index.html">API &rarr;</a>
+  </nav>
 
   <section>
     <p>
-      <strong>can</strong> is a server-side template language for Crystal.
+      <strong>Can</strong> is a server-side template language for Crystal.
       Components are defined inside the template as a special form, their
       CSS is scoped automatically to their own elements, and the whole
       template compiles into your binary at build time &mdash; no runtime
       parsing, no client framework.
     </p>
     <p>
-      A template just writes HTML to an <code>IO</code>. The same
+      A template just writes HTML to an <code>IO</code>, so the same
       components render the same way whether you hand them to Kemal, Grip,
-      plain <code>HTTP::Server</code> for per-request SSR, or to a build
-      script that pipes output to a file. This page is the build-script
-      case &mdash; the <a href="https://github.com/trans/can/tree/main/try/kemal">Kemal
-      example</a> in the repo shows the per-request case.
+      plain <code>HTTP::Server</code>, or a build script that pipes the
+      output to a file (like this page does).
     </p>
   </section>
 
@@ -325,10 +341,10 @@
   </section>
 
 </main>
-      <footer data-c-layout-c49919>
-        Rendered by <code data-c-layout-c49919>can</code> &middot; view
-        <a href="https://github.com/trans/can/blob/main/docs/index.can" data-c-layout-c49919>index.can</a> &middot;
-        <a href="https://github.com/trans/can/blob/main/docs/components.can" data-c-layout-c49919>components.can</a>
+      <footer data-c-layout-09eca2>
+        Rendered by <code data-c-layout-09eca2>can</code> &middot; view
+        <a href="https://github.com/trans/can/blob/main/docs/index.can" data-c-layout-09eca2>index.can</a> &middot;
+        <a href="https://github.com/trans/can/blob/main/docs/components.can" data-c-layout-09eca2>components.can</a>
       </footer>
     </body>
   </html>

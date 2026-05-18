@@ -10,25 +10,14 @@
         body { font-family: system-ui, -apple-system, sans-serif;
                max-width: 52rem; margin: 0 auto; padding: 3rem 1.25rem 4rem;
                color: #1a1a1a; line-height: 1.55;
-               background: #fafafa; }
-        header { text-align: center; padding-bottom: 2rem; margin-bottom: 1rem; }
-        header > h1 { margin: 0; font-size: 3rem; letter-spacing: -0.04em;
-                      font-weight: 800; }
-        header > p  { color: #555; margin: 0.4rem 0 0; font-size: 1.1rem; }
-        header > nav { margin-top: 1rem; }
-        header > nav > a {
-          display: inline-block; padding: 0.4rem 1rem;
-          color: #fff; background: #1a1a1a; border-radius: 999px;
-          font-size: 0.9rem; text-decoration: none; }
-        header > nav > a:hover { background: #2563eb; }
-
+               background: #fff; }
         footer { margin-top: 4rem; padding-top: 1.5rem;
                  border-top: 1px solid #e5e5e5; color: #888;
                  font-size: 0.85rem; text-align: center; }
         footer a { color: #2563eb; text-decoration: none; }
 
         /* Slot content (everything in the page body) */
-        main :slotted(section) { margin-top: 3rem; }
+        main :slotted(section) { margin-top: 4rem; }
         main :slotted(h2) { font-size: 1.4rem; margin: 0 0 0.25rem;
                             letter-spacing: -0.01em; }
         main :slotted(p)  { color: #555; margin: 0 0 1rem; }
@@ -36,14 +25,18 @@
                               Menlo, monospace; font-size: 0.9em;
                               background: #efefef; padding: 0.1rem 0.3rem;
                               border-radius: 3px; }
+        main :slotted(nav) {
+          text-align: center; margin: 2rem 0 0;
+          padding: 1rem; background: #06b6d4; border-radius: 6px; }
+        main :slotted(.cta) {
+          display: inline-block; padding: 0.4rem 1rem;
+          margin: 0 0.25rem;
+          color: #fff; background: #1a1a1a; border-radius: 999px;
+          font-size: 0.9rem; text-decoration: none; }
+        main :slotted(.cta):hover { background: #1f2937; }
       </style>
     </head>
     <body>
-      <header>
-        <h1>can</h1>
-        <p>Server-side web components for Crystal.</p>
-        <nav><a href="https://github.com/trans/can">github &rarr;</a></nav>
-      </header>
       <main><.slot/></main>
       <footer>
         Rendered by <code>can</code> &middot; view
@@ -52,6 +45,27 @@
       </footer>
     </body>
   </html>
+</.def>
+
+<!-- Page hero: logo on the left, intro text flowing on the right. -->
+<.def tag="hero">
+  <style>
+    .hero { display: flex; align-items: center; gap: 1.75rem;
+            margin: 0; padding-top: 0.5rem; }
+    .hero > .logo { width: 26%; flex-shrink: 0; }
+    .hero > .body { flex: 1; }
+    .hero > .body :slotted(img) { display: block; width: 100%; height: auto; }
+    @media (max-width: 36rem) {
+      .hero { flex-direction: column; text-align: center; }
+      .hero > .logo { width: 60%; }
+    }
+  </style>
+  <header class="hero">
+    <img src="logo.png"
+         alt="can &mdash; server-side web components for Crystal"
+         class="logo"/>
+    <div class="body"><.slot/></div>
+  </header>
 </.def>
 
 <!-- A demo wrapper: rendered output on top, source in a collapsible panel. -->

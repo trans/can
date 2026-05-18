@@ -1,20 +1,27 @@
 <layout title="can — server-side web components for Crystal">
 
+  <hero>
+    <img src="logo-text.png" alt="can"/>
+  </hero>
+
+  <nav>
+    <a class="cta" href="https://github.com/trans/can">github &rarr;</a>
+    <a class="cta" href="api/index.html">API &rarr;</a>
+  </nav>
+
   <section>
     <p>
-      <strong>can</strong> is a server-side template language for Crystal.
+      <strong>Can</strong> is a server-side template language for Crystal.
       Components are defined inside the template as a special form, their
       CSS is scoped automatically to their own elements, and the whole
       template compiles into your binary at build time &mdash; no runtime
       parsing, no client framework.
     </p>
     <p>
-      A template just writes HTML to an <code>IO</code>. The same
+      A template just writes HTML to an <code>IO</code>, so the same
       components render the same way whether you hand them to Kemal, Grip,
-      plain <code>HTTP::Server</code> for per-request SSR, or to a build
-      script that pipes output to a file. This page is the build-script
-      case &mdash; the <a href="https://github.com/trans/can/tree/main/try/kemal">Kemal
-      example</a> in the repo shows the per-request case.
+      plain <code>HTTP::Server</code>, or a build script that pipes the
+      output to a file (like this page does).
     </p>
   </section>
 
