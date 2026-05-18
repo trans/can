@@ -1,44 +1,159 @@
 <.def tag="layout" param:title="String">
-  <style>
-    /* The layout's own elements (body, header, footer, etc.) */
-    body { font-family: system-ui, -apple-system, sans-serif;
-           max-width: 44rem; margin: 2rem auto; padding: 0 1rem;
-           color: #222; line-height: 1.55; }
-    header { border-bottom: 1px solid #eee; padding-bottom: 0.75rem;
-             margin-bottom: 2rem; }
-    header > h1 { margin: 0; font-size: 1.75rem; letter-spacing: -0.01em; }
-    header > p { color: #666; margin: 0.25rem 0 0; }
-    footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid #eee;
-             color: #888; font-size: 0.85em; }
-    footer a { color: #2563eb; text-decoration: none; }
-    footer a:hover { text-decoration: underline; }
-
-    /* Slot content (everything filled by the caller into <main>). */
-    main :slotted(h2)   { margin-top: 2rem; font-size: 1.2rem; }
-    main :slotted(pre)  { background: #f6f6f6; padding: 0.75rem 1rem;
-                          border-radius: 4px; overflow-x: auto;
-                          font-size: 0.85em; }
-    main :slotted(a)    { color: #2563eb; text-decoration: none; }
-    main :slotted(a):hover { text-decoration: underline; }
-    main :slotted(code) { font-family: ui-monospace, SFMono-Regular,
-                          Menlo, monospace; }
-  </style>
   <!DOCTYPE html>
   <html lang="en">
     <head>
       <meta charset="utf-8"/>
       <meta name="viewport" content="width=device-width, initial-scale=1"/>
       <title>{title}</title>
+      <style>
+        /* Layout's own elements */
+        body { font-family: system-ui, -apple-system, sans-serif;
+               max-width: 52rem; margin: 0 auto; padding: 3rem 1.25rem 4rem;
+               color: #1a1a1a; line-height: 1.55;
+               background: #fafafa; }
+        header { text-align: center; padding-bottom: 2rem; margin-bottom: 1rem; }
+        header > h1 { margin: 0; font-size: 3rem; letter-spacing: -0.04em;
+                      font-weight: 800; }
+        header > p  { color: #555; margin: 0.4rem 0 0; font-size: 1.1rem; }
+        header > nav { margin-top: 1rem; }
+        header > nav > a {
+          display: inline-block; padding: 0.4rem 1rem;
+          color: #fff; background: #1a1a1a; border-radius: 999px;
+          font-size: 0.9rem; text-decoration: none; }
+        header > nav > a:hover { background: #2563eb; }
+
+        footer { margin-top: 4rem; padding-top: 1.5rem;
+                 border-top: 1px solid #e5e5e5; color: #888;
+                 font-size: 0.85rem; text-align: center; }
+        footer a { color: #2563eb; text-decoration: none; }
+
+        /* Slot content (everything in the page body) */
+        main :slotted(section) { margin-top: 3rem; }
+        main :slotted(h2) { font-size: 1.4rem; margin: 0 0 0.25rem;
+                            letter-spacing: -0.01em; }
+        main :slotted(p)  { color: #555; margin: 0 0 1rem; }
+        main :slotted(code) { font-family: ui-monospace, SFMono-Regular,
+                              Menlo, monospace; font-size: 0.9em;
+                              background: #efefef; padding: 0.1rem 0.3rem;
+                              border-radius: 3px; }
+      </style>
     </head>
     <body>
       <header>
         <h1>can</h1>
         <p>Server-side web components for Crystal.</p>
+        <nav><a href="https://github.com/trans/can">github &rarr;</a></nav>
       </header>
       <main><.slot/></main>
       <footer>
-        <a href="https://github.com/trans/can">github.com/trans/can</a>
+        Rendered by <code>can</code> &middot; view
+        <a href="https://github.com/trans/can/blob/main/docs/index.can">index.can</a> &middot;
+        <a href="https://github.com/trans/can/blob/main/docs/components.can">components.can</a>
       </footer>
     </body>
   </html>
+</.def>
+
+<!-- A demo wrapper: rendered output on top, source in a collapsible panel. -->
+<.def tag="demo">
+  <style>
+    .demo { margin: 0 0 1.5rem; }
+    .demo > .out {
+      padding: 1.25rem; background: #fff; border: 1px solid #e5e5e5;
+      border-radius: 6px; }
+    .demo > details {
+      margin-top: 0.4rem; font-size: 0.85em; }
+    .demo > details > summary {
+      cursor: pointer; color: #2563eb; user-select: none;
+      list-style: none; text-align: right; }
+    .demo > details > summary::before {
+      content: "\25B8"; padding-right: 0.4em;
+      display: inline-block; transition: transform 0.1s; }
+    .demo > details[open] > summary::before { content: "\25BE"; }
+    .demo > details > pre {
+      margin: 0.4rem 0 0; padding: 0.75rem 1rem;
+      background: #1a1a1a; color: #f0f0f0; border-radius: 4px;
+      font-size: 0.85em; overflow-x: auto; }
+    .demo > details > pre > code {
+      background: transparent; color: inherit; padding: 0; }
+  </style>
+  <div class="demo">
+    <div class="out"><.slot/></div>
+    <details><summary>source</summary><pre><code><.slot name="source"/></code></pre></details>
+  </div>
+</.def>
+
+<!-- Three card components — each uses ".card" internally, each
+     looks completely different because each has its own scoped CSS. -->
+
+<.def tag="card-soft" param:title="String">
+  <style>
+    .card { background: #eff6ff; border: 1px solid #bfdbfe;
+            border-radius: 8px; padding: 1rem 1.25rem; }
+    .card > h3 { margin: 0 0 0.3rem; color: #1e3a8a;
+                 font-weight: 700; font-size: 1.1rem; }
+    .card > .body { color: #1e40af; }
+  </style>
+  <div class="card">
+    <h3>{title}</h3>
+    <div class="body"><.slot/></div>
+  </div>
+</.def>
+
+<.def tag="card-bold" param:title="String">
+  <style>
+    .card { background: #1a1a1a; color: #f5f5f5; padding: 1.25rem;
+            border-radius: 2px;
+            box-shadow: 6px 6px 0 #fbbf24; }
+    .card > h3 { margin: 0 0 0.4rem; color: #fbbf24;
+                 font-family: ui-monospace, SFMono-Regular, monospace;
+                 letter-spacing: 0.05em; text-transform: uppercase;
+                 font-size: 0.95rem; }
+    .card > .body { font-size: 1.05rem; line-height: 1.4; }
+  </style>
+  <div class="card">
+    <h3>{title}</h3>
+    <div class="body"><.slot/></div>
+  </div>
+</.def>
+
+<.def tag="card-paper" param:title="String">
+  <style>
+    .card { background: #fffdf5; padding: 1.25rem 1.5rem;
+            border-left: 4px solid #92400e;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.08); }
+    .card > h3 { margin: 0 0 0.4rem; font-family: Georgia, serif;
+                 font-style: italic; font-size: 1.15rem;
+                 color: #57534e; }
+    .card > .body { font-family: Georgia, serif; color: #44403c; }
+  </style>
+  <div class="card">
+    <h3>{title}</h3>
+    <div class="body"><.slot/></div>
+  </div>
+</.def>
+
+<!-- A callout whose appearance is driven by a param. One component,
+     three visual variants. -->
+<.def tag="callout" param:kind="String">
+  <style>
+    .callout { padding: 0.9rem 1rem; border-radius: 4px;
+               border-left: 4px solid; margin: 0 0 0.75rem; }
+    .callout.info    { background: #eff6ff; border-color: #2563eb;
+                       color: #1e40af; }
+    .callout.warning { background: #fffbeb; border-color: #f59e0b;
+                       color: #92400e; }
+    .callout.danger  { background: #fef2f2; border-color: #dc2626;
+                       color: #991b1b; }
+    .callout > strong { display: block; margin-bottom: 0.2rem;
+                        text-transform: uppercase; letter-spacing: 0.05em;
+                        font-size: 0.8rem; }
+  </style>
+  <div class="callout {kind}">
+    <.if cond={kind == "info"}><strong>note</strong>
+      <.elseif cond={kind == "warning"}/><strong>heads up</strong>
+      <.elseif cond={kind == "danger"}/><strong>danger</strong>
+    </.if>
+    <.slot/>
+  </div>
 </.def>
