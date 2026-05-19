@@ -18,6 +18,14 @@ module Can
   # Tokenizer is brace/string/comment-aware but doesn't fully implement the CSS
   # syntax module; uncommon edge cases (escapes inside selectors, attribute
   # selectors with nested brackets) may not roundtrip identically.
+  #
+  # TODO: revisit per-element stamping once CSS `@scope { ... } to (...)` is
+  # broadly supported (Chromium ships it; Firefox/Safari behind as of 2026).
+  # `@scope` provides a real scope barrier with a stop selector, which would
+  # let us stamp only the component's root element and wall off nested
+  # components via `to (.child-component-root)`. Same isolation semantics,
+  # much lighter markup. Conservative target: revisit when all evergreen
+  # browsers ship it and a reasonable LTS window has passed.
   class CssScoper
     SCOPED_AT_RULES = {"media", "supports", "container", "layer"}
 
