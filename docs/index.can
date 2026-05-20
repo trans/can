@@ -1,84 +1,134 @@
-<layout title="can — server-side web components for Crystal">
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>can — server-side web components for Crystal</title>
+    <style>
+      /* Page chrome */
+      body { font-family: system-ui, -apple-system, sans-serif;
+             max-width: 52rem; margin: 0 auto; padding: 3rem 1.25rem 4rem;
+             color: #1a1a1a; line-height: 1.55;
+             background: #fff; }
+      footer { margin-top: 4rem; padding-top: 1.5rem;
+               border-top: 1px solid #e5e5e5; color: #888;
+               font-size: 0.85rem; text-align: center; }
+      footer a { color: #2563eb; text-decoration: none; }
 
-  <hero>
-    CANNED SERVER-SIDE HTML/CSS TEMPLATES FOR CRYSTAL<br/>
-		<nav>
-		  <a class="cta" href="https://github.com/trans/can">GITHUB</a>
-		  <a class="cta" href="api/index.html">API</a>
-		</nav>
-  </hero>
+      /* Slot/section content — plain descendant selectors, no scoping
+         needed since this CSS is the page's only stylesheet. */
+      main section { margin-top: 4rem; }
+      main h2 {
+        font-size: 2.7rem; margin: 0 0 0.75rem; letter-spacing: -0.01em;
+        text-align: center; color: #06b6d4;
+        font-variant: small-caps slashed-zero;
+      }
+      main h2::before { content: "~ "; }
+      main h2::after  { content: " ~"; }
+      main p { color: #555; margin: 0 0 1rem; }
+      main code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+                  font-size: 0.9em; background: #efefef;
+                  padding: 0.1rem 0.3rem; border-radius: 3px; }
+      main nav { text-align: left; margin: 0.5rem 0 0; }
+      main .cta {
+        display: inline-block; padding: 0.4rem 1rem;
+        margin: 0 0.25rem;
+        color: #1a1a1a; background: pink; border-radius: 999px;
+        font-size: 0.9rem; text-decoration: none; font-weight: bold; }
+      main .cta:hover { background: #e5e7eb; }
+      main .top-section { background: #06b6d4; padding: 1rem;
+                          border-radius: 10px; }
+      main .top-section code { color: #555; }
+    </style>
+  </head>
+  <body>
+    <main>
 
+      <hero>
+        CANNED SERVER-SIDE HTML/CSS TEMPLATES FOR CRYSTAL<br/>
+        <nav>
+          <a class="cta" href="https://github.com/trans/can">GITHUB</a>
+          <a class="cta" href="api/index.html">API</a>
+        </nav>
+      </hero>
 
-  <section class="top-section">
-    <p style="color: white;">
-      <strong>Can</strong> is a server-side template language for Crystal.
-      Components are defined inside the template as a special form, their
-      CSS is scoped automatically to their own elements, and the whole
-      template compiles into your binary at build time &mdash; no runtime
-      parsing, no client framework.
-    </p>
-    <p style="color: white;">
-      A template just writes HTML to an <code>IO</code>, so the same
-      components render the same way whether you hand them to Kemal, Grip,
-      plain <code>HTTP::Server</code>, or a build script that pipes the
-      output to a file (like this page does).
-    </p>
-  </section>
+      <section class="top-section">
+        <p style="color: white;">
+          <strong>Can</strong> is a server-side template language for Crystal.
+          Components are defined inside the template as a special form, their
+          CSS is scoped automatically to their own elements, and the whole
+          template compiles into your binary at build time &mdash; no runtime
+          parsing, no client framework.
+        </p>
+        <p style="color: white;">
+          A template just writes HTML to an <code>IO</code>, so the same
+          components render the same way whether you hand them to Kemal, Grip,
+          plain <code>HTTP::Server</code>, or a build script that pipes the
+          output to a file (like this page does).
+        </p>
+      </section>
 
-  <section>
-    <h2>Components, isolated</h2>
-    <p>
-      Three cards, each defined by a different component. Every one of them
-      uses a <code>.card</code> class internally. They don't collide
-      because each component's CSS is rewritten to require a generated
-      attribute that only its own elements carry. Pop the source on any of
-      them — same class, no juggling.
-    </p>
+      <section>
+        <h2>Components, isolated</h2>
+        <p>
+          Three cards, each defined by a different component. Every one of them
+          uses a <code>.card</code> class internally. They don't collide
+          because each component's CSS is rewritten to require a generated
+          attribute that only its own elements carry. Pop the source on any of
+          them — same class, no juggling.
+        </p>
 
-    <demo>
-      <card-soft title="Soft">Pastel surfaces, rounded corners, a quiet voice.</card-soft>
-      <:source>{snippets["card_soft"]}</:source>
-    </demo>
+        <demo>
+          <card-soft title="Soft">Pastel surfaces, rounded corners, a quiet voice.</card-soft>
+          <:source>{snippets["card_soft"]}</:source>
+        </demo>
 
-    <demo>
-      <card-bold title="Bold">High-contrast, monospace heading, a hard drop shadow.</card-bold>
-      <:source>{snippets["card_bold"]}</:source>
-    </demo>
+        <demo>
+          <card-bold title="Bold">High-contrast, monospace heading, a hard drop shadow.</card-bold>
+          <:source>{snippets["card_bold"]}</:source>
+        </demo>
 
-    <demo>
-      <card-paper title="Paper">Quiet serif, paper texture, a marginal note.</card-paper>
-      <:source>{snippets["card_paper"]}</:source>
-    </demo>
-  </section>
+        <demo>
+          <card-paper title="Paper">Quiet serif, paper texture, a marginal note.</card-paper>
+          <:source>{snippets["card_paper"]}</:source>
+        </demo>
+      </section>
 
-  <section>
-    <h2>One component, many variants</h2>
-    <p>
-      The same <code>&lt;callout&gt;</code> component renders three
-      different ways, picked by a <code>kind</code> param. Param-driven
-      style is just an attribute interpolation
-      (<code>class="callout &#123;kind&#125;"</code>) plus a <code>&lt;.if&gt;</code>
-      chain inside the body.
-    </p>
+      <section>
+        <h2>One component, many variants</h2>
+        <p>
+          The same <code>&lt;callout&gt;</code> component renders three
+          different ways, picked by a <code>kind</code> param. Param-driven
+          style is just an attribute interpolation
+          (<code>class="callout &#123;kind&#125;"</code>) plus a <code>&lt;.if&gt;</code>
+          chain inside the body.
+        </p>
 
-    <demo>
-      <callout kind="info">Server-rendered. No client runtime, no shadow DOM, no build pipeline beyond <code>crystal run</code>.</callout>
-      <callout kind="warning">Slot-bearing components must be defined at class/module scope — Crystal Procs can't take blocks.</callout>
-      <callout kind="danger">Use <code>Can.raw()</code> or <code>&lt;.raw&gt;</code> only for content you've already sanitized.</callout>
-      <:source>{snippets["callouts"]}</:source>
-    </demo>
-  </section>
+        <demo>
+          <callout kind="info">Server-rendered. No client runtime, no shadow DOM, no build pipeline beyond <code>crystal run</code>.</callout>
+          <callout kind="warning">Slot-bearing components must be defined at class/module scope — Crystal Procs can't take blocks.</callout>
+          <callout kind="danger">Use <code>Can.raw()</code> or <code>&lt;.raw&gt;</code> only for content you've already sanitized.</callout>
+          <:source>{snippets["callouts"]}</:source>
+        </demo>
+      </section>
 
-  <section>
-    <h2>Made of canned templates</h2>
-    <p>
-      This particular page is one static HTML file produced by
-      <code>crystal&nbsp;run&nbsp;docs/build.cr</code> — every component
-      you see was defined in a <code>.can</code> file and compiled at
-      build time. The same components work unchanged inside a live HTTP
-      handler that writes to <code>env.response</code>; the build script
-      is just one way to consume the rendered output.
-    </p>
-  </section>
+      <section>
+        <h2>Made of canned templates</h2>
+        <p>
+          This particular page is one static HTML file produced by
+          <code>crystal&nbsp;run&nbsp;docs/build.cr</code> — every component
+          you see was defined in a <code>.can</code> file and compiled at
+          build time. The same components work unchanged inside a live HTTP
+          handler that writes to <code>env.response</code>; the build script
+          is just one way to consume the rendered output.
+        </p>
+      </section>
 
-</layout>
+    </main>
+    <footer>
+      Rendered by <code>can</code> &middot; view
+      <a href="https://github.com/trans/can/blob/main/docs/index.can">index.can</a> &middot;
+      <a href="https://github.com/trans/can/blob/main/docs/components.can">components.can</a>
+    </footer>
+  </body>
+</html>

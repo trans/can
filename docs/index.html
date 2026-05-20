@@ -1,50 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>can — server-side web components for Crystal</title>
+    <style>
+      /* Page chrome */
+      body { font-family: system-ui, -apple-system, sans-serif;
+             max-width: 52rem; margin: 0 auto; padding: 3rem 1.25rem 4rem;
+             color: #1a1a1a; line-height: 1.55;
+             background: #fff; }
+      footer { margin-top: 4rem; padding-top: 1.5rem;
+               border-top: 1px solid #e5e5e5; color: #888;
+               font-size: 0.85rem; text-align: center; }
+      footer a { color: #2563eb; text-decoration: none; }
 
-  <!DOCTYPE html>
-  <html lang="en" data-c-layout-780d14>
-    <head data-c-layout-780d14>
-      <meta charset="utf-8" data-c-layout-780d14/>
-      <meta name="viewport" content="width=device-width, initial-scale=1" data-c-layout-780d14/>
-      <title data-c-layout-780d14>can — server-side web components for Crystal</title>
-      <style data-c-layout-780d14>
-        /* Layout's own elements */
-        body[data-c-layout-780d14] { font-family: system-ui, -apple-system, sans-serif;
-               max-width: 52rem; margin: 0 auto; padding: 3rem 1.25rem 4rem;
-               color: #1a1a1a; line-height: 1.55;
-               background: #fff; }
-        footer[data-c-layout-780d14] { margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid #e5e5e5; color: #888; font-size: 0.85rem; text-align: center; }
-        footer[data-c-layout-780d14] a[data-c-layout-780d14] { color: #2563eb; text-decoration: none; }
+      /* Slot/section content — plain descendant selectors, no scoping
+         needed since this CSS is the page's only stylesheet. */
+      main section { margin-top: 4rem; }
+      main h2 {
+        font-size: 2.7rem; margin: 0 0 0.75rem; letter-spacing: -0.01em;
+        text-align: center; color: #06b6d4;
+        font-variant: small-caps slashed-zero;
+      }
+      main h2::before { content: "~ "; }
+      main h2::after  { content: " ~"; }
+      main p { color: #555; margin: 0 0 1rem; }
+      main code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+                  font-size: 0.9em; background: #efefef;
+                  padding: 0.1rem 0.3rem; border-radius: 3px; }
+      main nav { text-align: left; margin: 0.5rem 0 0; }
+      main .cta {
+        display: inline-block; padding: 0.4rem 1rem;
+        margin: 0 0.25rem;
+        color: #1a1a1a; background: pink; border-radius: 999px;
+        font-size: 0.9rem; text-decoration: none; font-weight: bold; }
+      main .cta:hover { background: #e5e7eb; }
+      main .top-section { background: #06b6d4; padding: 1rem;
+                          border-radius: 10px; }
+      main .top-section code { color: #555; }
+    </style>
+  </head>
+  <body>
+    <main>
 
-        /* Slot content (everything in the page body) */
-        main[data-c-layout-780d14] section { margin-top: 4rem; }
-        main[data-c-layout-780d14] h2 { 
-          font-size: 2.7rem; margin: 0 0 0.75rem; letter-spacing: -0.01em; 
-          text-align: center; color: #06b6d4; font-variant: small-caps slashed-zero; 
-        }
-        main[data-c-layout-780d14] p  { color: #555; margin: 0 0 1rem; }
-        main[data-c-layout-780d14] code { font-family: ui-monospace, SFMono-Regular,
-                              Menlo, monospace; font-size: 0.9em;
-                              background: #efefef; padding: 0.1rem 0.3rem;
-                              border-radius: 3px; }
-        main[data-c-layout-780d14] nav {
-          text-align: left; margin: 0.5rem 0 0;
-          padding: 0rem; border-radius: 6px; }
-
-        main[data-c-layout-780d14] .cta {
-          display: inline-block; padding: 0.4rem 1rem;
-          margin: 0 0.25rem;
-          color: #1a1a1a; background: pink; border-radius: 999px;
-          font-size: 0.9rem; text-decoration: none; font-weight: bold; }
-        main[data-c-layout-780d14] .cta:hover { background: #e5e7eb; }
-
-        main[data-c-layout-780d14] .top-section {
-          background: #06b6d4; padding: 1rem; border-radius: 10px; }
-        main[data-c-layout-780d14] .top-section code { color: #555; }
-      </style>
-    </head>
-    <body data-c-layout-780d14>
-      <main data-c-layout-780d14>
-
-  
+      
   <style data-c-hero-1c049a>
     .hero[data-c-hero-1c049a] { display: flex; align-items: center; gap: 2rem; margin: 0; padding-top: 0; }
     .hero[data-c-hero-1c049a] > .logo[data-c-hero-1c049a] { width: 26%; flex-shrink: 0; }
@@ -57,44 +57,43 @@
   </style>
   <header class="hero" data-c-hero-1c049a>
     <div class="body" data-c-hero-1c049a>
-    CANNED SERVER-SIDE HTML/CSS TEMPLATES FOR CRYSTAL<br/>
-		<nav>
-		  <a class="cta" href="https://github.com/trans/can">GITHUB</a>
-		  <a class="cta" href="api/index.html">API</a>
-		</nav>
-  </div>
+        CANNED SERVER-SIDE HTML/CSS TEMPLATES FOR CRYSTAL<br/>
+        <nav>
+          <a class="cta" href="https://github.com/trans/can">GITHUB</a>
+          <a class="cta" href="api/index.html">API</a>
+        </nav>
+      </div>
     <img src="can.png" alt="can &mdash; server-side web components for Crystal" class="logo" data-c-hero-1c049a/>
   </header>
 
 
+      <section class="top-section">
+        <p style="color: white;">
+          <strong>Can</strong> is a server-side template language for Crystal.
+          Components are defined inside the template as a special form, their
+          CSS is scoped automatically to their own elements, and the whole
+          template compiles into your binary at build time &mdash; no runtime
+          parsing, no client framework.
+        </p>
+        <p style="color: white;">
+          A template just writes HTML to an <code>IO</code>, so the same
+          components render the same way whether you hand them to Kemal, Grip,
+          plain <code>HTTP::Server</code>, or a build script that pipes the
+          output to a file (like this page does).
+        </p>
+      </section>
 
-  <section class="top-section">
-    <p style="color: white;">
-      <strong>Can</strong> is a server-side template language for Crystal.
-      Components are defined inside the template as a special form, their
-      CSS is scoped automatically to their own elements, and the whole
-      template compiles into your binary at build time &mdash; no runtime
-      parsing, no client framework.
-    </p>
-    <p style="color: white;">
-      A template just writes HTML to an <code>IO</code>, so the same
-      components render the same way whether you hand them to Kemal, Grip,
-      plain <code>HTTP::Server</code>, or a build script that pipes the
-      output to a file (like this page does).
-    </p>
-  </section>
+      <section>
+        <h2>Components, isolated</h2>
+        <p>
+          Three cards, each defined by a different component. Every one of them
+          uses a <code>.card</code> class internally. They don't collide
+          because each component's CSS is rewritten to require a generated
+          attribute that only its own elements carry. Pop the source on any of
+          them — same class, no juggling.
+        </p>
 
-  <section>
-    <h2>Components, isolated</h2>
-    <p>
-      Three cards, each defined by a different component. Every one of them
-      uses a <code>.card</code> class internally. They don't collide
-      because each component's CSS is rewritten to require a generated
-      attribute that only its own elements carry. Pop the source on any of
-      them — same class, no juggling.
-    </p>
-
-    
+        
   <style data-c-demo-45c121>
     .demo[data-c-demo-45c121] { margin: 0 0 1.5rem; }
     .demo[data-c-demo-45c121] > .out[data-c-demo-45c121] {
@@ -118,7 +117,7 @@
   </style>
   <div class="demo" data-c-demo-45c121>
     <div class="out" data-c-demo-45c121>
-      
+          
   <style data-c-card-soft-5f226d>
     .card[data-c-card-soft-5f226d] { background: #eff6ff; border: 1px solid #bfdbfe;
             border-radius: 8px; padding: 1rem 1.25rem; }
@@ -131,13 +130,13 @@
     <div class="body" data-c-card-soft-5f226d>Pastel surfaces, rounded corners, a quiet voice.</div>
   </div>
 
-      
-    </div>
+          
+        </div>
     <details data-c-demo-45c121><summary data-c-demo-45c121>source</summary><pre data-c-demo-45c121><code data-c-demo-45c121>&lt;card-soft title=&quot;Soft&quot;&gt;Pastel surfaces, rounded corners, a quiet voice.&lt;/card-soft&gt;</code></pre></details>
   </div>
 
 
-    
+        
   <style data-c-demo-45c121>
     .demo[data-c-demo-45c121] { margin: 0 0 1.5rem; }
     .demo[data-c-demo-45c121] > .out[data-c-demo-45c121] {
@@ -161,7 +160,7 @@
   </style>
   <div class="demo" data-c-demo-45c121>
     <div class="out" data-c-demo-45c121>
-      
+          
   <style data-c-card-bold-66b265>
     .card[data-c-card-bold-66b265] { background: #1a1a1a; color: #f5f5f5; padding: 1.25rem;
             border-radius: 2px;
@@ -177,13 +176,13 @@
     <div class="body" data-c-card-bold-66b265>High-contrast, monospace heading, a hard drop shadow.</div>
   </div>
 
-      
-    </div>
+          
+        </div>
     <details data-c-demo-45c121><summary data-c-demo-45c121>source</summary><pre data-c-demo-45c121><code data-c-demo-45c121>&lt;card-bold title=&quot;Bold&quot;&gt;High-contrast, monospace heading, a hard drop shadow.&lt;/card-bold&gt;</code></pre></details>
   </div>
 
 
-    
+        
   <style data-c-demo-45c121>
     .demo[data-c-demo-45c121] { margin: 0 0 1.5rem; }
     .demo[data-c-demo-45c121] > .out[data-c-demo-45c121] {
@@ -207,7 +206,7 @@
   </style>
   <div class="demo" data-c-demo-45c121>
     <div class="out" data-c-demo-45c121>
-      
+          
   <style data-c-card-paper-7753c4>
     .card[data-c-card-paper-7753c4] { background: #fffdf5; padding: 1.25rem 1.5rem;
             border-left: 4px solid #92400e;
@@ -222,24 +221,24 @@
     <div class="body" data-c-card-paper-7753c4>Quiet serif, paper texture, a marginal note.</div>
   </div>
 
-      
-    </div>
+          
+        </div>
     <details data-c-demo-45c121><summary data-c-demo-45c121>source</summary><pre data-c-demo-45c121><code data-c-demo-45c121>&lt;card-paper title=&quot;Paper&quot;&gt;Quiet serif, paper texture, a marginal note.&lt;/card-paper&gt;</code></pre></details>
   </div>
 
-  </section>
+      </section>
 
-  <section>
-    <h2>One component, many variants</h2>
-    <p>
-      The same <code>&lt;callout&gt;</code> component renders three
-      different ways, picked by a <code>kind</code> param. Param-driven
-      style is just an attribute interpolation
-      (<code>class="callout &#123;kind&#125;"</code>) plus a <code>&lt;.if&gt;</code>
-      chain inside the body.
-    </p>
+      <section>
+        <h2>One component, many variants</h2>
+        <p>
+          The same <code>&lt;callout&gt;</code> component renders three
+          different ways, picked by a <code>kind</code> param. Param-driven
+          style is just an attribute interpolation
+          (<code>class="callout &#123;kind&#125;"</code>) plus a <code>&lt;.if&gt;</code>
+          chain inside the body.
+        </p>
 
-    
+        
   <style data-c-demo-45c121>
     .demo[data-c-demo-45c121] { margin: 0 0 1.5rem; }
     .demo[data-c-demo-45c121] > .out[data-c-demo-45c121] {
@@ -263,7 +262,7 @@
   </style>
   <div class="demo" data-c-demo-45c121>
     <div class="out" data-c-demo-45c121>
-      
+          
   <style data-c-callout-07debb>
     .callout[data-c-callout-07debb] { padding: 0.9rem 1rem; border-radius: 4px;
                border-left: 4px solid; margin: 0 0 0.75rem; }
@@ -283,7 +282,7 @@
     Server-rendered. No client runtime, no shadow DOM, no build pipeline beyond <code>crystal run</code>.
   </div>
 
-      
+          
   <style data-c-callout-07debb>
     .callout[data-c-callout-07debb] { padding: 0.9rem 1rem; border-radius: 4px;
                border-left: 4px solid; margin: 0 0 0.75rem; }
@@ -303,7 +302,7 @@
     Slot-bearing components must be defined at class/module scope — Crystal Procs can't take blocks.
   </div>
 
-      
+          
   <style data-c-callout-07debb>
     .callout[data-c-callout-07debb] { padding: 0.9rem 1rem; border-radius: 4px;
                border-left: 4px solid; margin: 0 0 0.75rem; }
@@ -323,33 +322,32 @@
     Use <code>Can.raw()</code> or <code>&lt;.raw&gt;</code> only for content you've already sanitized.
   </div>
 
-      
-    </div>
+          
+        </div>
     <details data-c-demo-45c121><summary data-c-demo-45c121>source</summary><pre data-c-demo-45c121><code data-c-demo-45c121>&lt;callout kind=&quot;info&quot;&gt;Server-rendered. No client runtime, …&lt;/callout&gt;
 &lt;callout kind=&quot;warning&quot;&gt;Slot-bearing components must be defined …&lt;/callout&gt;
 &lt;callout kind=&quot;danger&quot;&gt;Use Can.raw() or &lt;.raw&gt; only for content …&lt;/callout&gt;</code></pre></details>
   </div>
 
-  </section>
+      </section>
 
-  <section>
-    <h2>Made of canned templates</h2>
-    <p>
-      This particular page is one static HTML file produced by
-      <code>crystal&nbsp;run&nbsp;docs/build.cr</code> — every component
-      you see was defined in a <code>.can</code> file and compiled at
-      build time. The same components work unchanged inside a live HTTP
-      handler that writes to <code>env.response</code>; the build script
-      is just one way to consume the rendered output.
-    </p>
-  </section>
+      <section>
+        <h2>Made of canned templates</h2>
+        <p>
+          This particular page is one static HTML file produced by
+          <code>crystal&nbsp;run&nbsp;docs/build.cr</code> — every component
+          you see was defined in a <code>.can</code> file and compiled at
+          build time. The same components work unchanged inside a live HTTP
+          handler that writes to <code>env.response</code>; the build script
+          is just one way to consume the rendered output.
+        </p>
+      </section>
 
-</main>
-      <footer data-c-layout-780d14>
-        Rendered by <code data-c-layout-780d14>can</code> &middot; view
-        <a href="https://github.com/trans/can/blob/main/docs/index.can" data-c-layout-780d14>index.can</a> &middot;
-        <a href="https://github.com/trans/can/blob/main/docs/components.can" data-c-layout-780d14>components.can</a>
-      </footer>
-    </body>
-  </html>
-
+    </main>
+    <footer>
+      Rendered by <code>can</code> &middot; view
+      <a href="https://github.com/trans/can/blob/main/docs/index.can">index.can</a> &middot;
+      <a href="https://github.com/trans/can/blob/main/docs/components.can">components.can</a>
+    </footer>
+  </body>
+</html>
