@@ -4,46 +4,11 @@
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>can — server-side web components for Crystal</title>
-    <style>
-      /* Page chrome */
-      body { font-family: system-ui, -apple-system, sans-serif;
-             max-width: 52rem; margin: 0 auto; padding: 3rem 1.25rem 4rem;
-             color: #1a1a1a; line-height: 1.55;
-             background: #fff; }
-      footer { margin-top: 4rem; padding-top: 1.5rem;
-               border-top: 1px solid #e5e5e5; color: #888;
-               font-size: 0.85rem; text-align: center; }
-      footer a { color: #2563eb; text-decoration: none; }
-
-      /* Slot/section content — plain descendant selectors, no scoping
-         needed since this CSS is the page's only stylesheet. */
-      main section { margin-top: 4rem; }
-      main h2 {
-        font-size: 2.7rem; margin: 0 0 0.75rem; letter-spacing: -0.01em;
-        text-align: center; color: #06b6d4;
-        font-variant: small-caps slashed-zero;
-      }
-      main h2::before { content: "~ "; }
-      main h2::after  { content: " ~"; }
-      main p { color: #555; margin: 0 0 1rem; }
-      main code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-                  font-size: 0.9em; background: #efefef;
-                  padding: 0.1rem 0.3rem; border-radius: 3px; }
-      main nav { text-align: left; margin: 0.5rem 0 0; }
-      main .cta {
-        display: inline-block; padding: 0.4rem 1rem;
-        margin: 0 0.25rem;
-        color: #1a1a1a; background: pink; border-radius: 999px;
-        font-size: 0.9rem; text-decoration: none; font-weight: bold; }
-      main .cta:hover { background: #e5e7eb; }
-      main .top-section { background: #06b6d4; padding: 1rem;
-                          border-radius: 10px; }
-      main .top-section code { color: #555; }
-    </style>
+    <link rel="stylesheet" href="styles.css"/>
   </head>
+
   <body>
     <main>
-
       <hero>
         CANNED SERVER-SIDE HTML/CSS TEMPLATES FOR CRYSTAL<br/>
         <nav>
