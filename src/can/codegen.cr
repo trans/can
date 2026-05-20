@@ -383,6 +383,16 @@ module Can
         when AST::Def
           sb << "D:" << n.tag
           accumulate_signature(n.body, sb)
+        when AST::Raw
+          sb << "R{"
+          accumulate_signature(n.body, sb)
+          sb << '}'
+        when AST::Comment
+          sb << "C:" << n.content
+        when AST::Doctype
+          sb << "!:" << n.content
+        when AST::Import
+          sb << "M:" << n.from
         end
       end
     end
@@ -558,60 +568,65 @@ module Can
       @inline_def_scopes.any?(&.includes?(name))
     end
 
+    private def visit_nodes(nodes : Array(AST::Node), descend_into_defs : Bool = false, &block : AST::Node ->) : Nil
+      nodes.each do |n|
+        visit_node(n, descend_into_defs, &block)
+      end
+    end
+
+    private def visit_node(node : AST::Node, descend_into_defs : Bool = false, &block : AST::Node ->) : Nil
+      yield node
+
+      case node
+      when AST::Element
+        visit_nodes(node.children, descend_into_defs, &block)
+      when AST::If
+        visit_nodes(node.then_body, descend_into_defs, &block)
+        visit_nodes(node.else_body, descend_into_defs, &block)
+      when AST::For
+        visit_nodes(node.body, descend_into_defs, &block)
+      when AST::Let
+        visit_nodes(node.body, descend_into_defs, &block)
+      when AST::Raw
+        visit_nodes(node.body, descend_into_defs, &block)
+      when AST::SlotFill
+        visit_nodes(node.body, descend_into_defs, &block)
+      when AST::Def
+        visit_nodes(node.body, descend_into_defs, &block) if descend_into_defs
+      end
+    end
+
     # Recursively walks a node list and returns the unique set of named-slot
     # names referenced via <.slot name="…"/>. Used to extend a top-level def's
     # signature with one Proc keyword arg per slot.
     private def collect_named_slot_names(nodes : Array(AST::Node)) : Array(String)
       seen = [] of String
-      walk_named_slots(nodes, seen)
+      visit_nodes(nodes) do |n|
+        if n.is_a?(AST::Slot) && (name = n.name)
+          seen << name unless seen.includes?(name)
+        end
+      end
       seen
     end
 
-    private def walk_named_slots(nodes : Array(AST::Node), seen : Array(String)) : Nil
-      nodes.each do |n|
-        case n
-        when AST::Slot
-          if name = n.name
-            seen << name unless seen.includes?(name)
-          end
-        when AST::Element  then walk_named_slots(n.children, seen)
-        when AST::If       then walk_named_slots(n.then_body, seen); walk_named_slots(n.else_body, seen)
-        when AST::For      then walk_named_slots(n.body, seen)
-        when AST::Let      then walk_named_slots(n.body, seen)
-        when AST::Def
-          # Don't descend into nested defs — their slots belong to *their* signature.
-        end
-      end
-    end
-
     private def has_style_block?(nodes : Array(AST::Node)) : Bool
-      nodes.each do |n|
-        case n
-        when AST::Element
-          return true if n.tag == "style"
-          return true if has_style_block?(n.children)
-        when AST::If
-          return true if has_style_block?(n.then_body) || has_style_block?(n.else_body)
-        when AST::For
-          return true if has_style_block?(n.body)
-        when AST::Let
-          return true if has_style_block?(n.body)
+      found = false
+      visit_nodes(nodes) do |n|
+        if n.is_a?(AST::Element) && n.tag == "style"
+          found = true
         end
       end
-      false
+      found
     end
 
     private def uses_any_slot?(nodes : Array(AST::Node)) : Bool
-      nodes.each do |n|
-        case n
-        when AST::Slot     then return true
-        when AST::Element  then return true if uses_any_slot?(n.children)
-        when AST::If       then return true if uses_any_slot?(n.then_body) || uses_any_slot?(n.else_body)
-        when AST::For      then return true if uses_any_slot?(n.body)
-        when AST::Let      then return true if uses_any_slot?(n.body)
+      found = false
+      visit_nodes(nodes) do |n|
+        if n.is_a?(AST::Slot)
+          found = true
         end
       end
-      false
+      found
     end
   end
 end

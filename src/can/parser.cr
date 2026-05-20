@@ -184,13 +184,34 @@ module Can
       start = @pos
       start_line, start_col = @line, @col
       close = "</#{tag}>"
-      until eof? || starts_with?(close)
-        advance
+      until eof?
+        if starts_with?(close)
+          text = byte_slice(start, @pos - start)
+          consume_close_tag(tag)
+          return text.empty? ? [] of AST::Node : [AST::Text.new(text, start_line, start_col).as(AST::Node)]
+        end
+
+        case byte_at
+        when '"'.ord.to_u8
+          skip_crystal_string('"')
+        when '\''.ord.to_u8
+          skip_crystal_string('\'')
+        when '`'.ord.to_u8
+          tag == "script" ? skip_script_template_literal : advance
+        when '/'.ord.to_u8
+          if peek_byte(1) == '*'.ord.to_u8
+            skip_raw_block_comment
+          elsif tag == "script" && peek_byte(1) == '/'.ord.to_u8
+            skip_raw_line_comment
+          else
+            advance
+          end
+        else
+          advance
+        end
       end
-      raise_at "unterminated <#{tag}>", start_line, start_col if eof?
-      text = byte_slice(start, @pos - start)
-      consume_close_tag(tag)
-      text.empty? ? [] of AST::Node : [AST::Text.new(text, start_line, start_col).as(AST::Node)]
+
+      raise_at "unterminated <#{tag}>", start_line, start_col
     end
 
     private def matches_close_tag?(expected : String) : Bool
@@ -417,8 +438,20 @@ module Can
     end
 
     private def build_slot(attrs, l, c) : AST::Slot
-      name_attr = attrs.find { |a| a.name == "name" }
-      name = name_attr.is_a?(AST::StringAttr) ? name_attr.value : nil
+      name = nil
+
+      attrs.each do |a|
+        case a.name
+        when "name"
+          unless a.is_a?(AST::StringAttr)
+            raise_at "<.slot> 'name' must be a literal string", a.line, a.column
+          end
+          name = a.value
+        else
+          raise_at "unknown attribute on <.slot>: #{a.name}", a.line, a.column
+        end
+      end
+
       AST::Slot.new(name, l, c)
     end
 
@@ -532,6 +565,80 @@ module Can
       end
       raise_here "unterminated char literal" if eof?
       advance # closing '
+    end
+
+    private def skip_script_template_literal : Nil
+      advance # opening `
+      until eof?
+        case byte_at
+        when '\\'.ord.to_u8
+          advance(2)
+        when '`'.ord.to_u8
+          advance
+          return
+        when '$'.ord.to_u8
+          if peek_byte(1) == '{'.ord.to_u8
+            advance(2)
+            skip_script_template_interpolation
+          else
+            advance
+          end
+        else
+          advance
+        end
+      end
+      raise_here "unterminated template literal"
+    end
+
+    private def skip_script_template_interpolation : Nil
+      depth = 1
+      until eof?
+        case byte_at
+        when '{'.ord.to_u8
+          depth += 1
+          advance
+        when '}'.ord.to_u8
+          depth -= 1
+          advance
+          return if depth == 0
+        when '"'.ord.to_u8
+          skip_crystal_string('"')
+        when '\''.ord.to_u8
+          skip_crystal_string('\'')
+        when '`'.ord.to_u8
+          skip_script_template_literal
+        when '/'.ord.to_u8
+          if peek_byte(1) == '*'.ord.to_u8
+            skip_raw_block_comment
+          elsif peek_byte(1) == '/'.ord.to_u8
+            skip_raw_line_comment
+          else
+            advance
+          end
+        else
+          advance
+        end
+      end
+      raise_here "unterminated template interpolation"
+    end
+
+    private def skip_raw_block_comment : Nil
+      advance(2)
+      until eof?
+        if byte_at == '*'.ord.to_u8 && peek_byte(1) == '/'.ord.to_u8
+          advance(2)
+          return
+        end
+        advance
+      end
+      raise_here "unterminated block comment"
+    end
+
+    private def skip_raw_line_comment : Nil
+      advance(2)
+      until eof? || byte_at == '\n'.ord.to_u8
+        advance
+      end
     end
 
     # =====================================================================

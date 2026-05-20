@@ -240,6 +240,12 @@ describe Can::Parser do
       s.name.should eq("header")
     end
 
+    it "errors when <.slot> name is not a literal string" do
+      expect_raises(Can::ParseError, /must be a literal string/) do
+        Can::Parser.parse(%(<.slot name={header}/>))
+      end
+    end
+
     it "parses <:name> as a SlotFill" do
       f = single(%(<:header><h1>logo</h1></:header>)).as(Can::AST::SlotFill)
       f.name.should eq("header")
@@ -281,6 +287,26 @@ describe Can::Parser do
     it "captures <script> content verbatim" do
       el = single(%(<script>if (x < 3) { foo() }</script>)).as(Can::AST::Element)
       el.children[0].as(Can::AST::Text).content.should eq("if (x < 3) { foo() }")
+    end
+
+    it "doesn't terminate <style> inside a quoted CSS string" do
+      el = single(%(<style>.card::before { content: "</style>"; }</style>)).as(Can::AST::Element)
+      el.children[0].as(Can::AST::Text).content.should eq(%(.card::before { content: "</style>"; }))
+    end
+
+    it "doesn't terminate <style> inside a CSS comment" do
+      el = single(%(<style>/* </style> */ .card { color: red }</style>)).as(Can::AST::Element)
+      el.children[0].as(Can::AST::Text).content.should eq(%(/* </style> */ .card { color: red }))
+    end
+
+    it "doesn't terminate <script> inside a quoted JS string" do
+      el = single(%(<script>const x = "</script>";</script>)).as(Can::AST::Element)
+      el.children[0].as(Can::AST::Text).content.should eq(%(const x = "</script>";))
+    end
+
+    it "doesn't terminate <script> inside a template literal" do
+      el = single(%(<script>const x = `</script>`;</script>)).as(Can::AST::Element)
+      el.children[0].as(Can::AST::Text).content.should eq(%(const x = `</script>`;))
     end
   end
 

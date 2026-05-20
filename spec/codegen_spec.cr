@@ -480,6 +480,14 @@ describe Can::Codegen do
       out.should contain("<h2>Hello, Thomas</h2>")
       out.should contain("<div><p>welcome</p></div>")
     end
+
+    it "supports named slots reached through <.raw>" do
+      out = render <<-CAN, prelude: %(user = "<Thomas>")
+        <.def tag="card"><h2><.raw><.slot name="title"/></.raw></h2></.def>
+        <card><:title>Hello, {user}</:title></card>
+        CAN
+      out.should contain("<h2>Hello, &lt;Thomas&gt;</h2>")
+    end
   end
 
   describe "scoped CSS (round-trip)" do
