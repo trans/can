@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.20.1">
+<meta name="crystal_docs.project_version" content="0.2.0">
+<meta name="crystal_docs.project_name" content="can">
+
+
+
+<link href="../../css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="../../js/doc.js"></script>
+
+  <meta name="repository-name" content="can">
+  <title>Can::AST::If - can 0.2.0</title>
+  <script type="text/javascript">
+    CrystalDocs.base_path = "../../";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="../../index.html">
+          can
+        </a>
+      </h1>
+
+      <span class="project-version">
+        0.2.0
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent open current" data-id="can/Can" data-name="can">
+      <a href="../../Can.html">Can</a>
+      
+        <ul>
+  
+  <li class="parent open current" data-id="can/Can/AST" data-name="can::ast">
+      <a href="../../Can/AST.html">AST</a>
+      
+        <ul>
+  
+  <li class=" " data-id="can/Can/AST/Attribute" data-name="can::ast::attribute">
+      <a href="../../Can/AST/Attribute.html">Attribute</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Comment" data-name="can::ast::comment">
+      <a href="../../Can/AST/Comment.html">Comment</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Def" data-name="can::ast::def">
+      <a href="../../Can/AST/Def.html">Def</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Doctype" data-name="can::ast::doctype">
+      <a href="../../Can/AST/Doctype.html">Doctype</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Element" data-name="can::ast::element">
+      <a href="../../Can/AST/Element.html">Element</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/ElseIfMark" data-name="can::ast::elseifmark">
+      <a href="../../Can/AST/ElseIfMark.html">ElseIfMark</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/ElseMark" data-name="can::ast::elsemark">
+      <a href="../../Can/AST/ElseMark.html">ElseMark</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/ExprAttr" data-name="can::ast::exprattr">
+      <a href="../../Can/AST/ExprAttr.html">ExprAttr</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/For" data-name="can::ast::for">
+      <a href="../../Can/AST/For.html">For</a>
+      
+    </li>
+  
+  <li class=" current" data-id="can/Can/AST/If" data-name="can::ast::if">
+      <a href="../../Can/AST/If.html">If</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/InterpAttr" data-name="can::ast::interpattr">
+      <a href="../../Can/AST/InterpAttr.html">InterpAttr</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Interpolation" data-name="can::ast::interpolation">
+      <a href="../../Can/AST/Interpolation.html">Interpolation</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Let" data-name="can::ast::let">
+      <a href="../../Can/AST/Let.html">Let</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Node" data-name="can::ast::node">
+      <a href="../../Can/AST/Node.html">Node</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Param" data-name="can::ast::param">
+      <a href="../../Can/AST/Param.html">Param</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Raw" data-name="can::ast::raw">
+      <a href="../../Can/AST/Raw.html">Raw</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Require" data-name="can::ast::require">
+      <a href="../../Can/AST/Require.html">Require</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Slot" data-name="can::ast::slot">
+      <a href="../../Can/AST/Slot.html">Slot</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/SlotFill" data-name="can::ast::slotfill">
+      <a href="../../Can/AST/SlotFill.html">SlotFill</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/StringAttr" data-name="can::ast::stringattr">
+      <a href="../../Can/AST/StringAttr.html">StringAttr</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Template" data-name="can::ast::template">
+      <a href="../../Can/AST/Template.html">Template</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Text" data-name="can::ast::text">
+      <a href="../../Can/AST/Text.html">Text</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/Codegen" data-name="can::codegen">
+      <a href="../../Can/Codegen.html">Codegen</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/CssScoper" data-name="can::cssscoper">
+      <a href="../../Can/CssScoper.html">CssScoper</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/ParseError" data-name="can::parseerror">
+      <a href="../../Can/ParseError.html">ParseError</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/Parser" data-name="can::parser">
+      <a href="../../Can/Parser.html">Parser</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/SafeString" data-name="can::safestring">
+      <a href="../../Can/SafeString.html">SafeString</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1 class="type-name">
+
+  <span class="kind">
+    class
+  </span> Can::<wbr>AST::<wbr>If
+
+</h1>
+
+
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../Can/AST/If.html">Can::AST::If</a></li><li class="superclass"><a href="../../Can/AST/Node.html">Can::AST::Node</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+
+
+
+
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Both &lt;.if cond={…}&gt;…&lt;/.if&gt; and the :if={…} attribute desugar to this.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2>
+    <a id="defined-in" class="anchor" href="#defined-in">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Defined in:
+  </h2>
+  
+    
+      <a href="https://github.com/trans/can/blob/v0.2.0/src/can/ast.cr#L101" target="_blank">
+        can/ast.cr
+      </a>
+    
+    <br/>
+  
+
+
+
+
+
+  
+  <h2>
+    <a id="constructors" class="anchor" href="#constructors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructors
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#new%28condition%3AString%2Cthen_body%3AArray%28Can%3A%3AAST%3A%3ANode%29%3D%5B%5DofNode%2Celse_body%3AArray%28Can%3A%3AAST%3A%3ANode%29%3D%5B%5DofNode%2Cline%3D0%2Ccolumn%3D0%29-class-method" class="signature"><strong>.new</strong>(condition : String, then_body : Array(Can::AST::Node) = <span class="o">[]</span> <span class="k">of</span> <span class="t">Node</span>, else_body : Array(Can::AST::Node) = <span class="o">[]</span> <span class="k">of</span> <span class="t">Node</span>, line = <span class="n">0</span>, column = <span class="n">0</span>)</a>
+        
+      </li>
+    
+  </ul>
+
+
+  
+
+  
+
+  
+  <h2>
+    <a id="instance-method-summary" class="anchor" href="#instance-method-summary">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Summary
+  </h2>
+  <ul class="list-summary">
+    
+      <li class="entry-summary">
+        <a href="#condition%3AString-instance-method" class="signature"><strong>#condition</strong> : String</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#condition%3D%28condition%3AString%29-instance-method" class="signature"><strong>#condition=</strong>(condition : String)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#else_body%3AArray%28Node%29-instance-method" class="signature"><strong>#else_body</strong> : Array(Node)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#else_body%3D%28else_body%3AArray%28Node%29%29-instance-method" class="signature"><strong>#else_body=</strong>(else_body : Array(Node))</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#then_body%3AArray%28Node%29-instance-method" class="signature"><strong>#then_body</strong> : Array(Node)</a>
+        
+      </li>
+    
+      <li class="entry-summary">
+        <a href="#then_body%3D%28then_body%3AArray%28Node%29%29-instance-method" class="signature"><strong>#then_body=</strong>(then_body : Array(Node))</a>
+        
+      </li>
+    
+  </ul>
+
+
+
+  <div class="methods-inherited">
+    
+      
+
+  <h3>Instance methods inherited from class <code><a href="../../Can/AST/Node.html">Can::AST::Node</a></code></h3>
+  
+  
+    <a href="../../Can/AST/Node.html#column%3AInt32-instance-method" class="tooltip">
+      <span>column : Int32</span>
+    column</a>, 
+    
+  
+    <a href="../../Can/AST/Node.html#column%3D%28column%3AInt32%29-instance-method" class="tooltip">
+      <span>column=(column : Int32)</span>
+    column=</a>, 
+    
+  
+    <a href="../../Can/AST/Node.html#line%3AInt32-instance-method" class="tooltip">
+      <span>line : Int32</span>
+    line</a>, 
+    
+  
+    <a href="../../Can/AST/Node.html#line%3D%28line%3AInt32%29-instance-method" class="tooltip">
+      <span>line=(line : Int32)</span>
+    line=</a>
+    
+  
+
+
+      
+
+  <h3>Constructor methods inherited from class <code><a href="../../Can/AST/Node.html">Can::AST::Node</a></code></h3>
+  
+  
+    <a href="../../Can/AST/Node.html#new%28line%3AInt32%3D0%2Ccolumn%3AInt32%3D0%29-class-method" class="tooltip">
+      <span>new(line : Int32 = <span class="n">0</span>, column : Int32 = <span class="n">0</span>)</span>
+    new</a>
+    
+  
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+      
+
+
+      
+
+
+      
+
+
+      
+
+
+    
+  </div>
+
+  
+  <h2>
+    <a id="constructor-detail" class="anchor" href="#constructor-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Constructor Detail
+  </h2>
+  
+    <div class="entry-detail" id="new(condition:String,then_body:Array(Can::AST::Node)=[]ofNode,else_body:Array(Can::AST::Node)=[]ofNode,line=0,column=0)-class-method">
+      <div class="signature">
+        
+        def self.<strong>new</strong>(condition : String, then_body : Array(<a href="../../Can/AST/Node.html">Can::AST::Node</a>) = <span class="o">[]</span> <span class="k">of</span> <span class="t">Node</span>, else_body : Array(<a href="../../Can/AST/Node.html">Can::AST::Node</a>) = <span class="o">[]</span> <span class="k">of</span> <span class="t">Node</span>, line = <span class="n">0</span>, column = <span class="n">0</span>)
+
+        <a class="method-permalink" href="#new%28condition%3AString%2Cthen_body%3AArray%28Can%3A%3AAST%3A%3ANode%29%3D%5B%5DofNode%2Celse_body%3AArray%28Can%3A%3AAST%3A%3ANode%29%3D%5B%5DofNode%2Cline%3D0%2Ccolumn%3D0%29-class-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/trans/can/blob/v0.2.0/src/can/ast.cr#L106" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+  
+
+  
+
+  
+  <h2>
+    <a id="instance-method-detail" class="anchor" href="#instance-method-detail">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Instance Method Detail
+  </h2>
+  
+    <div class="entry-detail" id="condition:String-instance-method">
+      <div class="signature">
+        
+        def <strong>condition</strong> : String
+
+        <a class="method-permalink" href="#condition%3AString-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/trans/can/blob/v0.2.0/src/can/ast.cr#L102" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="condition=(condition:String)-instance-method">
+      <div class="signature">
+        
+        def <strong>condition=</strong>(condition : String)
+
+        <a class="method-permalink" href="#condition%3D%28condition%3AString%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/trans/can/blob/v0.2.0/src/can/ast.cr#L102" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="else_body:Array(Node)-instance-method">
+      <div class="signature">
+        
+        def <strong>else_body</strong> : Array(<a href="../../Can/AST/Node.html">Node</a>)
+
+        <a class="method-permalink" href="#else_body%3AArray%28Node%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/trans/can/blob/v0.2.0/src/can/ast.cr#L104" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="else_body=(else_body:Array(Node))-instance-method">
+      <div class="signature">
+        
+        def <strong>else_body=</strong>(else_body : Array(<a href="../../Can/AST/Node.html">Node</a>))
+
+        <a class="method-permalink" href="#else_body%3D%28else_body%3AArray%28Node%29%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/trans/can/blob/v0.2.0/src/can/ast.cr#L104" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="then_body:Array(Node)-instance-method">
+      <div class="signature">
+        
+        def <strong>then_body</strong> : Array(<a href="../../Can/AST/Node.html">Node</a>)
+
+        <a class="method-permalink" href="#then_body%3AArray%28Node%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/trans/can/blob/v0.2.0/src/can/ast.cr#L103" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+    <div class="entry-detail" id="then_body=(then_body:Array(Node))-instance-method">
+      <div class="signature">
+        
+        def <strong>then_body=</strong>(then_body : Array(<a href="../../Can/AST/Node.html">Node</a>))
+
+        <a class="method-permalink" href="#then_body%3D%28then_body%3AArray%28Node%29%29-instance-method">#</a>
+      </div>
+      
+      <br/>
+      <div>
+        
+          [<a href="https://github.com/trans/can/blob/v0.2.0/src/can/ast.cr#L103" target="_blank">View source</a>]
+        
+      </div>
+    </div>
+  
+
+
+
+</div>
+
+</body>
+</html>

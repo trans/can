@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Crystal Docs 1.20.1">
+<meta name="crystal_docs.project_version" content="0.2.0">
+<meta name="crystal_docs.project_name" content="can">
+
+
+
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="js/doc.js"></script>
+
+  <meta name="repository-name" content="can">
+  <title>can 0.2.0</title>
+  <script type="text/javascript">
+  CrystalDocs.base_path = "";
+  </script>
+</head>
+<body>
+
+<svg class="hidden">
+  <symbol id="octicon-link" viewBox="0 0 16 16">
+    <path fill="currentColor" fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path>
+  </symbol>
+</svg>
+<input type="checkbox" id="sidebar-btn">
+<label for="sidebar-btn" id="sidebar-btn-label">
+  <svg class="open" xmlns="http://www.w3.org/2000/svg" height="2em" width="2em" viewBox="0 0 512 512"><title>Open Sidebar</title><path fill="currentColor" d="M80 96v64h352V96H80zm0 112v64h352v-64H80zm0 112v64h352v-64H80z"></path></svg>
+  <svg class="close" xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 512 512"><title>Close Sidebar</title><path fill="currentColor" d="m118.6 73.4-45.2 45.2L210.7 256 73.4 393.4l45.2 45.2L256 301.3l137.4 137.3 45.2-45.2L301.3 256l137.3-137.4-45.2-45.2L256 210.7Z"></path></svg>
+</label>
+<div class="sidebar">
+  <div class="sidebar-header">
+    <div class="search-box">
+      <input type="search" class="search-input" placeholder="Search..." spellcheck="false" aria-label="Search">
+    </div>
+
+    <div class="project-summary">
+      <h1 class="project-name">
+        <a href="index.html">
+          can
+        </a>
+      </h1>
+
+      <span class="project-version">
+        0.2.0
+      </span>
+    </div>
+  </div>
+
+  <div class="search-results hidden">
+    <ul class="search-list"></ul>
+  </div>
+
+  <div class="types-list">
+    <ul>
+  
+  <li class="parent " data-id="can/Can" data-name="can">
+      <a href="Can.html">Can</a>
+      
+        <ul>
+  
+  <li class="parent " data-id="can/Can/AST" data-name="can::ast">
+      <a href="Can/AST.html">AST</a>
+      
+        <ul>
+  
+  <li class=" " data-id="can/Can/AST/Attribute" data-name="can::ast::attribute">
+      <a href="Can/AST/Attribute.html">Attribute</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Comment" data-name="can::ast::comment">
+      <a href="Can/AST/Comment.html">Comment</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Def" data-name="can::ast::def">
+      <a href="Can/AST/Def.html">Def</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Doctype" data-name="can::ast::doctype">
+      <a href="Can/AST/Doctype.html">Doctype</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Element" data-name="can::ast::element">
+      <a href="Can/AST/Element.html">Element</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/ElseIfMark" data-name="can::ast::elseifmark">
+      <a href="Can/AST/ElseIfMark.html">ElseIfMark</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/ElseMark" data-name="can::ast::elsemark">
+      <a href="Can/AST/ElseMark.html">ElseMark</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/ExprAttr" data-name="can::ast::exprattr">
+      <a href="Can/AST/ExprAttr.html">ExprAttr</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/For" data-name="can::ast::for">
+      <a href="Can/AST/For.html">For</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/If" data-name="can::ast::if">
+      <a href="Can/AST/If.html">If</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/InterpAttr" data-name="can::ast::interpattr">
+      <a href="Can/AST/InterpAttr.html">InterpAttr</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Interpolation" data-name="can::ast::interpolation">
+      <a href="Can/AST/Interpolation.html">Interpolation</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Let" data-name="can::ast::let">
+      <a href="Can/AST/Let.html">Let</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Node" data-name="can::ast::node">
+      <a href="Can/AST/Node.html">Node</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Param" data-name="can::ast::param">
+      <a href="Can/AST/Param.html">Param</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Raw" data-name="can::ast::raw">
+      <a href="Can/AST/Raw.html">Raw</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Require" data-name="can::ast::require">
+      <a href="Can/AST/Require.html">Require</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Slot" data-name="can::ast::slot">
+      <a href="Can/AST/Slot.html">Slot</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/SlotFill" data-name="can::ast::slotfill">
+      <a href="Can/AST/SlotFill.html">SlotFill</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/StringAttr" data-name="can::ast::stringattr">
+      <a href="Can/AST/StringAttr.html">StringAttr</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Template" data-name="can::ast::template">
+      <a href="Can/AST/Template.html">Template</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/AST/Text" data-name="can::ast::text">
+      <a href="Can/AST/Text.html">Text</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/Codegen" data-name="can::codegen">
+      <a href="Can/Codegen.html">Codegen</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/CssScoper" data-name="can::cssscoper">
+      <a href="Can/CssScoper.html">CssScoper</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/ParseError" data-name="can::parseerror">
+      <a href="Can/ParseError.html">ParseError</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/Parser" data-name="can::parser">
+      <a href="Can/Parser.html">Parser</a>
+      
+    </li>
+  
+  <li class=" " data-id="can/Can/SafeString" data-name="can::safestring">
+      <a href="Can/SafeString.html">SafeString</a>
+      
+    </li>
+  
+</ul>
+
+      
+    </li>
+  
+</ul>
+
+  </div>
+</div>
+
+
+<div class="main-content">
+<h1><a id="can" class="anchor" href="#can">  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Can</h1>
+<p>A server-side web component system for Crystal. Write components as HTML;
+render them to a string. Each component's <code>&lt;style&gt;</code> is scoped to the
+elements it owns.</p>
+<p>The name is short for <em>canned templates</em>. Sits in the XSLT and Zope
+TAL/METAL lineage — components are a special form <em>inside the template
+language</em> rather than imported from a Crystal class library. The HTML
+itself is the program.</p>
+<p><strong><a href="https://trans.github.io/can/">Live landing page →</a></strong> (built by <code>can</code> itself; source under <a href="docs/"><code>docs/</code></a>)</p>
+<pre><code class="language-html">&lt;.def tag=&quot;card&quot; param:title=&quot;String&quot;&gt;
+  &lt;style&gt;
+    .card { border: 1px solid #ccc; padding: 1rem; }
+    .card &gt; h2 { color: navy; margin-top: 0; }
+  &lt;/style&gt;
+  &lt;div class=&quot;card&quot;&gt;
+    &lt;h2&gt;{title}&lt;/h2&gt;
+    &lt;.slot/&gt;
+  &lt;/div&gt;
+&lt;/.def&gt;
+
+&lt;card title=&quot;Hello&quot;&gt;
+  &lt;p&gt;Welcome.&lt;/p&gt;
+&lt;/card&gt;</code></pre>
+<h2><a id="installation" class="anchor" href="#installation">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Installation</h2>
+<p>Add to your <code>shard.yml</code>:</p>
+<pre><code class="language-yaml">dependencies:
+  can:
+    github: trans/can</code></pre>
+<p>Then <code>shards install</code>.</p>
+<h2><a id="quick-start" class="anchor" href="#quick-start">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Quick start</h2>
+<p>Templates live in <code>.can</code> files. A small Crystal class loads them at compile
+time and renders to an <code>IO</code>:</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;can&quot;</span>
+
+<span class="k">class</span> <span class="t">HomePage</span>
+  <span class="t">Can</span>.template <span class="s">&quot;templates/components.can&quot;</span>   <span class="c"># class scope: defines methods</span>
+
+  <span class="k">def</span> <span class="m">render</span>(io : <span class="t">IO</span>)
+    name <span class="o">=</span> <span class="s">&quot;Thomas&quot;</span>
+    <span class="t">Can</span>.template <span class="s">&quot;templates/home.can&quot;</span>       <span class="c"># method scope: emits HTML</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+io <span class="o">=</span> <span class="t">IO</span><span class="t">::</span><span class="t">Memory</span>.new
+<span class="t">HomePage</span>.new.render(io)
+puts io.to_s</code></pre>
+<p>Run with <code>crystal run</code>. The template is parsed and compiled to Crystal
+source at compile time — there's no runtime parsing, and template errors
+surface as compile errors.</p>
+<h2><a id="interpolation" class="anchor" href="#interpolation">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Interpolation</h2>
+<p><code>{expr}</code> evaluates a Crystal expression and HTML-escapes the result:</p>
+<pre><code class="language-html">&lt;h1&gt;Hi, {user.name}!&lt;/h1&gt;
+&lt;p&gt;You have {todos.size} things to do.&lt;/p&gt;</code></pre>
+<p>For pre-sanitized content, use <code>&lt;.raw&gt;</code>:</p>
+<pre><code class="language-html">&lt;article&gt;
+  &lt;.raw&gt;{markdown_to_html(post.body)}&lt;/.raw&gt;
+&lt;/article&gt;</code></pre>
+<p>Or mark the value at the data layer:</p>
+<pre><code class="language-crystal">trusted <span class="o">=</span> <span class="t">Can</span>.raw(<span class="s">&quot;&lt;em&gt;safe&lt;/em&gt;&quot;</span>)</code></pre>
+<pre><code class="language-html">&lt;div&gt;{trusted}&lt;/div&gt;   &lt;!-- emitted verbatim --&gt;</code></pre>
+<p>Both compose. <code>&lt;.raw&gt;</code> doesn't penetrate into nested <code>&lt;.def&gt;</code> bodies —
+those have their own escape context.</p>
+<h2><a id="special-forms" class="anchor" href="#special-forms">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Special forms</h2>
+<p>Dotted tags are language built-ins:</p>
+<p>| Form | Purpose |
+|---|---|
+| <code>&lt;.def tag=&quot;…&quot; param:foo=&quot;T&quot;&gt;…&lt;/.def&gt;</code> | Define a component. |
+| <code>&lt;.if cond={…}&gt;…&lt;/.if&gt;</code> (with <code>&lt;.elseif/&gt;</code> / <code>&lt;.else/&gt;</code>) | Conditional. |
+| <code>&lt;.for each={x in xs}&gt;…&lt;/.for&gt;</code> | Iteration. |
+| <code>&lt;.let name=&quot;x&quot; value={…}&gt;…&lt;/.let&gt;</code> | Local binding for the body. |
+| <code>&lt;.slot/&gt;</code> / <code>&lt;.slot name=&quot;…&quot;/&gt;</code> | Slot placeholder in a component body. |
+| <code>&lt;.require from=&quot;…&quot;/&gt;</code> | <code>require</code> another Crystal file. |
+| <code>&lt;.raw&gt;…&lt;/.raw&gt;</code> | No-escape zone. |</p>
+<p><code>:if</code> and <code>:for</code> are attribute-form shortcuts:</p>
+<pre><code class="language-html">&lt;p :if={admin?}&gt;secret&lt;/p&gt;
+&lt;li :for={item in items}&gt;{item}&lt;/li&gt;</code></pre>
+<p>When both are present, <code>:if</code> is outer (same as Vue 3).</p>
+<p><code>&lt;.if&gt;</code> supports <code>&lt;.elseif/&gt;</code> and <code>&lt;.else/&gt;</code> sentinels:</p>
+<pre><code class="language-html">&lt;.if cond={n == 0}&gt;
+  zero
+  &lt;.elseif cond={n &lt; 10}/&gt;
+  small
+  &lt;.else/&gt;
+  large
+&lt;/.if&gt;</code></pre>
+<p>Codegen collapses these into a Crystal <code>if/elsif/elsif/else/end</code> chain.</p>
+<h2><a id="components" class="anchor" href="#components">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Components</h2>
+<p>A <code>&lt;.def&gt;</code> defines a component. Invoke it as a tag — the tag name maps to
+a Crystal method:</p>
+<ul>
+<li><code>&lt;Card&gt;</code>, <code>&lt;my-card&gt;</code>, and <code>&lt;card&gt;</code> all map to method <code>card</code>.</li>
+<li>Hyphens become underscores; PascalCase becomes snake_case.</li>
+<li>Real HTML element names (<code>a</code>, <code>div</code>, <code>h1</code>, …) render literally.</li>
+</ul>
+<pre><code class="language-html">&lt;.def tag=&quot;badge&quot; param:label=&quot;String&quot; param:emoji={&quot;✨&quot;}&gt;
+  &lt;span&gt;{emoji} {label}&lt;/span&gt;
+&lt;/.def&gt;
+
+&lt;badge label=&quot;crystal&quot;/&gt;
+&lt;badge label=&quot;ruby&quot; emoji=&quot;💎&quot;/&gt;</code></pre>
+<h3><a id="params" class="anchor" href="#params">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Params</h3>
+<p><code>param:foo=&quot;T&quot;</code> declares a required param of type <code>T</code>. <code>param:foo={value}</code>
+declares an optional one — the default is the given Crystal expression and
+the type is inferred from the literal:</p>
+<pre><code class="language-html">&lt;.def tag=&quot;row&quot;
+      param:label=&quot;String&quot;            ← required
+      param:n={0_i32}                 ← Int32, default 0
+      param:items={[] of String}      ← Array(String), default []
+&gt;
+  …
+&lt;/.def&gt;</code></pre>
+<p>Crystal's typed literal suffixes (<code>_i32</code>, <code>_u8</code>, <code>_f64</code>, …) cover the cases
+where bare numerics would be ambiguous.</p>
+<h3><a id="slots" class="anchor" href="#slots">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Slots</h3>
+<p>A <code>&lt;.slot/&gt;</code> in a component body marks where the invocation's children
+render. Named slots use <code>&lt;.slot name=&quot;…&quot;/&gt;</code> in the def and <code>&lt;:name&gt;…&lt;/:name&gt;</code>
+at the call site:</p>
+<pre><code class="language-html">&lt;.def tag=&quot;layout&quot; param:heading=&quot;String&quot;&gt;
+  &lt;header&gt;
+    &lt;h1&gt;{heading}&lt;/h1&gt;
+    &lt;.slot name=&quot;nav&quot;/&gt;
+  &lt;/header&gt;
+  &lt;main&gt;&lt;.slot/&gt;&lt;/main&gt;
+  &lt;footer&gt;&lt;.slot name=&quot;footer&quot;/&gt;&lt;/footer&gt;
+&lt;/.def&gt;
+
+&lt;layout heading=&quot;Welcome&quot;&gt;
+  &lt;:nav&gt;&lt;a href=&quot;/&quot;&gt;home&lt;/a&gt;&lt;/:nav&gt;
+  &lt;p&gt;page content&lt;/p&gt;
+  &lt;:footer&gt;&lt;small&gt;© 2026&lt;/small&gt;&lt;/:footer&gt;
+&lt;/layout&gt;</code></pre>
+<p>Slot fill content runs in the <em>caller's</em> scope and captures the caller's
+local variables.</p>
+<h3><a id="top-level-vs-inline-defs" class="anchor" href="#top-level-vs-inline-defs">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Top-level vs inline defs</h3>
+<p>A <code>&lt;.def&gt;</code> at the top of a template loaded at class scope becomes a real
+method on the surrounding class. A <code>&lt;.def&gt;</code> inside another element — or
+inside a template loaded inside a method — becomes a local <code>Proc</code> that
+captures surrounding bindings:</p>
+<pre><code class="language-html">&lt;div&gt;
+  &lt;.def tag=&quot;pill&quot;&gt;[{label}]&lt;/.def&gt;
+  &lt;.for each={label in tags}&gt;&lt;pill/&gt;&lt;/.for&gt;
+&lt;/div&gt;</code></pre>
+<p>Inline defs <strong>can't host slots or have param defaults</strong> (Crystal <code>Proc</code>s
+don't support either). Put slot-bearing or default-bearing components in
+a separate <code>.can</code> file loaded at class scope:</p>
+<pre><code class="language-crystal"><span class="k">class</span> <span class="t">Page</span>
+  <span class="t">Can</span>.template <span class="s">&quot;components.can&quot;</span>   <span class="c"># defs with slots/defaults here</span>
+  <span class="k">def</span> <span class="m">render</span>(io : <span class="t">IO</span>)
+    <span class="t">Can</span>.template <span class="s">&quot;page.can&quot;</span>       <span class="c"># rendering content here</span>
+  <span class="k">end</span>
+<span class="k">end</span></code></pre>
+<p>A clear compile-time error fires if you violate this.</p>
+<h2><a id="css-scoping" class="anchor" href="#css-scoping">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>CSS scoping</h2>
+<p>A <code>&lt;style&gt;</code> block inside a <code>&lt;.def&gt;</code> is scoped automatically:</p>
+<ol>
+<li>Each component gets a stable id like <code>c-card-a3f9</code> (6-char CRC32 of its
+tag + body).</li>
+<li>Every HTML element rendered by the component is stamped with the
+matching <code>data-c-…</code> attribute.</li>
+<li>Every CSS selector in the component's <code>&lt;style&gt;</code> is rewritten to require
+that attribute.</li>
+</ol>
+<p>Author writes:</p>
+<pre><code class="language-html">&lt;.def tag=&quot;card&quot; param:title=&quot;String&quot;&gt;
+  &lt;style&gt;
+    .card { border: 1px solid #ccc; }
+    .card &gt; h2 { color: navy; }
+    .card:hover { border-color: black; }
+  &lt;/style&gt;
+  &lt;div class=&quot;card&quot;&gt;&lt;h2&gt;{title}&lt;/h2&gt;&lt;/div&gt;
+&lt;/.def&gt;</code></pre>
+<p>Browser receives (with <code>id</code> like <code>a3f9</code>):</p>
+<pre><code class="language-html">&lt;style data-c-card-a3f9&gt;
+  .card[data-c-card-a3f9] { border: 1px solid #ccc; }
+  .card[data-c-card-a3f9] &gt; h2[data-c-card-a3f9] { color: navy; }
+  .card[data-c-card-a3f9]:hover { border-color: black; }
+&lt;/style&gt;
+&lt;div class=&quot;card&quot; data-c-card-a3f9&gt;
+  &lt;h2 data-c-card-a3f9&gt;Hello&lt;/h2&gt;
+&lt;/div&gt;</code></pre>
+<p>The scoper recurses into <code>@media</code> and <code>@supports</code>, passes <code>@keyframes</code> /
+<code>@font-face</code> / <code>@import</code> through unchanged, and respects comments and
+strings.</p>
+<p>Components without a <code>&lt;style&gt;</code> get no stamping — no noise in their output.</p>
+<h3><a id="styling-slot-content" class="anchor" href="#styling-slot-content">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Styling slot content</h3>
+<p>Slot content is written by the caller and isn't stamped with the host's id,
+so <code>&lt;.tags &gt; *</code> after rewriting would require the <code>*</code> to have the host
+attribute and miss the spans. Use <code>:slotted()</code> to opt slot content into a
+rule:</p>
+<pre><code class="language-css">.tags &gt; :slotted(*) { padding: 0.25rem; }</code></pre>
+<p>becomes</p>
+<pre><code class="language-css">.tags[data-c-tag-list-…] &gt; * { padding: 0.25rem; }</code></pre>
+<p>The host stays scoped; the slot side doesn't require the attribute.</p>
+<h2><a id="how-it-works" class="anchor" href="#how-it-works">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>How it works</h2>
+<p><code>Can.template &quot;path/to/foo.can&quot;</code> is a macro. At compile time:</p>
+<ol>
+<li>Crystal's <code>{{ run }}</code> invokes <code>src/can/cli/compile_template.cr</code> with the
+template path.</li>
+<li>That CLI parses the file (<code><a href="Can/Parser.html">Can::Parser</a></code>) and runs codegen
+(<code><a href="Can/Codegen.html">Can::Codegen</a></code>), producing a string of Crystal source.</li>
+<li>The macro splices that string in at the call site.</li>
+</ol>
+<p>So the template fully compiles into your binary. The macro is the only
+piece that touches Crystal's macro system; parser, codegen, and CSS scoper
+are plain Crystal modules with regular unit tests.</p>
+<p><code>Can.template_inline &quot;…&quot;</code> does the same with an inline source string.</p>
+<h2><a id="use-with-kemal-or-any-io-based-server" class="anchor" href="#use-with-kemal-or-any-io-based-server">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Use with Kemal (or any IO-based server)</h2>
+<p><code>can</code> doesn't ship a Kemal adapter — it doesn't need one. A render
+method just writes HTML to an <code>IO</code>, and <code>env.response</code> is an <code>IO</code>. The
+recipe:</p>
+<pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;kemal&quot;</span>
+<span class="k">require</span> <span class="s">&quot;can&quot;</span>
+
+<span class="k">class</span> <span class="t">Pages</span>
+  <span class="t">Can</span>.template <span class="s">&quot;templates/layout.can&quot;</span>   <span class="c"># class scope: layout def with slots</span>
+
+  <span class="k">def</span> <span class="m">home</span>(name : <span class="t">String</span>, todos : <span class="t">Array</span>(<span class="t">String</span>)) : <span class="t">String</span>
+    <span class="t">String</span>.build <span class="k">do</span> <span class="o">|</span>io<span class="o">|</span>
+      <span class="t">Can</span>.template <span class="s">&quot;templates/home.can&quot;</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="t">PAGES</span> <span class="o">=</span> <span class="t">Pages</span>.new
+
+get <span class="s">&quot;/&quot;</span> <span class="k">do</span> <span class="o">|</span>env<span class="o">|</span>
+  env.response.content_type <span class="o">=</span> <span class="s">&quot;text/html&quot;</span>
+  name <span class="o">=</span> env.params.query[<span class="s">&quot;name&quot;</span>]? <span class="o">||</span> <span class="s">&quot;stranger&quot;</span>
+  <span class="t">PAGES</span>.home(name, [<span class="s">&quot;buy milk&quot;</span>, <span class="s">&quot;write more crystal&quot;</span>])
+<span class="k">end</span>
+
+<span class="t">Kemal</span>.run</code></pre>
+<p>Where <code>layout.can</code> defines a top-level component with slots:</p>
+<pre><code class="language-html">&lt;.def tag=&quot;layout&quot; param:title=&quot;String&quot;&gt;
+  &lt;!DOCTYPE html&gt;
+  &lt;html&gt;
+    &lt;head&gt;&lt;title&gt;{title}&lt;/title&gt;&lt;/head&gt;
+    &lt;body&gt;
+      &lt;header&gt;&lt;.slot name=&quot;heading&quot;/&gt;&lt;/header&gt;
+      &lt;main&gt;&lt;.slot/&gt;&lt;/main&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;
+&lt;/.def&gt;</code></pre>
+<p>And <code>home.can</code> fills those slots:</p>
+<pre><code class="language-html">&lt;layout title=&quot;Home&quot;&gt;
+  &lt;:heading&gt;&lt;h1&gt;Hi, {name}!&lt;/h1&gt;&lt;/:heading&gt;
+  &lt;p&gt;List:&lt;/p&gt;
+  &lt;ul&gt;&lt;.for each={t in todos}&gt;&lt;li&gt;{t}&lt;/li&gt;&lt;/.for&gt;&lt;/ul&gt;
+&lt;/layout&gt;</code></pre>
+<p>The same shape works for Grip, plain <code>HTTP::Server</code>, or anything else
+that exposes an <code>IO</code> for the response body. A runnable example lives at
+<code>try/kemal/</code> — <code>crystal run try/kemal/app.cr</code> from the project root,
+then open <a href="http://localhost:3000/">http://localhost:3000/</a>.</p>
+<h2><a id="limitations" class="anchor" href="#limitations">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Limitations</h2>
+<ul>
+<li>Inline <code>&lt;.def&gt;</code> lowers to a local Crystal <code>Proc</code>, so it can't host
+<code>&lt;.slot/&gt;</code> and can't have param defaults. Clear errors fire; move
+slot-bearing or default-bearing components to a top-level <code>.can</code> file
+loaded at class/module scope.</li>
+<li>The brace-expression reader inside <code>{expr}</code> skips over quoted strings,
+but doesn't fully parse nested Crystal code inside double-quoted
+<code>#{...}</code> interpolations. Most expressions are fine; complex string
+interpolation inside <code>{expr}</code> may misparse.</li>
+<li>The CSS scoper handles common selectors but isn't a full CSS-syntax
+parser — exotic at-rules or deeply nested attribute selectors may not
+roundtrip identically.</li>
+<li><code>&lt;style&gt;</code> is emitted inline at each component render; if a component
+appears N times on a page, its <code>&lt;style&gt;</code> block does too. Browsers handle
+this fine and gzip eats most of the wire cost.</li>
+</ul>
+<h2><a id="development" class="anchor" href="#development">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Development</h2>
+<pre><code class="language-crystal">$ shards install
+$ crystal spec</code></pre>
+<p>The test suite uses <code>crystal run</code> for end-to-end round-trip and macro
+tests, so a full run takes around a minute.</p>
+<h2><a id="contributors" class="anchor" href="#contributors">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Contributors</h2>
+<ul>
+<li><a href="https://github.com/trans">Thomas Sawyer</a> — creator and
+maintainer</li>
+</ul>
+<h2><a id="license" class="anchor" href="#license">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>License</h2>
+<p>MIT.</p>
+</div>
+</body>
+</html>
