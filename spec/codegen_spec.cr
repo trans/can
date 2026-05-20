@@ -103,19 +103,19 @@ describe Can::Codegen do
       gen(%(<.let name="x" value={1+2}>{x}</.let>)).should contain("x = (1+2)")
     end
 
-    it "emits <.def> as a Crystal method definition with block param" do
+    it "emits <.def> as a Crystal method definition with a __slot kwarg" do
       out = gen(%(<.def tag="x" param:title="String">y</.def>))
-      out.should contain("def x(io : IO, title : String, &block : IO -> _) : Nil")
+      out.should contain("def x(io : IO, title : String, __slot : Proc(IO, Nil) = ->(io : IO) {}) : Nil")
       out.should contain(%(io << "y"))
     end
 
     it "emits a param default and omits the type annotation when defaulted" do
       out = gen(%(<.def tag="card" param:title="String" param:level={2_i32}>y</.def>))
-      out.should contain("def card(io : IO, title : String, level = 2_i32, &block : IO -> _) : Nil")
+      out.should contain("def card(io : IO, title : String, level = 2_i32, __slot : Proc(IO, Nil) = ->(io : IO) {}) : Nil")
     end
 
-    it "emits <.slot/> as block.call(io) inside a top-level def" do
-      gen(%(<.def tag="x"><.slot/></.def>)).should contain("block.call(io)")
+    it "emits <.slot/> as __slot.call(io) inside a top-level def" do
+      gen(%(<.def tag="x"><.slot/></.def>)).should contain("__slot.call(io)")
     end
 
     it "emits a named <.slot/> as a Proc-keyword call inside a top-level def" do
@@ -146,7 +146,6 @@ describe Can::Codegen do
       out = gen(%(<Card title="Hi"/>))
       out.should contain("card(io")
       out.should contain(%(title: "Hi"))
-      out.should contain("end")
     end
 
     it "lowercases and underscores hyphenated component tags" do
@@ -364,6 +363,21 @@ describe Can::Codegen do
       out.should contain("<li>a</li>")
       out.should contain("<li>b</li>")
       out.should contain("<p>none</p>")
+    end
+
+    it "supports a top-level <.def> calling itself recursively" do
+      out = render <<-CAN
+        <.def tag="tree" param:items="Array(String)" param:depth={0_i32}>
+          <ul>
+            <.for each={x in items}><li>{x}@{depth}</li></.for>
+            <.if cond={depth < 1}><tree items={["x", "y"]} depth={depth + 1}/></.if>
+          </ul>
+        </.def>
+        <tree items={["root"]} depth={0_i32}/>
+        CAN
+      out.should contain("<li>root@0</li>")
+      out.should contain("<li>x@1</li>")
+      out.should contain("<li>y@1</li>")
     end
 
     it "maps PascalCase and kebab-case to the same method" do

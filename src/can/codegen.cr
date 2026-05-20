@@ -237,11 +237,14 @@ module Can
         end
         @out << "nil\n}"
       end
-      @out << ") do |io|\n"
-      with_scope do
-        default_children.each { |c| emit_node(c) }
+      unless default_children.empty?
+        @out << ", __slot: ->(io : IO) {\n"
+        with_scope do
+          default_children.each { |c| emit_node(c) }
+        end
+        @out << "nil\n}"
       end
-      @out << "end\n"
+      @out << ")\n"
     end
 
     private def emit_attribute(a : AST::Attribute) : Nil
@@ -316,7 +319,10 @@ module Can
       named_slots.each do |slot_name|
         @out << ", " << slot_name << " : Proc(IO, Nil) = ->(io : IO) {}"
       end
-      @out << ", &block : IO -> _) : Nil\n"
+      # Default slot is also a Proc keyword arg (not `&block`) so the method
+      # can self-recurse — Crystal inlines `&block` params, which makes
+      # recursive component invocations error with "infinite inlining."
+      @out << ", __slot : Proc(IO, Nil) = ->(io : IO) {}) : Nil\n"
 
       @in_top_level_def = true
       previous_attr = @current_component_attr
@@ -424,7 +430,7 @@ module Can
       if name = n.name
         @out << name << ".call(io)\n"
       else
-        @out << "block.call(io)\n"
+        @out << "__slot.call(io)\n"
       end
     end
 
