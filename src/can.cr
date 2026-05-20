@@ -5,7 +5,7 @@ require "./can/css_scope"
 require "./can/codegen"
 
 module Can
-  VERSION = "0.1.0"
+  VERSION = "0.1.1"
 
   # Marks a string as pre-escaped/trusted. Interpolations that evaluate to a
   # `SafeString` are emitted verbatim instead of HTML-escaped.

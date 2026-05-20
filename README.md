@@ -366,10 +366,14 @@ then open <http://localhost:3000/>.
 
 ## Limitations
 
-- Inline `<.def>` can't host `<.slot/>` and can't have param defaults
-  (Crystal `Proc` constraints). Clear errors fire.
-- The brace-expression reader inside `{expr}` doesn't recurse into Crystal
-  `#{…}` interpolations within string literals. Rare in practice.
+- Inline `<.def>` lowers to a local Crystal `Proc`, so it can't host
+  `<.slot/>` and can't have param defaults. Clear errors fire; move
+  slot-bearing or default-bearing components to a top-level `.can` file
+  loaded at class/module scope.
+- The brace-expression reader inside `{expr}` skips over quoted strings,
+  but doesn't fully parse nested Crystal code inside double-quoted
+  `#{...}` interpolations. Most expressions are fine; complex string
+  interpolation inside `{expr}` may misparse.
 - The CSS scoper handles common selectors but isn't a full CSS-syntax
   parser — exotic at-rules or deeply nested attribute selectors may not
   roundtrip identically.
