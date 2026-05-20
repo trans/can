@@ -342,7 +342,7 @@ module Can
       when "for"     then build_for(attrs, body, l, c)
       when "let"     then build_let(attrs, body, l, c)
       when "slot"    then build_slot(attrs, l, c)
-      when "import"  then build_import(attrs, l, c)
+      when "require" then build_require(attrs, l, c)
       when "raw"     then build_raw(attrs, body, l, c)
       else                raise_at "unknown special form <.#{name}>", l, c
       end
@@ -455,10 +455,10 @@ module Can
       AST::Slot.new(name, l, c)
     end
 
-    private def build_import(attrs, l, c) : AST::Import
+    private def build_require(attrs, l, c) : AST::Require
       from_attr = attrs.find { |a| a.name == "from" }
-      raise_at "<.import> requires 'from'", l, c unless from_attr.is_a?(AST::StringAttr)
-      AST::Import.new(from_attr.value, l, c)
+      raise_at "<.require> requires 'from'", l, c unless from_attr.is_a?(AST::StringAttr)
+      AST::Require.new(from_attr.value, l, c)
     end
 
     private def required_expr(attrs : Array(AST::Attribute), aname : String, ctx : String, l : Int32, c : Int32) : String

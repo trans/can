@@ -128,8 +128,8 @@ describe Can::Codegen do
       expect_raises(Exception, /only appear inside a top-level/) { gen("<.slot/>") }
     end
 
-    it "emits <.import/> as a Crystal require" do
-      gen(%(<.import from="components/card"/>)).should contain(%(require "components/card"))
+    it "emits <.require/> as a Crystal require" do
+      gen(%(<.require from="components/card"/>)).should contain(%(require "components/card"))
     end
 
     it "lowers a nested <.def> to a local Proc" do

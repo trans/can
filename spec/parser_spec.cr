@@ -223,7 +223,7 @@ describe Can::Parser do
     end
   end
 
-  describe "<.let> / <.slot> / <.import>" do
+  describe "<.let> / <.slot> / <.require>" do
     it "parses <.let>" do
       l = single(%(<.let name="x" value={1 + 2}>{x}</.let>)).as(Can::AST::Let)
       l.name.should eq("x")
@@ -269,8 +269,8 @@ describe Can::Parser do
       end
     end
 
-    it "parses <.import>" do
-      i = single(%(<.import from="components/card"/>)).as(Can::AST::Import)
+    it "parses <.require>" do
+      i = single(%(<.require from="components/card"/>)).as(Can::AST::Require)
       i.from.should eq("components/card")
     end
   end

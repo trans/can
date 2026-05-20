@@ -161,7 +161,7 @@ module Can
       end
     end
 
-    class Import < Node
+    class Require < Node
       property from : String
 
       def initialize(@from : String, @line = 0, @column = 0)

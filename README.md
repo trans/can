@@ -107,7 +107,7 @@ Dotted tags are language built-ins:
 | `<.for each={x in xs}>…</.for>` | Iteration. |
 | `<.let name="x" value={…}>…</.let>` | Local binding for the body. |
 | `<.slot/>` / `<.slot name="…"/>` | Slot placeholder in a component body. |
-| `<.import from="…"/>` | `require` another Crystal file. |
+| `<.require from="…"/>` | `require` another Crystal file. |
 | `<.raw>…</.raw>` | No-escape zone. |
 
 `:if` and `:for` are attribute-form shortcuts:

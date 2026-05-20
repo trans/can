@@ -81,7 +81,7 @@ module Can
         # an inline def. Slot-bearing components are class-scope-only and
         # error clearly when met in method scope.
         @scope == :method ? emit_inline_def(n) : emit_top_level_def(n)
-      when AST::Import then emit_import(n)
+      when AST::Require then emit_require(n)
       when AST::Text
         # At class scope there's no `io` to write to, so dropping
         # whitespace between top-level defs lets a components-only file
@@ -113,8 +113,8 @@ module Can
       when AST::Doctype       then emit_doctype(n)
       when AST::SlotFill
         raise "<:#{n.name}> slot-fill is only valid as a child of a component invocation"
-      when AST::Import
-        raise "<.import/> is only allowed at the top level of a template"
+      when AST::Require
+        raise "<.require/> is only allowed at the top level of a template"
       when AST::ElseMark
         raise "<.else/> can only appear inside a <.if> body"
       when AST::ElseIfMark
@@ -391,7 +391,7 @@ module Can
           sb << "C:" << n.content
         when AST::Doctype
           sb << "!:" << n.content
-        when AST::Import
+        when AST::Require
           sb << "M:" << n.from
         end
       end
@@ -444,7 +444,7 @@ module Can
       end
     end
 
-    private def emit_import(n : AST::Import) : Nil
+    private def emit_require(n : AST::Require) : Nil
       @out << "require "
       n.from.inspect(@out)
       @out << '\n'
