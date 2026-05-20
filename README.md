@@ -366,8 +366,6 @@ then open <http://localhost:3000/>.
 
 ## Limitations
 
-- A `<.def>` can't recursively call itself by its own tag yet — the name
-  isn't in scope at the moment its body is codegen'd.
 - Inline `<.def>` can't host `<.slot/>` and can't have param defaults
   (Crystal `Proc` constraints). Clear errors fire.
 - The brace-expression reader inside `{expr}` doesn't recurse into Crystal
