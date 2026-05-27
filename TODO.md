@@ -26,18 +26,17 @@ Real fix needs a render-context object that tracks which components have
 appeared on the current page and emits each one's stylesheet only on the
 first appearance. Architectural — touches the calling convention.
 
-## Parser edge cases
-
-### `{expr}` doesn't follow `#{…}` inside Crystal string literals
-
-The brace-counting reader inside `{…}` tracks paren/brace depth and
-string literals, but doesn't recurse into Crystal string interpolations
-inside those literals. So `{name = "a #{x} b"}` mis-counts braces. Rare
-in practice — most template interpolations don't contain Crystal string
-interpolation. Real fix is making the brace reader recognize `#{` inside
-string literals as a nested context.
-
 ## Features
+
+### Source-mapped error messages
+
+Template errors today surface as Crystal compile errors with line
+numbers pointing at the *generated* Crystal source, not the original
+`.can` file. AST nodes already track `@line` / `@column` from parse
+time; threading those through codegen as `# <source.can:line>`
+comments (and writing a tiny error rewriter that maps them back) would
+turn "error on line 47 of `__macro_run__`" into "error on line 12 of
+`page.can`." Big adoption win, mostly plumbing.
 
 ### Interpreter mode / standalone CLI
 

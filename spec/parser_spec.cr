@@ -37,6 +37,22 @@ describe Can::Parser do
       t.children[0].as(Can::AST::Interpolation).expression.should eq(%("a }b"))
     end
 
+    it "ignores braces inside Crystal regex literals" do
+      t = parse(%({s.gsub(/[{}]/, "_")}))
+      t.children[0].as(Can::AST::Interpolation).expression
+        .should eq(%(s.gsub(/[{}]/, "_")))
+    end
+
+    it "treats `/` after an identifier or number as division, not regex" do
+      t = parse(%({a / b / c}))
+      t.children[0].as(Can::AST::Interpolation).expression.should eq("a / b / c")
+    end
+
+    it "consumes regex flags after the closing slash" do
+      t = parse(%({s =~ /foo/im}))
+      t.children[0].as(Can::AST::Interpolation).expression.should eq("s =~ /foo/im")
+    end
+
     it "escapes \\{ as a literal brace in text" do
       t = parse(%(use \\{name} for a brace; {name} interpolates))
       # text-run before interp + text-run including the literal '{' + interp + tail

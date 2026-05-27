@@ -537,6 +537,7 @@ module Can
       expect_byte('{'.ord.to_u8)
       start = @pos
       depth = 1
+      prev : UInt8? = nil # most recent non-whitespace byte, for regex/division disambiguation
 
       until eof? || depth == 0
         b = byte_at
@@ -544,6 +545,7 @@ module Can
         when '{'.ord.to_u8
           depth += 1
           advance
+          prev = b
         when '}'.ord.to_u8
           depth -= 1
           if depth == 0
@@ -552,16 +554,68 @@ module Can
             return result.strip
           end
           advance
+          prev = b
         when '"'.ord.to_u8
           skip_crystal_string('"')
+          prev = b
         when '\''.ord.to_u8
           skip_crystal_char_literal
+          prev = b
+        when '/'.ord.to_u8
+          if regex_context?(prev)
+            skip_crystal_regex
+          else
+            advance
+          end
+          prev = b
+        when ' '.ord.to_u8, '\t'.ord.to_u8, '\n'.ord.to_u8, '\r'.ord.to_u8
+          advance
         else
           advance
+          prev = b
         end
       end
 
       raise_at "unterminated { ... } expression", l, c
+    end
+
+    # Heuristic for "is this `/` the start of a regex literal vs. division?"
+    # Looks at the previous non-whitespace byte: if it could end an expression
+    # (identifier, digit, closing bracket), `/` is division; otherwise regex.
+    private def regex_context?(prev : UInt8?) : Bool
+      return true if prev.nil? # start of expression
+      case prev
+      when '('.ord.to_u8, '['.ord.to_u8, ','.ord.to_u8,
+           '='.ord.to_u8, '~'.ord.to_u8, '!'.ord.to_u8,
+           '&'.ord.to_u8, '|'.ord.to_u8, ';'.ord.to_u8,
+           ':'.ord.to_u8, '?'.ord.to_u8, '<'.ord.to_u8,
+           '>'.ord.to_u8, '+'.ord.to_u8, '-'.ord.to_u8,
+           '*'.ord.to_u8, '%'.ord.to_u8, '^'.ord.to_u8,
+           '{'.ord.to_u8
+        true
+      else
+        false
+      end
+    end
+
+    private def skip_crystal_regex : Nil
+      advance # opening /
+      until eof?
+        b = byte_at
+        if b == '\\'.ord.to_u8
+          advance(2)
+        elsif b == '/'.ord.to_u8
+          advance
+          # consume Crystal regex flags (i, m, x)
+          while !eof? && (byte_at == 'i'.ord.to_u8 || byte_at == 'm'.ord.to_u8 || byte_at == 'x'.ord.to_u8)
+            advance
+          end
+          return
+        else
+          advance
+        end
+      end
+      raise_here "unterminated regex literal"
     end
 
     private def skip_crystal_string(quote : Char) : Nil
