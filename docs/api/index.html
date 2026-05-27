@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.20.1">
-<meta name="crystal_docs.project_version" content="0.2.0">
+<meta name="crystal_docs.project_version" content="0.2.1-dev">
 <meta name="crystal_docs.project_name" content="can">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="can">
-  <title>can 0.2.0</title>
+  <title>can 0.2.1-dev</title>
   <script type="text/javascript">
   CrystalDocs.base_path = "";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        0.2.0
+        0.2.1-dev
       </span>
     </div>
   </div>
@@ -296,6 +296,12 @@ surface as compile errors.</p>
 <pre><code class="language-html">&lt;div&gt;{trusted}&lt;/div&gt;   &lt;!-- emitted verbatim --&gt;</code></pre>
 <p>Both compose. <code>&lt;.raw&gt;</code> doesn't penetrate into nested <code>&lt;.def&gt;</code> bodies —
 those have their own escape context.</p>
+<p>To put a literal <code>{</code> in text or in a quoted attribute value, escape it
+with a backslash: <code>\{</code> becomes <code>{</code>. Only <code>\{</code> is special — any other
+backslash stays literal. This works in text content and inside
+double/single-quoted attribute values; it isn't needed inside <code>&lt;style&gt;</code>
+or <code>&lt;script&gt;</code> bodies (those don't interpolate) or inside a <code>{expr}</code>
+itself (that's Crystal code).</p>
 <h2><a id="special-forms" class="anchor" href="#special-forms">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
