@@ -96,6 +96,13 @@ trusted = Can.raw("<em>safe</em>")
 Both compose. `<.raw>` doesn't penetrate into nested `<.def>` bodies —
 those have their own escape context.
 
+To put a literal `{` in text or in a quoted attribute value, escape it
+with a backslash: `\{` becomes `{`. Only `\{` is special — any other
+backslash stays literal. This works in text content and inside
+double/single-quoted attribute values; it isn't needed inside `<style>`
+or `<script>` bodies (those don't interpolate) or inside a `{expr}`
+itself (that's Crystal code).
+
 ## Special forms
 
 Dotted tags are language built-ins:

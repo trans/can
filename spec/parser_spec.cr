@@ -36,6 +36,17 @@ describe Can::Parser do
       t = parse(%({"a }b"}))
       t.children[0].as(Can::AST::Interpolation).expression.should eq(%("a }b"))
     end
+
+    it "escapes \\{ as a literal brace in text" do
+      t = parse(%(use \\{name} for a brace; {name} interpolates))
+      # text-run before interp + text-run including the literal '{' + interp + tail
+      texts = t.children.compact_map(&.as?(Can::AST::Text)).map(&.content)
+      texts.join.should contain("use ")
+      texts.join.should contain("{name} for a brace; ")
+      t.children.any?(Can::AST::Interpolation).should be_true
+      t.children.compact_map(&.as?(Can::AST::Interpolation))
+        .map(&.expression).should eq(["name"])
+    end
   end
 
   describe "elements" do
@@ -93,6 +104,15 @@ describe Can::Parser do
       a.parts[1].as(Can::AST::Interpolation).expression.should eq("name")
       a.parts[2].as(Can::AST::Text).content.should eq(", msg ")
       a.parts[3].as(Can::AST::Interpolation).expression.should eq("n")
+    end
+
+    it "escapes \\{ as a literal brace in an attribute string" do
+      el = single(%(<a title="brace \\{ ok then {name}">x</a>)).as(Can::AST::Element)
+      a = el.attributes[0].as(Can::AST::InterpAttr)
+      a.parts.compact_map(&.as?(Can::AST::Text)).map(&.content).join
+        .should eq("brace { ok then ")
+      a.parts.compact_map(&.as?(Can::AST::Interpolation))
+        .map(&.expression).should eq(["name"])
     end
 
     it "parses boolean (valueless) attribute" do

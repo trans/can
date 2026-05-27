@@ -88,6 +88,20 @@ module Can
         case b
         when '<'.ord.to_u8
           break
+        when '\\'.ord.to_u8
+          if peek_byte(1) == '{'.ord.to_u8
+            # `\{` — drop the backslash, keep `{` as literal text.
+            if @pos > text_start
+              result << AST::Text.new(byte_slice(text_start, @pos - text_start), text_line, text_col)
+            end
+            advance # consume '\'
+            text_start = @pos
+            text_line = @line
+            text_col = @col
+            advance # consume '{' as literal text
+          else
+            advance
+          end
         when '{'.ord.to_u8
           if @pos > text_start
             result << AST::Text.new(byte_slice(text_start, @pos - text_start), text_line, text_col)
@@ -298,7 +312,16 @@ module Can
       text_line, text_col = @line, @col
 
       until eof? || byte_at == quote_byte
-        if byte_at == '{'.ord.to_u8
+        if byte_at == '\\'.ord.to_u8 && peek_byte(1) == '{'.ord.to_u8
+          # `\{` — drop the backslash, keep `{` as literal text.
+          if @pos > text_start
+            parts << AST::Text.new(byte_slice(text_start, @pos - text_start), text_line, text_col)
+          end
+          advance # consume '\'
+          text_start = @pos
+          text_line, text_col = @line, @col
+          advance # consume '{' as literal text
+        elsif byte_at == '{'.ord.to_u8
           if @pos > text_start
             parts << AST::Text.new(byte_slice(text_start, @pos - text_start), text_line, text_col)
           end
