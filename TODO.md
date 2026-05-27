@@ -51,6 +51,34 @@ interpreter that walks the AST and emits HTML directly, instead of
 generating Crystal source. ~100-200 lines. Also makes live-reload
 trivial.
 
+### Template-include directive
+
+`<.import>` (now `<.require>`) emits a Crystal `require`, so it pulls
+in `.cr` files — not `.can` templates. A separate include form for
+templates would let a page co-locate its component imports with its
+content:
+
+```html
+<.can src="components/card.can"/>
+<.can src="components/layout.can"/>
+
+<layout title="Home">
+  <card title="Hello">...</card>
+</layout>
+```
+
+Mechanism is different from `<.require>`: this would splice the
+referenced template's class-scope output (its `<.def>` blocks) into
+the surrounding scope at compile time, not emit a runtime `require`.
+Likely needs to be valid anywhere a special form is (with a convention
+of putting it at the top); position in the document is purely
+aesthetic since it's a compile-time directive.
+
+Open question: how to handle a page template that wants to *both* host
+defs AND render content — today the macro picks one scope per call,
+so this would need codegen to emit a class-level chunk and a
+method-level chunk from one file.
+
 ### `@scope` migration for scoped CSS
 
 See the `TODO` comment in `src/can/css_scope.cr`. Once CSS
