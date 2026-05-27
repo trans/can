@@ -142,6 +142,14 @@ describe Can::Codegen do
       gen("<div></div>").should contain(%(io << "<div"))
     end
 
+    it "emits SVG child tags as literal elements" do
+      out = gen(%(<svg><path d="M0 0"/><linearGradient id="g"/></svg>))
+      out.should contain(%(io << "<path"))
+      out.should contain(%(io << "<linearGradient"))
+      out.should_not contain("path(io")
+      out.should_not contain("linear_gradient(io")
+    end
+
     it "emits an unknown tag as a component method call" do
       out = gen(%(<Card title="Hi"/>))
       out.should contain("card(io")
@@ -174,6 +182,15 @@ describe Can::Codegen do
 
     it "renders a string attribute" do
       render(%(<a href="/x">link</a>)).should eq(%(<a href="/x">link</a>))
+    end
+
+    it "escapes static double quotes when re-emitting single-quoted attributes" do
+      render(%(<a title='he said "hi"'>x</a>)).should eq(%(<a title="he said &quot;hi&quot;">x</a>))
+    end
+
+    it "escapes static double quotes in interpolated attribute text" do
+      render(%(<a title='he said "hi" to {name}'>x</a>), prelude: %(name = "Tom"))
+        .should eq(%(<a title="he said &quot;hi&quot; to Tom">x</a>))
     end
 
     it "renders an interpolated attribute" do
@@ -426,6 +443,24 @@ describe Can::Codegen do
       out.should contain("<p>y=2</p>")
     end
 
+    it "binds inline def args by param name, not attribute order" do
+      out = render <<-CAN
+        <div>
+          <.def tag="row" param:label="String" param:n="Int32">
+            <p>{label}={n}</p>
+          </.def>
+          <row n={1} label="x"/>
+        </div>
+        CAN
+      out.should contain("<p>x=1</p>")
+    end
+
+    it "rejects unknown params on inline component invocations" do
+      expect_raises(Exception, /unknown param 'extra'/) do
+        Can::Codegen.compile(%(<div><.def tag="x">ok</.def><x extra="no"/></div>))
+      end
+    end
+
     it "rejects <.slot/> inside an inline def" do
       expect_raises(NotImplementedError, /class\/module scope/) do
         Can::Codegen.compile(%(<div><.def tag="x"><.slot/></.def></div>))
@@ -470,6 +505,12 @@ describe Can::Codegen do
         CAN
       out.should contain("<header></header>")
       out.should contain("<main><p>just body</p></main>")
+    end
+
+    it "rejects duplicate named slot fills" do
+      expect_raises(Exception, /duplicate slot fill <:title>/) do
+        Can::Codegen.compile(%(<.def tag="card"><.slot name="title"/></.def><card><:title>A</:title><:title>B</:title></card>))
+      end
     end
 
     it "named slot fills can use surrounding bindings" do

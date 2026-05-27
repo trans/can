@@ -48,11 +48,25 @@ module Can
       "u", "ul",
       "var", "video",
       "wbr",
+      # SVG elements. Tags are checked case-insensitively, but emitted using
+      # the author's original spelling for names such as linearGradient.
+      "animate", "animatemotion", "animatetransform", "circle", "clippath",
+      "defs", "desc", "ellipse", "feblend", "fecolormatrix",
+      "fecomponenttransfer", "fecomposite", "feconvolvematrix",
+      "fediffuselighting", "fedisplacementmap", "fedistantlight",
+      "fedropshadow", "feflood", "fefunca", "fefuncb", "fefuncg", "fefuncr",
+      "fegaussianblur", "feimage", "femerge", "femergenode",
+      "femorphology", "feoffset", "fepointlight", "fespecularlighting",
+      "fespotlight", "fetile", "feturbulence", "filter", "foreignobject",
+      "g", "image", "line", "lineargradient", "marker", "mask",
+      "metadata", "mpath", "path", "pattern", "polygon", "polyline",
+      "radialgradient", "rect", "set", "stop", "symbol", "textpath",
+      "tspan", "use", "view",
     }
 
     @out : IO
     @scope : Symbol
-    @inline_def_scopes : Array(Set(String))
+    @inline_def_scopes : Array(Hash(String, Array(String)))
     @in_top_level_def : Bool = false
     @in_raw : Bool = false
     @current_component_attr : String? = nil
@@ -66,7 +80,7 @@ module Can
     end
 
     def initialize(@out : IO, @scope : Symbol = :class)
-      @inline_def_scopes = [Set(String).new]
+      @inline_def_scopes = [Hash(String, Array(String)).new]
     end
 
     def emit_template(t : AST::Template) : Nil
@@ -197,28 +211,40 @@ module Can
       default_children = [] of AST::Node
       n.children.each do |c|
         if c.is_a?(AST::SlotFill)
+          raise "duplicate slot fill <:#{c.name}> in component <#{n.tag}>" if named_fills.has_key?(c.name)
           named_fills[c.name] = c.body
         else
           default_children << c
         end
       end
 
-      if inline_def_in_scope?(method)
+      if params = inline_def_params(method)
         unless default_children.empty? && named_fills.empty?
           raise NotImplementedError.new(
             "inline component <#{n.tag}> can't accept slot content (only top-level <.def> components support slots)"
           )
         end
-        emit_inline_proc_call(n, method)
+        emit_inline_proc_call(n, method, params)
       else
         emit_method_call(n, method, default_children, named_fills)
       end
     end
 
-    private def emit_inline_proc_call(n : AST::Element, method : String) : Nil
+    private def emit_inline_proc_call(n : AST::Element, method : String, params : Array(String)) : Nil
       proc_var = inline_proc_name(method)
-      @out << proc_var << ".call(io"
+      attrs = {} of String => AST::Attribute
       n.attributes.each do |a|
+        raise "duplicate attribute '#{a.name}' on inline component <#{n.tag}>" if attrs.has_key?(a.name)
+        attrs[a.name] = a
+      end
+      attrs.each_key do |name|
+        raise "unknown param '#{name}' on inline component <#{n.tag}>" unless params.includes?(name)
+      end
+
+      @out << proc_var << ".call(io"
+      params.each do |name|
+        a = attrs[name]?
+        raise "missing required param '#{name}' on inline component <#{n.tag}>" unless a
         @out << ", "
         emit_component_arg_value(a)
       end
@@ -253,7 +279,7 @@ module Can
         if a.value.empty?
           emit_static(" #{a.name}")
         else
-          emit_static(%( #{a.name}="#{a.value}"))
+          emit_static(%( #{a.name}="#{escape_static_attr(a.value)}"))
         end
       when AST::ExprAttr
         emit_static(%( #{a.name}="))
@@ -263,7 +289,7 @@ module Can
         emit_static(%( #{a.name}="))
         a.parts.each do |p|
           case p
-          when AST::Text          then emit_static(p.content)
+          when AST::Text          then emit_static(escape_static_attr(p.content))
           when AST::Interpolation then emit_escaped_expr(p.expression)
           end
         end
@@ -431,7 +457,7 @@ module Can
 
       @out << "nil\n}\n"
 
-      register_inline_def(method)
+      register_inline_def(method, n.params.map(&.name))
     end
 
     private def emit_slot(n : AST::Slot) : Nil
@@ -544,7 +570,7 @@ module Can
     end
 
     private def push_scope : Nil
-      @inline_def_scopes << Set(String).new
+      @inline_def_scopes << Hash(String, Array(String)).new
     end
 
     private def pop_scope : Nil
@@ -560,12 +586,19 @@ module Can
       end
     end
 
-    private def register_inline_def(name : String) : Nil
-      @inline_def_scopes.last << name
+    private def register_inline_def(name : String, params : Array(String)) : Nil
+      @inline_def_scopes.last[name] = params
     end
 
-    private def inline_def_in_scope?(name : String) : Bool
-      @inline_def_scopes.any?(&.includes?(name))
+    private def inline_def_params(name : String) : Array(String)?
+      @inline_def_scopes.reverse_each do |scope|
+        return scope[name] if scope.has_key?(name)
+      end
+      nil
+    end
+
+    private def escape_static_attr(value : String) : String
+      value.gsub('"', "&quot;")
     end
 
     private def visit_nodes(nodes : Array(AST::Node), descend_into_defs : Bool = false, &block : AST::Node ->) : Nil
