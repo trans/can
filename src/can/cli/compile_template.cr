@@ -11,9 +11,21 @@ unless mode && arg
   exit 1
 end
 
+source_name = case mode
+              when "inline" then "inline template"
+              when "file"   then arg
+              else               nil
+              end
+
 source = case mode
          when "inline" then arg
-         when "file"   then File.read(arg)
+         when "file"
+           begin
+             File.read(arg)
+           rescue ex
+             STDERR.puts "Can template error: cannot read #{arg}: #{ex.message}"
+             exit 1
+           end
          else
            STDERR.puts "unknown mode: #{mode}"
            exit 1
@@ -27,4 +39,17 @@ scope_sym = case scope
               exit 1
             end
 
-print Can::Codegen.compile(source, scope_sym)
+begin
+  print Can::Codegen.compile(source, scope_sym, source_name)
+rescue ex : Can::ParseError
+  if source_name
+    message = ex.message.to_s.sub(/ \(line \d+, col \d+\)\z/, "")
+    STDERR.puts "Can template error in #{source_name}:#{ex.line}:#{ex.column}: #{message}"
+  else
+    STDERR.puts "Can template error: #{ex.message}"
+  end
+  exit 1
+rescue ex
+  STDERR.puts "Can template error: #{ex.message}"
+  exit 1
+end

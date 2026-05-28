@@ -29,6 +29,30 @@ private def render_with_macro(body : String) : String
   end
 end
 
+private def compile_macro_error(body : String) : String
+  program = <<-CRYSTAL
+    require "can"
+    io = IO::Memory.new
+    #{body}
+    print io.to_s
+    CRYSTAL
+
+  tmp = File.tempfile("can_macro_error_test", ".cr") { |f| f.print(program) }
+  begin
+    output = IO::Memory.new
+    err = IO::Memory.new
+    status = Process.run(
+      "crystal", ["run", "--no-color", tmp.path],
+      env: {"CRYSTAL_PATH" => CRYSTAL_PATH_FOR_TESTS},
+      output: output, error: err, chdir: PROJECT_ROOT
+    )
+    status.success?.should be_false
+    err.to_s
+  ensure
+    tmp.delete
+  end
+end
+
 describe "Can.template_inline" do
   it "splices generated code in place and uses surrounding scope" do
     out = render_with_macro <<-CR
@@ -53,6 +77,22 @@ describe "Can.template_inline" do
       CR
     out.should eq("<ul><li>a</li><li>b</li><li>c</li></ul>")
   end
+
+  it "reports parse errors with inline template location" do
+    err = compile_macro_error <<-CR
+      Can.template_inline "<div>\\n<span></div>"
+      CR
+    err.should contain("Can template error in inline template:2:7:")
+    err.should_not contain("Unhandled exception")
+  end
+
+  it "includes template source markers near generated expression errors" do
+    err = compile_macro_error <<-CR
+      Can.template_inline %q(<p>{missing}</p>)
+      CR
+    err.should contain("# can: inline template:1:4")
+    err.should contain("undefined local variable or method 'missing'")
+  end
 end
 
 describe "Can.template" do
@@ -65,6 +105,22 @@ describe "Can.template" do
     out.should contain("<h1>Hello, World!</h1>")
     out.should contain("<li>read</li>")
     out.should contain("<li>write</li>")
+  end
+
+  it "reports parse errors with file template location" do
+    bad = File.tempfile("bad_can_template", ".can") do |f|
+      f.print "<div>\n<span></div>"
+    end
+
+    begin
+      err = compile_macro_error <<-CR
+        Can.template #{bad.path.inspect}
+        CR
+      err.should contain("Can template error in #{bad.path}:2:7:")
+      err.should_not contain("Unhandled exception")
+    ensure
+      bad.delete
+    end
   end
 
   it "skips conditional content when condition is false" do

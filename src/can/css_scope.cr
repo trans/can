@@ -197,10 +197,10 @@ module Can
       while i < chars.size
         c = chars[i]
         case c
-        when '('   then paren_depth += 1
-        when ')'   then paren_depth -= 1
-        when '['   then bracket_depth += 1
-        when ']'   then bracket_depth -= 1
+        when '(' then paren_depth += 1
+        when ')' then paren_depth -= 1
+        when '[' then bracket_depth += 1
+        when ']' then bracket_depth -= 1
         when ','
           if paren_depth == 0 && bracket_depth == 0
             groups << chars[group_start...i].join
@@ -240,10 +240,10 @@ module Can
           end
 
           case c
-          when '('   then paren_depth += 1; i += 1
-          when ')'   then paren_depth -= 1; i += 1
-          when '['   then bracket_depth += 1 if paren_depth == 0; i += 1
-          when ']'   then bracket_depth -= 1 if paren_depth == 0; i += 1
+          when '(' then paren_depth += 1; i += 1
+          when ')' then paren_depth -= 1; i += 1
+          when '[' then bracket_depth += 1 if paren_depth == 0; i += 1
+          when ']' then bracket_depth -= 1 if paren_depth == 0; i += 1
           else
             if paren_depth == 0 && bracket_depth == 0 && (whitespace?(c) || c == '>' || c == '+' || c == '~')
               flush_compound.call(i)

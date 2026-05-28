@@ -13,11 +13,11 @@ module Can
   #
   # An element whose tag is in `HTML_ELEMENTS` renders as literal HTML.
   # Any other tag is treated as a component invocation: `<Card title="…">…</Card>`
-  # becomes `card(io, title: "…") do |io| … end`. The tag is mapped to a
-  # method name via `tag.gsub('-', '_').underscore`.
+  # becomes `card(io, title: "…", __slot: ->(io : IO) { … })`. The tag is
+  # mapped to a method name via `tag.gsub('-', '_').underscore`.
   #
   # `<.def>` at the top level becomes a method (with optional named-slot
-  # `Proc` params and a default-slot `&block`). `<.def>` inside a body
+  # `Proc` params and a default-slot `__slot` proc). `<.def>` inside a body
   # becomes a local `Proc` that closes over surrounding bindings; v1
   # restriction: inline defs can't host `<.slot/>` and can't be invoked
   # with slot content.
@@ -70,16 +70,21 @@ module Can
     @in_top_level_def : Bool = false
     @in_raw : Bool = false
     @current_component_attr : String? = nil
+    @source_name : String?
 
-    def self.compile(template : AST::Template, scope : Symbol = :class) : String
-      String.build { |sb| new(sb, scope).emit_template(template) }
+    # Compiles a parsed template to Crystal source. When `source_name` is
+    # provided, generated code includes `# can: source:line:column` markers
+    # that make macro-expansion errors easier to map back to the template.
+    def self.compile(template : AST::Template, scope : Symbol = :class, source_name : String? = nil) : String
+      String.build { |sb| new(sb, scope, source_name).emit_template(template) }
     end
 
-    def self.compile(source : String, scope : Symbol = :class) : String
-      compile(Parser.parse(source), scope)
+    # Parses and compiles a template string to Crystal source.
+    def self.compile(source : String, scope : Symbol = :class, source_name : String? = nil) : String
+      compile(Parser.parse(source), scope, source_name)
     end
 
-    def initialize(@out : IO, @scope : Symbol = :class)
+    def initialize(@out : IO, @scope : Symbol = :class, @source_name : String? = nil)
       @inline_def_scopes = [Hash(String, Array(String)).new]
     end
 
@@ -126,27 +131,30 @@ module Can
       when AST::Comment       then emit_comment(n)
       when AST::Doctype       then emit_doctype(n)
       when AST::SlotFill
-        raise "<:#{n.name}> slot-fill is only valid as a child of a component invocation"
+        raise_at(n, "<:#{n.name}> slot-fill is only valid as a child of a component invocation")
       when AST::Require
-        raise "<.require/> is only allowed at the top level of a template"
+        raise_at(n, "<.require/> is only allowed at the top level of a template")
       when AST::ElseMark
-        raise "<.else/> can only appear inside a <.if> body"
+        raise_at(n, "<.else/> can only appear inside a <.if> body")
       when AST::ElseIfMark
-        raise "<.elseif/> can only appear inside a <.if> body"
+        raise_at(n, "<.elseif/> can only appear inside a <.if> body")
       else
-        raise "codegen: unhandled node #{n.class.name}"
+        raise_at(n, "codegen: unhandled node #{n.class.name}")
       end
     end
 
     private def emit_text(n : AST::Text) : Nil
+      emit_source_marker(n)
       emit_static(n.content)
     end
 
     private def emit_interp(n : AST::Interpolation) : Nil
+      emit_source_marker(n)
       emit_escaped_expr(n.expression)
     end
 
     private def emit_element(n : AST::Element) : Nil
+      emit_source_marker(n)
       if html_tag?(n.tag)
         emit_html_element(n)
       else
@@ -211,7 +219,7 @@ module Can
       default_children = [] of AST::Node
       n.children.each do |c|
         if c.is_a?(AST::SlotFill)
-          raise "duplicate slot fill <:#{c.name}> in component <#{n.tag}>" if named_fills.has_key?(c.name)
+          raise_at(c, "duplicate slot fill <:#{c.name}> in component <#{n.tag}>") if named_fills.has_key?(c.name)
           named_fills[c.name] = c.body
         else
           default_children << c
@@ -220,7 +228,7 @@ module Can
 
       if params = inline_def_params(method)
         unless default_children.empty? && named_fills.empty?
-          raise NotImplementedError.new(
+          raise_not_implemented_at(n,
             "inline component <#{n.tag}> can't accept slot content (only top-level <.def> components support slots)"
           )
         end
@@ -234,17 +242,17 @@ module Can
       proc_var = inline_proc_name(method)
       attrs = {} of String => AST::Attribute
       n.attributes.each do |a|
-        raise "duplicate attribute '#{a.name}' on inline component <#{n.tag}>" if attrs.has_key?(a.name)
+        raise_at(a, "duplicate attribute '#{a.name}' on inline component <#{n.tag}>") if attrs.has_key?(a.name)
         attrs[a.name] = a
       end
       attrs.each_key do |name|
-        raise "unknown param '#{name}' on inline component <#{n.tag}>" unless params.includes?(name)
+        raise_at(attrs[name], "unknown param '#{name}' on inline component <#{n.tag}>") unless params.includes?(name)
       end
 
       @out << proc_var << ".call(io"
       params.each do |name|
         a = attrs[name]?
-        raise "missing required param '#{name}' on inline component <#{n.tag}>" unless a
+        raise_at(n, "missing required param '#{name}' on inline component <#{n.tag}>") unless a
         @out << ", "
         emit_component_arg_value(a)
       end
@@ -330,6 +338,7 @@ module Can
     end
 
     private def emit_top_level_def(n : AST::Def) : Nil
+      emit_source_marker(n)
       method = tag_to_method_name(n.tag)
       named_slots = collect_named_slot_names(n.body)
       attr = has_style_block?(n.body) ? component_attr(n) : nil
@@ -425,7 +434,7 @@ module Can
 
     private def emit_inline_def(n : AST::Def) : Nil
       if uses_any_slot?(n.body)
-        raise NotImplementedError.new(
+        raise_not_implemented_at(n,
           "<.def tag=\"#{n.tag}\"> contains <.slot/>. " \
           "Slot-bearing components must be defined at class/module scope — " \
           "move this <.def> into a separate .can file loaded outside any method body."
@@ -433,12 +442,13 @@ module Can
       end
 
       if n.params.any?(&.default)
-        raise NotImplementedError.new(
+        raise_not_implemented_at(n,
           "<.def tag=\"#{n.tag}\"> has param defaults; Crystal Procs don't support defaults, " \
           "so defaults are top-level-only. Move this <.def> to class/module scope."
         )
       end
 
+      emit_source_marker(n)
       method = tag_to_method_name(n.tag)
       proc_var = inline_proc_name(method)
 
@@ -461,7 +471,8 @@ module Can
     end
 
     private def emit_slot(n : AST::Slot) : Nil
-      raise "<.slot/> can only appear inside a top-level <.def> body" unless @in_top_level_def
+      emit_source_marker(n)
+      raise_at(n, "<.slot/> can only appear inside a top-level <.def> body") unless @in_top_level_def
 
       if name = n.name
         @out << name << ".call(io)\n"
@@ -471,12 +482,14 @@ module Can
     end
 
     private def emit_require(n : AST::Require) : Nil
+      emit_source_marker(n)
       @out << "require "
       n.from.inspect(@out)
       @out << '\n'
     end
 
     private def emit_if(n : AST::If) : Nil
+      emit_source_marker(n)
       @out << "if ("
       @out << n.condition
       @out << ")\n"
@@ -503,6 +516,7 @@ module Can
     end
 
     private def emit_for(n : AST::For) : Nil
+      emit_source_marker(n)
       @out << "("
       @out << n.collection
       @out << ").each do |"
@@ -513,6 +527,7 @@ module Can
     end
 
     private def emit_let(n : AST::Let) : Nil
+      emit_source_marker(n)
       @out << n.name
       @out << " = ("
       @out << n.expression
@@ -521,10 +536,12 @@ module Can
     end
 
     private def emit_comment(n : AST::Comment) : Nil
+      emit_source_marker(n)
       emit_static("<!--#{n.content}-->")
     end
 
     private def emit_doctype(n : AST::Doctype) : Nil
+      emit_source_marker(n)
       emit_static("<!#{n.content}>")
     end
 
@@ -533,6 +550,26 @@ module Can
       @out << "io << "
       s.inspect(@out)
       @out << '\n'
+    end
+
+    private def emit_source_marker(n : AST::Node) : Nil
+      return unless source = @source_name
+      return if n.line <= 0
+      @out << "# can: " << source << ':' << n.line << ':' << n.column << '\n'
+    end
+
+    private def raise_at(n : AST::Node, message : String) : NoReturn
+      raise format_error(n, message)
+    end
+
+    private def raise_not_implemented_at(n : AST::Node, message : String) : NoReturn
+      raise NotImplementedError.new(format_error(n, message))
+    end
+
+    private def format_error(n : AST::Node, message : String) : String
+      return message unless source = @source_name
+      return "#{source}: #{message}" if n.line <= 0
+      "#{source}:#{n.line}:#{n.column}: #{message}"
     end
 
     private def emit_escaped_expr(expr : String) : Nil
@@ -548,6 +585,7 @@ module Can
     end
 
     private def emit_raw(n : AST::Raw) : Nil
+      emit_source_marker(n)
       prev = @in_raw
       @in_raw = true
       begin

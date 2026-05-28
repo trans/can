@@ -10,6 +10,11 @@ install:
 test:
     crystal spec
 
+# Run local verification checks.
+check:
+    crystal tool format --check src spec
+    crystal spec
+
 # Format all Crystal source.
 format:
     crystal tool format
@@ -24,6 +29,9 @@ api:
 
 # Build everything served by GitHub Pages (marketing + API).
 docs: site api
+
+# Rebuild generated docs for a release.
+release-docs: docs
 
 # Run the small portfolio-style example (prints HTML to stdout).
 try:
