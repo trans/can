@@ -237,3 +237,88 @@ describe "Can.template" do
     end
   end
 end
+
+describe "Can.use / Can.view" do
+  it "loads component defs with Can.use and renders a view with Can.view" do
+    component = File.tempfile("can_component", ".can") do |f|
+      f.print <<-CAN
+        <.def tag="card" param:title="String">
+          <section class="card"><h2>{title}</h2><.slot/></section>
+        </.def>
+        CAN
+    end
+    page = File.tempfile("can_page", ".can") do |f|
+      f.print %(<card title={title}><p>{body}</p></card>)
+    end
+
+    begin
+      out = render_with_macro <<-CR
+        module SharedComponents
+          Can.use #{component.path.inspect}
+        end
+
+        class HomePage
+          include SharedComponents
+
+          def title
+            "Welcome"
+          end
+
+          def body
+            "<safe?>"
+          end
+
+          Can.view #{page.path.inspect}
+        end
+
+        HomePage.new.render(io)
+        CR
+
+      out.should contain(%(<section class="card"><h2>Welcome</h2>))
+      out.should contain("<p>&lt;safe?&gt;</p>")
+    ensure
+      component.delete
+      page.delete
+    end
+  end
+
+  it "lets Can.view define components used by its own render body" do
+    page = File.tempfile("can_self_contained_page", ".can") do |f|
+      f.print <<-CAN
+        <.def tag="badge" param:label="String"><span>{label}</span></.def>
+        <main><badge label="new"/></main>
+        CAN
+    end
+
+    begin
+      out = render_with_macro <<-CR
+        class SelfContainedPage
+          Can.view #{page.path.inspect}
+        end
+
+        SelfContainedPage.new.render(io)
+        CR
+      out.should contain(%(<main><span>new</span></main>))
+    ensure
+      page.delete
+    end
+  end
+
+  it "rejects top-level render content in Can.use" do
+    component = File.tempfile("can_bad_component", ".can") do |f|
+      f.print %(<p>not component-only</p>)
+    end
+
+    begin
+      err = compile_macro_error <<-CR
+        module BadComponents
+          Can.use #{component.path.inspect}
+        end
+        CR
+      err.should contain("top-level render content is not allowed in Can.use")
+      err.should contain(component.path)
+    ensure
+      component.delete
+    end
+  end
+end

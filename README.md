@@ -49,16 +49,17 @@ time and renders to an `IO`:
 require "can"
 
 class HomePage
-  Can.template "templates/components.can"   # class scope: defines methods
+  getter name : String
 
-  def render(io : IO)
-    name = "Thomas"
-    Can.template "templates/home.can"       # method scope: emits HTML
+  def initialize(@name)
   end
+
+  Can.use "templates/components.can"  # component defs only
+  Can.view "templates/home.can"       # emits render(io)
 end
 
 io = IO::Memory.new
-HomePage.new.render(io)
+HomePage.new("Thomas").render(io)
 puts io.to_s
 ```
 
@@ -205,10 +206,15 @@ local variables.
 
 ### Top-level vs inline defs
 
-A `<.def>` at the top of a template loaded at class scope becomes a real
-method on the surrounding class. A `<.def>` inside another element — or
-inside a template loaded inside a method — becomes a local `Proc` that
-captures surrounding bindings:
+`Can.use` loads a component-only `.can` file: top-level `<.def>` blocks
+become real methods on the surrounding class/module, and top-level render
+content is rejected. `Can.view` loads a renderable `.can` file: top-level
+defs become methods and the remaining top-level content becomes
+`render(io : IO)`.
+
+A `<.def>` inside another element — or inside a template loaded inside a
+method with the lower-level `Can.template` macro — becomes a local `Proc`
+that captures surrounding bindings:
 
 ```html
 <div>
@@ -219,14 +225,12 @@ captures surrounding bindings:
 
 Inline defs **can't host slots or have param defaults** (Crystal `Proc`s
 don't support either). Put slot-bearing or default-bearing components in
-a separate `.can` file loaded at class scope:
+a separate `.can` file loaded with `Can.use`:
 
 ```crystal
 class Page
-  Can.template "components.can"   # defs with slots/defaults here
-  def render(io : IO)
-    Can.template "page.can"       # rendering content here
-  end
+  Can.use "components.can"  # defs with slots/defaults here
+  Can.view "page.can"      # rendering content here
 end
 ```
 
@@ -296,7 +300,7 @@ The host stays scoped; the slot side doesn't require the attribute.
 
 ## How it works
 
-`Can.template "path/to/foo.can"` is a macro. At compile time:
+`Can.use`, `Can.view`, and `Can.template` are macros. At compile time:
 
 1. Crystal's `{{ run }}` invokes `src/can/cli/compile_template.cr` with the
    template path.
@@ -308,7 +312,9 @@ So the template fully compiles into your binary. The macro is the only
 piece that touches Crystal's macro system; parser, codegen, and CSS scoper
 are plain Crystal modules with regular unit tests.
 
-`Can.template_inline "…"` does the same with an inline source string.
+`Can.template` is the lower-level macro: at class scope it emits component
+methods, and inside a method it emits render statements into the local
+`io`. `Can.template_inline "…"` does the same with an inline source string.
 
 ## Use with Kemal (or any IO-based server)
 
@@ -320,14 +326,27 @@ recipe:
 require "kemal"
 require "can"
 
-class Pages
-  Can.template "templates/layout.can"   # class scope: layout def with slots
+module Components
+  Can.use "templates/layout.can"   # layout def with slots
+end
 
+class Pages
   def home(name : String, todos : Array(String)) : String
     String.build do |io|
-      Can.template "templates/home.can"
+      HomePage.new(name, todos).render(io)
     end
   end
+end
+
+class HomePage
+  getter name : String
+  getter todos : Array(String)
+
+  def initialize(@name, @todos)
+  end
+
+  include Components
+  Can.view "templates/home.can"
 end
 
 PAGES = Pages.new

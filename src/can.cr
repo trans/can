@@ -74,4 +74,34 @@ module Can
       {{ run("./can/cli/compile_template", "file", path, "class").id }}
     {% end %}
   end
+
+  # Loads a `.can` file as a component library in the surrounding
+  # class/module. Top-level `<.def>` blocks become methods; top-level render
+  # content is rejected so component-only files stay explicit.
+  #
+  #     module Components
+  #       Can.use "components/card.can"
+  #     end
+  macro use(path)
+    {% if @def %}
+      {% raise "Can.use must be called at class/module scope" %}
+    {% else %}
+      {{ run("./can/cli/compile_template", "file", path, "use").id }}
+    {% end %}
+  end
+
+  # Loads a `.can` file as the render surface for the surrounding class.
+  # Top-level `<.def>` blocks become methods, and top-level render content is
+  # emitted as `render(io : IO)`.
+  #
+  #     class HomePage
+  #       Can.view "pages/home.can"
+  #     end
+  macro view(path)
+    {% if @def %}
+      {% raise "Can.view must be called at class/module scope" %}
+    {% else %}
+      {{ run("./can/cli/compile_template", "file", path, "view").id }}
+    {% end %}
+  end
 end

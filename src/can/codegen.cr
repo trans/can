@@ -89,7 +89,55 @@ module Can
     end
 
     def emit_template(t : AST::Template) : Nil
-      t.children.each { |n| emit_top_level(n) }
+      case @scope
+      when :use
+        emit_use_template(t)
+      when :view
+        emit_view_template(t)
+      else
+        t.children.each { |n| emit_top_level(n) }
+      end
+    end
+
+    private def emit_use_template(t : AST::Template) : Nil
+      t.children.each do |n|
+        case n
+        when AST::Def
+          emit_top_level_def(n)
+        when AST::Require
+          emit_require(n)
+        when AST::Text
+          next if n.content.blank?
+          raise_at(n, "top-level render content is not allowed in Can.use")
+        when AST::Comment
+          next
+        else
+          raise_at(n, "top-level render content is not allowed in Can.use")
+        end
+      end
+    end
+
+    private def emit_view_template(t : AST::Template) : Nil
+      render_nodes = [] of AST::Node
+
+      t.children.each do |n|
+        case n
+        when AST::Def
+          emit_top_level_def(n)
+        when AST::Require
+          emit_require(n)
+        when AST::Text
+          render_nodes << n unless n.content.blank?
+        else
+          render_nodes << n
+        end
+      end
+
+      @out << "def render(io : IO) : Nil\n"
+      with_scope do
+        render_nodes.each { |n| emit_node(n) }
+      end
+      @out << "end\n"
     end
 
     private def emit_top_level(n : AST::Node) : Nil

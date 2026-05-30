@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.20.1">
-<meta name="crystal_docs.project_version" content="0.2.2-dev">
+<meta name="crystal_docs.project_version" content="main-dev">
 <meta name="crystal_docs.project_name" content="can">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="can">
-  <title>can 0.2.2-dev</title>
+  <title>can main-dev</title>
   <script type="text/javascript">
   CrystalDocs.base_path = "";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        0.2.2-dev
+        main-dev
       </span>
     </div>
   </div>
@@ -265,16 +265,17 @@ time and renders to an <code>IO</code>:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;can&quot;</span>
 
 <span class="k">class</span> <span class="t">HomePage</span>
-  <span class="t">Can</span>.template <span class="s">&quot;templates/components.can&quot;</span>   <span class="c"># class scope: defines methods</span>
+  getter name : <span class="t">String</span>
 
-  <span class="k">def</span> <span class="m">render</span>(io : <span class="t">IO</span>)
-    name <span class="o">=</span> <span class="s">&quot;Thomas&quot;</span>
-    <span class="t">Can</span>.template <span class="s">&quot;templates/home.can&quot;</span>       <span class="c"># method scope: emits HTML</span>
+  <span class="k">def</span> <span class="m">initialize</span>(@name)
   <span class="k">end</span>
+
+  <span class="t">Can</span>.use <span class="s">&quot;templates/components.can&quot;</span>  <span class="c"># component defs only</span>
+  <span class="t">Can</span>.view <span class="s">&quot;templates/home.can&quot;</span>       <span class="c"># emits render(io)</span>
 <span class="k">end</span>
 
 io <span class="o">=</span> <span class="t">IO</span><span class="t">::</span><span class="t">Memory</span>.new
-<span class="t">HomePage</span>.new.render(io)
+<span class="t">HomePage</span>.new(<span class="s">&quot;Thomas&quot;</span>).render(io)
 puts io.to_s</code></pre>
 <p>Run with <code>crystal run</code>. The template is parsed and compiled to Crystal
 source at compile time — there's no runtime parsing, and template errors
@@ -394,22 +395,24 @@ local variables.</p>
     <use href="#octicon-link"/>
   </svg>
 </a>Top-level vs inline defs</h3>
-<p>A <code>&lt;.def&gt;</code> at the top of a template loaded at class scope becomes a real
-method on the surrounding class. A <code>&lt;.def&gt;</code> inside another element — or
-inside a template loaded inside a method — becomes a local <code>Proc</code> that
-captures surrounding bindings:</p>
+<p><code>Can.use</code> loads a component-only <code>.can</code> file: top-level <code>&lt;.def&gt;</code> blocks
+become real methods on the surrounding class/module, and top-level render
+content is rejected. <code>Can.view</code> loads a renderable <code>.can</code> file: top-level
+defs become methods and the remaining top-level content becomes
+<code>render(io : IO)</code>.</p>
+<p>A <code>&lt;.def&gt;</code> inside another element — or inside a template loaded inside a
+method with the lower-level <code>Can.template</code> macro — becomes a local <code>Proc</code>
+that captures surrounding bindings:</p>
 <pre><code class="language-html">&lt;div&gt;
   &lt;.def tag=&quot;pill&quot;&gt;[{label}]&lt;/.def&gt;
   &lt;.for each={label in tags}&gt;&lt;pill/&gt;&lt;/.for&gt;
 &lt;/div&gt;</code></pre>
 <p>Inline defs <strong>can't host slots or have param defaults</strong> (Crystal <code>Proc</code>s
 don't support either). Put slot-bearing or default-bearing components in
-a separate <code>.can</code> file loaded at class scope:</p>
+a separate <code>.can</code> file loaded with <code>Can.use</code>:</p>
 <pre><code class="language-crystal"><span class="k">class</span> <span class="t">Page</span>
-  <span class="t">Can</span>.template <span class="s">&quot;components.can&quot;</span>   <span class="c"># defs with slots/defaults here</span>
-  <span class="k">def</span> <span class="m">render</span>(io : <span class="t">IO</span>)
-    <span class="t">Can</span>.template <span class="s">&quot;page.can&quot;</span>       <span class="c"># rendering content here</span>
-  <span class="k">end</span>
+  <span class="t">Can</span>.use <span class="s">&quot;components.can&quot;</span>  <span class="c"># defs with slots/defaults here</span>
+  <span class="t">Can</span>.view <span class="s">&quot;page.can&quot;</span>      <span class="c"># rendering content here</span>
 <span class="k">end</span></code></pre>
 <p>A clear compile-time error fires if you violate this.</p>
 <h2><a id="css-scoping" class="anchor" href="#css-scoping">
@@ -466,7 +469,7 @@ rule:</p>
     <use href="#octicon-link"/>
   </svg>
 </a>How it works</h2>
-<p><code>Can.template &quot;path/to/foo.can&quot;</code> is a macro. At compile time:</p>
+<p><code>Can.use</code>, <code>Can.view</code>, and <code>Can.template</code> are macros. At compile time:</p>
 <ol>
 <li>Crystal's <code>{{ run }}</code> invokes <code>src/can/cli/compile_template.cr</code> with the
 template path.</li>
@@ -477,7 +480,9 @@ template path.</li>
 <p>So the template fully compiles into your binary. The macro is the only
 piece that touches Crystal's macro system; parser, codegen, and CSS scoper
 are plain Crystal modules with regular unit tests.</p>
-<p><code>Can.template_inline &quot;…&quot;</code> does the same with an inline source string.</p>
+<p><code>Can.template</code> is the lower-level macro: at class scope it emits component
+methods, and inside a method it emits render statements into the local
+<code>io</code>. <code>Can.template_inline &quot;…&quot;</code> does the same with an inline source string.</p>
 <h2><a id="use-with-kemal-or-any-io-based-server" class="anchor" href="#use-with-kemal-or-any-io-based-server">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -489,14 +494,27 @@ recipe:</p>
 <pre><code class="language-crystal"><span class="k">require</span> <span class="s">&quot;kemal&quot;</span>
 <span class="k">require</span> <span class="s">&quot;can&quot;</span>
 
-<span class="k">class</span> <span class="t">Pages</span>
-  <span class="t">Can</span>.template <span class="s">&quot;templates/layout.can&quot;</span>   <span class="c"># class scope: layout def with slots</span>
+<span class="k">module</span> <span class="t">Components</span>
+  <span class="t">Can</span>.use <span class="s">&quot;templates/layout.can&quot;</span>   <span class="c"># layout def with slots</span>
+<span class="k">end</span>
 
+<span class="k">class</span> <span class="t">Pages</span>
   <span class="k">def</span> <span class="m">home</span>(name : <span class="t">String</span>, todos : <span class="t">Array</span>(<span class="t">String</span>)) : <span class="t">String</span>
     <span class="t">String</span>.build <span class="k">do</span> <span class="o">|</span>io<span class="o">|</span>
-      <span class="t">Can</span>.template <span class="s">&quot;templates/home.can&quot;</span>
+      <span class="t">HomePage</span>.new(name, todos).render(io)
     <span class="k">end</span>
   <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">class</span> <span class="t">HomePage</span>
+  getter name : <span class="t">String</span>
+  getter todos : <span class="t">Array</span>(<span class="t">String</span>)
+
+  <span class="k">def</span> <span class="m">initialize</span>(@name, @todos)
+  <span class="k">end</span>
+
+  <span class="k">include</span> <span class="t">Components</span>
+  <span class="t">Can</span>.view <span class="s">&quot;templates/home.can&quot;</span>
 <span class="k">end</span>
 
 <span class="t">PAGES</span> <span class="o">=</span> <span class="t">Pages</span>.new

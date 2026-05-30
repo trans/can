@@ -7,7 +7,7 @@ arg = ARGV[1]?
 scope = ARGV[2]? || "class"
 
 unless mode && arg
-  STDERR.puts "usage: compile_template (inline|file) <source-or-path> [class|method]"
+  STDERR.puts "usage: compile_template (inline|file) <source-or-path> [class|method|use|view]"
   exit 1
 end
 
@@ -34,6 +34,8 @@ source = case mode
 scope_sym = case scope
             when "class"  then :class
             when "method" then :method
+            when "use"    then :use
+            when "view"   then :view
             else
               STDERR.puts "unknown scope: #{scope}"
               exit 1
