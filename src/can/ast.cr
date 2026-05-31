@@ -46,14 +46,6 @@ module Can
       end
     end
 
-    # title="hello {name}, you have {n} messages"
-    class InterpAttr < Attribute
-      property parts : Array(Node)
-
-      def initialize(@name : String, @parts : Array(Node), @line = 0, @column = 0)
-      end
-    end
-
     # items={list} — a single Crystal expression, not a string
     class ExprAttr < Attribute
       property expression : String

@@ -11,8 +11,8 @@ module Can
   end
 
   # Strict XML-ish parser for the can template language. Tags must be
-  # explicitly closed (or self-closed); attribute values must be quoted
-  # (`"..."` / `'...'`) or expression-form (`={...}`).
+  # explicitly closed (or self-closed). Quoted attribute values are literal;
+  # expression-form attributes (`={...}`) evaluate Crystal.
   #
   # `<style>` and `<script>` switch to raw-text mode — content is captured
   # verbatim until the matching close tag, no nested-tag or interpolation
@@ -307,49 +307,16 @@ module Can
       quote_byte = byte_at
       advance # opening quote
 
-      parts = [] of AST::Node
-      text_start = @pos
-      text_line, text_col = @line, @col
-
+      start = @pos
       until eof? || byte_at == quote_byte
-        if byte_at == '\\'.ord.to_u8 && peek_byte(1) == '{'.ord.to_u8
-          # `\{` — drop the backslash, keep `{` as literal text.
-          if @pos > text_start
-            parts << AST::Text.new(byte_slice(text_start, @pos - text_start), text_line, text_col)
-          end
-          advance # consume '\'
-          text_start = @pos
-          text_line, text_col = @line, @col
-          advance # consume '{' as literal text
-        elsif byte_at == '{'.ord.to_u8
-          if @pos > text_start
-            parts << AST::Text.new(byte_slice(text_start, @pos - text_start), text_line, text_col)
-          end
-          il, ic = @line, @col
-          expr = read_brace_expression
-          parts << AST::Interpolation.new(expr, il, ic)
-          text_start = @pos
-          text_line, text_col = @line, @col
-        else
-          advance
-        end
+        advance
       end
 
       raise_at "unterminated attribute value for '#{name}'", l, c if eof?
-
-      if @pos > text_start
-        parts << AST::Text.new(byte_slice(text_start, @pos - text_start), text_line, text_col)
-      end
+      value = byte_slice(start, @pos - start)
 
       advance # closing quote
-
-      if parts.empty?
-        AST::StringAttr.new(name, "", l, c)
-      elsif parts.size == 1 && (only = parts[0]).is_a?(AST::Text)
-        AST::StringAttr.new(name, only.content, l, c)
-      else
-        AST::InterpAttr.new(name, parts, l, c)
-      end
+      AST::StringAttr.new(name, value, l, c)
     end
 
     # =====================================================================

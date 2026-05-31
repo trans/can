@@ -117,11 +117,6 @@
 
     </li>
 
-  <li class=" " data-id="can/Can/AST/InterpAttr" data-name="can::ast::interpattr">
-      <a href="../Can/AST/InterpAttr.html">InterpAttr</a>
-
-    </li>
-
   <li class=" " data-id="can/Can/AST/Interpolation" data-name="can::ast::interpolation">
       <a href="../Can/AST/Interpolation.html">Interpolation</a>
 
@@ -245,8 +240,9 @@
   <p>Codegen: emits Crystal source that writes HTML to a local <code>io</code>.</p>
 <p>Static text from the source template is emitted verbatim — author
 responsibility to write valid HTML (e.g. <code>&amp;lt;</code> for literal <code>&lt;</code>).
-Interpolated <code>{expr}</code> values are HTML-escaped at runtime via stdlib
-<code>::HTML.escape</code>.</p>
+Interpolated <code>{expr}</code> values in text and expression attributes are
+HTML-escaped at runtime via stdlib <code>::HTML.escape</code>. Quoted attributes
+are literal text.</p>
 <p>An element whose tag is in <code><a href="../Can/Codegen.html#HTML_ELEMENTS">HTML_ELEMENTS</a></code> renders as literal HTML.
 Any other tag is treated as a component invocation: <code>&lt;Card title=&quot;…&quot;&gt;…&lt;/Card&gt;</code>
 becomes <code>card(io, title: &quot;…&quot;, __slot: -&gt;(io : IO) { … })</code>. The tag is

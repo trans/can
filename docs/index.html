@@ -199,8 +199,8 @@
         <p>
           The same <code>&lt;callout&gt;</code> component renders three
           different ways, picked by a <code>kind</code> param. Param-driven
-          style is just an attribute interpolation
-          (<code>class="callout &#123;kind&#125;"</code>) plus a <code>&lt;.if&gt;</code>
+          style is just an expression attribute
+          (<code>class=&#123;"callout #&#123;kind&#125;"&#125;</code>) plus a <code>&lt;.if&gt;</code>
           chain inside the body.
         </p>
 

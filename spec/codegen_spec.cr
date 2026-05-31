@@ -188,14 +188,19 @@ describe Can::Codegen do
       render(%(<a title='he said "hi"'>x</a>)).should eq(%(<a title="he said &quot;hi&quot;">x</a>))
     end
 
-    it "escapes static double quotes in interpolated attribute text" do
+    it "leaves braces in quoted attribute text literal" do
       render(%(<a title='he said "hi" to {name}'>x</a>), prelude: %(name = "Tom"))
-        .should eq(%(<a title="he said &quot;hi&quot; to Tom">x</a>))
+        .should eq(%(<a title="he said &quot;hi&quot; to {name}">x</a>))
     end
 
-    it "renders an interpolated attribute" do
-      render(%(<a class="card {kind}">x</a>), prelude: %(kind = "blue"))
+    it "renders a Crystal-built expression attribute" do
+      render(%q(<a class={"card #{kind}"}>x</a>), prelude: %(kind = "blue"))
         .should eq(%(<a class="card blue">x</a>))
+    end
+
+    it "renders HTMX JSON attributes without brace escaping" do
+      render(%(<button hx-post="/items" hx-vals='{"kind":"book"}'>Save</button>))
+        .should eq(%(<button hx-post="/items" hx-vals="{&quot;kind&quot;:&quot;book&quot;}">Save</button>))
     end
 
     it "renders an expression attribute and escapes its value" do

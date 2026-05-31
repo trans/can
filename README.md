@@ -97,12 +97,25 @@ trusted = Can.raw("<em>safe</em>")
 Both compose. `<.raw>` doesn't penetrate into nested `<.def>` bodies —
 those have their own escape context.
 
-To put a literal `{` in text or in a quoted attribute value, escape it
-with a backslash: `\{` becomes `{`. Only `\{` is special — any other
-backslash stays literal. This works in text content and inside
-double/single-quoted attribute values; it isn't needed inside `<style>`
-or `<script>` bodies (those don't interpolate) or inside a `{expr}`
-itself (that's Crystal code).
+To put a literal `{` in text, escape it with a backslash: `\{` becomes
+`{`. Only `\{` is special — any other backslash stays literal. It isn't
+needed inside quoted attributes, `<style>` or `<script>` bodies (those
+don't interpolate), or inside a `{expr}` itself (that's Crystal code).
+
+## Attributes
+
+Quoted attributes are literal text. Use expression-form attributes when
+the value should come from Crystal:
+
+```html
+<button hx-post="/items" hx-vals='{"kind":"book"}'>Save</button>
+<input value={user.name}/>
+<input title={"Hello #{name}"}/>
+```
+
+Expression attributes are HTML-escaped in the rendered output, just like
+text interpolations. For component calls, the expression value is passed
+to the component and escapes when the receiving component renders it.
 
 ## Special forms
 

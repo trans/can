@@ -111,7 +111,7 @@
                         text-transform: uppercase; letter-spacing: 0.05em;
                         font-size: 0.8rem; }
   </style>
-  <div class="callout {kind}">
+  <div class={"callout #{kind}"}>
     <.if cond={kind == "info"}><strong>note</strong>
       <.elseif cond={kind == "warning"}/><strong>heads up</strong>
       <.elseif cond={kind == "danger"}/><strong>danger</strong>

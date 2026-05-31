@@ -112,23 +112,16 @@ describe Can::Parser do
       a.expression.should eq("user.name")
     end
 
-    it "parses interpolated string attribute" do
+    it "treats braces inside quoted attributes as literal text" do
       el = single(%(<a title="hi {name}, msg {n}">x</a>)).as(Can::AST::Element)
-      a = el.attributes[0].as(Can::AST::InterpAttr)
-      a.parts.size.should eq(4)
-      a.parts[0].as(Can::AST::Text).content.should eq("hi ")
-      a.parts[1].as(Can::AST::Interpolation).expression.should eq("name")
-      a.parts[2].as(Can::AST::Text).content.should eq(", msg ")
-      a.parts[3].as(Can::AST::Interpolation).expression.should eq("n")
+      a = el.attributes[0].as(Can::AST::StringAttr)
+      a.value.should eq("hi {name}, msg {n}")
     end
 
-    it "escapes \\{ as a literal brace in an attribute string" do
+    it "does not special-case \\{ inside quoted attributes" do
       el = single(%(<a title="brace \\{ ok then {name}">x</a>)).as(Can::AST::Element)
-      a = el.attributes[0].as(Can::AST::InterpAttr)
-      a.parts.compact_map(&.as?(Can::AST::Text)).map(&.content).join
-        .should eq("brace { ok then ")
-      a.parts.compact_map(&.as?(Can::AST::Interpolation))
-        .map(&.expression).should eq(["name"])
+      a = el.attributes[0].as(Can::AST::StringAttr)
+      a.value.should eq("brace \\{ ok then {name}")
     end
 
     it "parses boolean (valueless) attribute" do

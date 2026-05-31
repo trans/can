@@ -117,11 +117,6 @@
       
     </li>
   
-  <li class=" " data-id="can/Can/AST/InterpAttr" data-name="can::ast::interpattr">
-      <a href="Can/AST/InterpAttr.html">InterpAttr</a>
-      
-    </li>
-  
   <li class=" " data-id="can/Can/AST/Interpolation" data-name="can::ast::interpolation">
       <a href="Can/AST/Interpolation.html">Interpolation</a>
       
@@ -297,12 +292,23 @@ surface as compile errors.</p>
 <pre><code class="language-html">&lt;div&gt;{trusted}&lt;/div&gt;   &lt;!-- emitted verbatim --&gt;</code></pre>
 <p>Both compose. <code>&lt;.raw&gt;</code> doesn't penetrate into nested <code>&lt;.def&gt;</code> bodies —
 those have their own escape context.</p>
-<p>To put a literal <code>{</code> in text or in a quoted attribute value, escape it
-with a backslash: <code>\{</code> becomes <code>{</code>. Only <code>\{</code> is special — any other
-backslash stays literal. This works in text content and inside
-double/single-quoted attribute values; it isn't needed inside <code>&lt;style&gt;</code>
-or <code>&lt;script&gt;</code> bodies (those don't interpolate) or inside a <code>{expr}</code>
-itself (that's Crystal code).</p>
+<p>To put a literal <code>{</code> in text, escape it with a backslash: <code>\{</code> becomes
+<code>{</code>. Only <code>\{</code> is special — any other backslash stays literal. It isn't
+needed inside quoted attributes, <code>&lt;style&gt;</code> or <code>&lt;script&gt;</code> bodies (those
+don't interpolate), or inside a <code>{expr}</code> itself (that's Crystal code).</p>
+<h2><a id="attributes" class="anchor" href="#attributes">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Attributes</h2>
+<p>Quoted attributes are literal text. Use expression-form attributes when
+the value should come from Crystal:</p>
+<pre><code class="language-html">&lt;button hx-post=&quot;/items&quot; hx-vals='{&quot;kind&quot;:&quot;book&quot;}'&gt;Save&lt;/button&gt;
+&lt;input value={user.name}/&gt;
+&lt;input title={&quot;Hello #{name}&quot;}/&gt;</code></pre>
+<p>Expression attributes are HTML-escaped in the rendered output, just like
+text interpolations. For component calls, the expression value is passed
+to the component and escapes when the receiving component renders it.</p>
 <h2><a id="special-forms" class="anchor" href="#special-forms">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>

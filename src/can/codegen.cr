@@ -8,8 +8,9 @@ module Can
   #
   # Static text from the source template is emitted verbatim — author
   # responsibility to write valid HTML (e.g. `&lt;` for literal `<`).
-  # Interpolated `{expr}` values are HTML-escaped at runtime via stdlib
-  # `::HTML.escape`.
+  # Interpolated `{expr}` values in text and expression attributes are
+  # HTML-escaped at runtime via stdlib `::HTML.escape`. Quoted attributes
+  # are literal text.
   #
   # An element whose tag is in `HTML_ELEMENTS` renders as literal HTML.
   # Any other tag is treated as a component invocation: `<Card title="…">…</Card>`
@@ -126,8 +127,6 @@ module Can
           emit_top_level_def(n)
         when AST::Require
           emit_require(n)
-        when AST::Text
-          render_nodes << n unless n.content.blank?
         else
           render_nodes << n
         end
@@ -341,15 +340,6 @@ module Can
         emit_static(%( #{a.name}="))
         emit_escaped_expr(a.expression)
         emit_static(%("))
-      when AST::InterpAttr
-        emit_static(%( #{a.name}="))
-        a.parts.each do |p|
-          case p
-          when AST::Text          then emit_static(escape_static_attr(p.content))
-          when AST::Interpolation then emit_escaped_expr(p.expression)
-          end
-        end
-        emit_static(%("))
       end
     end
 
@@ -367,21 +357,6 @@ module Can
         a.value.inspect(@out)
       when AST::ExprAttr
         @out << '(' << a.expression << ')'
-      when AST::InterpAttr
-        @out << "String.build { |__sb| "
-        a.parts.each do |p|
-          case p
-          when AST::Text
-            @out << "__sb << "
-            p.content.inspect(@out)
-            @out << "; "
-          when AST::Interpolation
-            @out << "__sb << ("
-            @out << p.expression
-            @out << ").to_s; "
-          end
-        end
-        @out << '}'
       end
     end
 
