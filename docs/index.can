@@ -3,7 +3,42 @@
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>can — server-side HTML components for Crystal</title>
+    <title>Can - Server-Side HTML Components for Crystal</title>
+    <meta name="description" content="Can is a pre-1.0 server-side HTML component system for Crystal. Write .can templates as HTML, compose components with slots and scoped CSS, and compile them before runtime."/>
+    <meta name="robots" content="index,follow"/>
+    <link rel="canonical" href="https://trans.github.io/can/"/>
+
+    <meta property="og:type" content="website"/>
+    <meta property="og:site_name" content="Can"/>
+    <meta property="og:title" content="Can - Server-Side HTML Components for Crystal"/>
+    <meta property="og:description" content="Write componentized HTML in .can files, compose it with slots and scoped CSS, and compile it into Crystal before your app runs."/>
+    <meta property="og:url" content="https://trans.github.io/can/"/>
+    <meta property="og:image" content="https://trans.github.io/can/can.png"/>
+
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="Can - Server-Side HTML Components for Crystal"/>
+    <meta name="twitter:description" content="Componentized HTML for Crystal SSR projects, compiled before runtime."/>
+    <meta name="twitter:image" content="https://trans.github.io/can/can.png"/>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareSourceCode",
+        "name": "Can",
+        "description": "A pre-1.0 server-side HTML component system for Crystal. Write .can templates as HTML, compose components with slots and scoped CSS, and compile them before runtime.",
+        "programmingLanguage": "Crystal",
+        "codeRepository": "https://github.com/trans/can",
+        "url": "https://trans.github.io/can/",
+        "license": "https://github.com/trans/can/blob/main/LICENSE",
+        "keywords": [
+          "Crystal",
+          "server-side rendering",
+          "HTML components",
+          "template compiler",
+          "scoped CSS"
+        ]
+      }
+    </script>
     <link rel="stylesheet" href="styles.css"/>
   </head>
 
