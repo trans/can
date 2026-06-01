@@ -1,15 +1,23 @@
 # Can
 
-A server-side web component system for Crystal. Write components as HTML;
-render them to a string. Each component's `<style>` is scoped to the
-elements it owns.
+Server-side HTML components for Crystal, compiled before runtime.
+
+Can lets you write componentized HTML in `.can` files and compile those
+templates into Crystal. It gives Crystal server-rendered apps a component
+model with defs, slots, scoped CSS, literal and expression attributes,
+`Can.use`, `Can.view`, template-level `<.use>`, and a small `can-render`
+CLI for static experiments.
+
+Can is pre-1.0. It is a good fit for experiments, small Crystal SSR
+projects, and developers who want componentized HTML without a browser-side
+framework or runtime template parser.
+
+**[Live landing page →](https://trans.github.io/can/)** (built by `can` itself; source under [`docs/`](docs/))
 
 The name is short for *canned templates*. Sits in the XSLT and Zope
 TAL/METAL lineage — components are a special form *inside the template
 language* rather than imported from a Crystal class library. The HTML
 itself is the program.
-
-**[Live landing page →](https://trans.github.io/can/)** (built by `can` itself; source under [`docs/`](docs/))
 
 ```html
 <.def tag="card" param:title="String">
@@ -27,6 +35,23 @@ itself is the program.
   <p>Welcome.</p>
 </card>
 ```
+
+## Use Can when
+
+- You are building server-rendered HTML in Crystal.
+- You want components, slots, and scoped CSS without a client-side runtime.
+- You want template errors to surface during Crystal compilation.
+- You want `.can` files that can render inside Kemal, `HTTP::Server`, or a
+  small static rendering script.
+
+## Do not use Can when
+
+- You need a mature, production-hardened 1.0 template system today.
+- You need browser-side interactivity or hydration from the component system
+  itself.
+- You need a full static site generator. `can-render` renders one `.can`
+  file and is useful for static experiments, but it is not a site generator
+  yet.
 
 ## Installation
 

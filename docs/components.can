@@ -4,6 +4,7 @@
     .hero { display: flex; align-items: center; gap: 2rem; margin: 0; padding-top: 0; }
     .hero > .logo { width: 26%; flex-shrink: 0; }
     .hero > .body { flex: 1; font-size: 2rem; }
+    .hero > .body small { display: inline-block; font-size: 0.55em; font-weight: 700; }
     .hero > .body :slotted(img) { display: block; width: 80%; height: auto; }
     @media (max-width: 36rem) {
       .hero { flex-direction: column; text-align: center; }
@@ -12,7 +13,7 @@
   </style>
   <header class="hero">
     <div class="body"><.slot/></div>
-    <img src="can.png" alt="can &mdash; server-side web components for Crystal" class="logo"/>
+    <img src="can.png" alt="can &mdash; server-side HTML components for Crystal" class="logo"/>
   </header>
 </.def>
 

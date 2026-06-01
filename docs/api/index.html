@@ -238,14 +238,20 @@
     <use href="#octicon-link"/>
   </svg>
 </a>Can</h1>
-<p>A server-side web component system for Crystal. Write components as HTML;
-render them to a string. Each component's <code>&lt;style&gt;</code> is scoped to the
-elements it owns.</p>
+<p>Server-side HTML components for Crystal, compiled before runtime.</p>
+<p>Can lets you write componentized HTML in <code>.can</code> files and compile those
+templates into Crystal. It gives Crystal server-rendered apps a component
+model with defs, slots, scoped CSS, literal and expression attributes,
+<code>Can.use</code>, <code>Can.view</code>, template-level <code>&lt;.use&gt;</code>, and a small <code>can-render</code>
+CLI for static experiments.</p>
+<p>Can is pre-1.0. It is a good fit for experiments, small Crystal SSR
+projects, and developers who want componentized HTML without a browser-side
+framework or runtime template parser.</p>
+<p><strong><a href="https://trans.github.io/can/">Live landing page →</a></strong> (built by <code>can</code> itself; source under <a href="docs/"><code>docs/</code></a>)</p>
 <p>The name is short for <em>canned templates</em>. Sits in the XSLT and Zope
 TAL/METAL lineage — components are a special form <em>inside the template
 language</em> rather than imported from a Crystal class library. The HTML
 itself is the program.</p>
-<p><strong><a href="https://trans.github.io/can/">Live landing page →</a></strong> (built by <code>can</code> itself; source under <a href="docs/"><code>docs/</code></a>)</p>
 <pre><code class="language-html">&lt;.def tag=&quot;card&quot; param:title=&quot;String&quot;&gt;
   &lt;style&gt;
     .card { border: 1px solid #ccc; padding: 1rem; }
@@ -260,6 +266,31 @@ itself is the program.</p>
 &lt;card title=&quot;Hello&quot;&gt;
   &lt;p&gt;Welcome.&lt;/p&gt;
 &lt;/card&gt;</code></pre>
+<h2><a id="use-can-when" class="anchor" href="#use-can-when">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Use Can when</h2>
+<ul>
+<li>You are building server-rendered HTML in Crystal.</li>
+<li>You want components, slots, and scoped CSS without a client-side runtime.</li>
+<li>You want template errors to surface during Crystal compilation.</li>
+<li>You want <code>.can</code> files that can render inside Kemal, <code>HTTP::Server</code>, or a
+small static rendering script.</li>
+</ul>
+<h2><a id="do-not-use-can-when" class="anchor" href="#do-not-use-can-when">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>Do not use Can when</h2>
+<ul>
+<li>You need a mature, production-hardened 1.0 template system today.</li>
+<li>You need browser-side interactivity or hydration from the component system
+itself.</li>
+<li>You need a full static site generator. <code>can-render</code> renders one <code>.can</code>
+file and is useful for static experiments, but it is not a site generator
+yet.</li>
+</ul>
 <h2><a id="installation" class="anchor" href="#installation">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>

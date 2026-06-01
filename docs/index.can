@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>can — server-side web components for Crystal</title>
+    <title>can — server-side HTML components for Crystal</title>
     <link rel="stylesheet" href="styles.css"/>
   </head>
 
@@ -11,7 +11,8 @@
     <main>
       <hero>
         <b>COMPONENTS IN A CAN</b><br/>
-        SERVER-SIDE, STYLE ISOLATED, HTML TEMPLATES FOR CRYSTAL<br/>
+        SERVER-SIDE HTML COMPONENTS FOR CRYSTAL<br/>
+        <small>COMPILED BEFORE RUNTIME</small><br/>
         <nav>
           <a class="cta" href="https://github.com/trans/can">GITHUB</a>
           <a class="cta" href="api/index.html">API</a>
@@ -20,17 +21,18 @@
 
       <section class="top-section">
         <p style="color: white;">
-          <strong>Can</strong> is a server-side template language for Crystal.
-          Components are defined inside the template as a special form, their
-          CSS is scoped automatically to their own elements, and the whole
-          template compiles into your binary at build time &mdash; no runtime
-          parsing, no client framework.
+          <strong>Can</strong> is a server-side HTML component system for
+          Crystal. Write componentized HTML in <code>.can</code> files,
+          compose it with defs, slots, and scoped CSS, then compile it into
+          Crystal before your app runs &mdash; no runtime template parser, no
+          client framework.
         </p>
         <p style="color: white;">
-          A template just writes HTML to an IO object, so the same
-          components render the same way whether you hand them to Kemal,
-          Grip, plain HTTP::Server, or a build script that pipes the
-          output to a file (like this page does).
+          Can is pre-1.0 and aimed at experiments, small Crystal SSR
+          projects, and developers who want componentized HTML without a
+          browser-side runtime. A template writes HTML to an IO object, so the
+          same components work with Kemal, Grip, plain HTTP::Server, or a
+          small render script.
         </p>
       </section>
 
