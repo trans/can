@@ -248,6 +248,21 @@
 
 
 
+  <h2>
+    <a id="overview" class="anchor" href="#overview">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>
+    Overview
+  </h2>
+
+  <p>Implements the <code>can-render</code> executable.</p>
+<p>The CLI renders one <code>.can</code> file by generating a small Crystal program,
+compiling it with <code>crystal run</code>, and writing the rendered HTML to stdout
+or an output file. It is public so shard users can wrap the same behavior
+from their own command-line tools without shelling out to <code>bin/can-render</code>.</p>
+
 
 
 
@@ -273,7 +288,7 @@
   </h2>
 
 
-      <a href="https://github.com/trans/can/blob/v0.4.0/src/can/cli/render.cr#L5" target="_blank">
+      <a href="https://github.com/trans/can/blob/v0.4.0/src/can/cli/render.cr#L12" target="_blank">
         can/cli/render.cr
       </a>
 
@@ -298,6 +313,8 @@
       <li class="entry-summary">
         <a href="#new%28argv%3AArray%28String%29%2Ccan_require%3AString%2Ccan_source_dir%3AString%29-class-method" class="signature"><strong>.new</strong>(argv : Array(String), can_require : String, can_source_dir : String)</a>
 
+          <div class="summary"><p>Creates a renderer command.</p></div>
+
       </li>
 
   </ul>
@@ -316,6 +333,8 @@
 
       <li class="entry-summary">
         <a href="#run%28argv%3AArray%28String%29%2Ccan_require%3AString%2Ccan_source_dir%3AString%29%3AInt32-class-method" class="signature"><strong>.run</strong>(argv : Array(String), can_require : String, can_source_dir : String) : Int32</a>
+
+          <div class="summary"><p>Runs the CLI with <code>argv</code> and returns a process-style exit code.</p></div>
 
       </li>
 
@@ -337,6 +356,8 @@
 
       <li class="entry-summary">
         <a href="#run%3AInt32-instance-method" class="signature"><strong>#run</strong> : Int32</a>
+
+          <div class="summary"><p>Parses options, renders the requested template, and returns an exit code.</p></div>
 
       </li>
 
@@ -392,10 +413,17 @@
         <a class="method-permalink" href="#new%28argv%3AArray%28String%29%2Ccan_require%3AString%2Ccan_source_dir%3AString%29-class-method">#</a>
       </div>
 
+        <div class="doc">
+
+          <p>Creates a renderer command.</p>
+<p>Most callers should use <code><a href="../../Can/CLI/Render.html#run%28argv%3AArray%28String%29%2Ccan_require%3AString%2Ccan_source_dir%3AString%29%3AInt32-class-method">.run</a></code>; the constructor stays public for tests
+and custom wrappers that want to instantiate before invoking <code><a href="../../Can/CLI/Render.html#run%3AInt32-instance-method">#run</a></code>.</p>
+        </div>
+
       <br/>
       <div>
 
-          [<a href="https://github.com/trans/can/blob/v0.4.0/src/can/cli/render.cr#L24" target="_blank">View source</a>]
+          [<a href="https://github.com/trans/can/blob/v0.4.0/src/can/cli/render.cr#L39" target="_blank">View source</a>]
 
       </div>
     </div>
@@ -420,10 +448,17 @@
         <a class="method-permalink" href="#run%28argv%3AArray%28String%29%2Ccan_require%3AString%2Ccan_source_dir%3AString%29%3AInt32-class-method">#</a>
       </div>
 
+        <div class="doc">
+
+          <p>Runs the CLI with <code>argv</code> and returns a process-style exit code.</p>
+<p><code>can_require</code> is the generated program's require target for Can, and
+<code>can_source_dir</code> is prepended to <code>CRYSTAL_PATH</code> for the nested compiler.</p>
+        </div>
+
       <br/>
       <div>
 
-          [<a href="https://github.com/trans/can/blob/v0.4.0/src/can/cli/render.cr#L20" target="_blank">View source</a>]
+          [<a href="https://github.com/trans/can/blob/v0.4.0/src/can/cli/render.cr#L31" target="_blank">View source</a>]
 
       </div>
     </div>
@@ -450,10 +485,15 @@
         <a class="method-permalink" href="#run%3AInt32-instance-method">#</a>
       </div>
 
+        <div class="doc">
+
+          <p>Parses options, renders the requested template, and returns an exit code.</p>
+        </div>
+
       <br/>
       <div>
 
-          [<a href="https://github.com/trans/can/blob/v0.4.0/src/can/cli/render.cr#L33" target="_blank">View source</a>]
+          [<a href="https://github.com/trans/can/blob/v0.4.0/src/can/cli/render.cr#L49" target="_blank">View source</a>]
 
       </div>
     </div>

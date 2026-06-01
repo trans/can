@@ -1,5 +1,13 @@
 module Can
+  # Parsed template node types used by `Parser` and consumed by `Codegen`.
+  #
+  # These classes are intentionally public so tools can parse `.can` files,
+  # inspect the tree, and build experiments on top of Can without depending on
+  # Crystal macros.
   module AST
+    # Base class for every parsed node.
+    #
+    # `line` and `column` point at the node's source location when available.
     abstract class Node
       property line : Int32
       property column : Int32
@@ -8,6 +16,7 @@ module Can
       end
     end
 
+    # Root node for a parsed `.can` template.
     class Template < Node
       property children : Array(Node)
 
@@ -15,6 +24,7 @@ module Can
       end
     end
 
+    # Literal text between tags, comments, and interpolations.
     class Text < Node
       property content : String
 
@@ -31,6 +41,7 @@ module Can
       end
     end
 
+    # Base class for parsed element and special-form attributes.
     abstract class Attribute < Node
       property name : String
 
@@ -68,6 +79,10 @@ module Can
       end
     end
 
+    # Parameter declaration from a component definition.
+    #
+    # Required params carry a `type`; optional params carry the default Crystal
+    # expression in `default`.
     class Param < Node
       property name : String
       property type : String
@@ -111,6 +126,7 @@ module Can
       end
     end
 
+    # Local binding special form: `<.let name="x" value={expr}>...</.let>`.
     class Let < Node
       property name : String
       property expression : String
@@ -121,6 +137,10 @@ module Can
       end
     end
 
+    # Slot placeholder inside a top-level component definition.
+    #
+    # A `nil` name is the default slot; otherwise the slot is filled with a
+    # matching `<:name>...</:name>` at the call site.
     class Slot < Node
       property name : String?
 
@@ -153,6 +173,7 @@ module Can
       end
     end
 
+    # Crystal require directive: `<.require from="..."/>`.
     class Require < Node
       property from : String
 
@@ -160,6 +181,9 @@ module Can
       end
     end
 
+    # Template dependency directive: `<.use from="..."/>`.
+    #
+    # Codegen loads the referenced `.can` file as a component-only template.
     class Use < Node
       property from : String
 
@@ -177,6 +201,7 @@ module Can
       end
     end
 
+    # HTML comment: `<!-- ... -->`.
     class Comment < Node
       property content : String
 
@@ -184,6 +209,7 @@ module Can
       end
     end
 
+    # Doctype or bang directive, such as `<!DOCTYPE html>`.
     class Doctype < Node
       property content : String
 

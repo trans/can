@@ -1,7 +1,14 @@
 require "option_parser"
 
 module Can
+  # Command-line entry points shipped with Can.
   module CLI
+    # Implements the `can-render` executable.
+    #
+    # The CLI renders one `.can` file by generating a small Crystal program,
+    # compiling it with `crystal run`, and writing the rendered HTML to stdout
+    # or an output file. It is public so shard users can wrap the same behavior
+    # from their own command-line tools without shelling out to `bin/can-render`.
     class Render
       private DEFAULT_CLASS = "CanRenderPage"
       private IDENTIFIER    = /\A[a-z_][a-zA-Z0-9_]*\z/
@@ -17,10 +24,18 @@ module Can
       @show_help : Bool
       @show_version : Bool
 
+      # Runs the CLI with `argv` and returns a process-style exit code.
+      #
+      # `can_require` is the generated program's require target for Can, and
+      # `can_source_dir` is prepended to `CRYSTAL_PATH` for the nested compiler.
       def self.run(argv : Array(String), can_require : String, can_source_dir : String) : Int32
         new(argv, can_require, can_source_dir).run
       end
 
+      # Creates a renderer command.
+      #
+      # Most callers should use `.run`; the constructor stays public for tests
+      # and custom wrappers that want to instantiate before invoking `#run`.
       def initialize(@argv : Array(String), @can_require : String, @can_source_dir : String)
         @output_path = nil
         @requires = [] of String
@@ -30,6 +45,7 @@ module Can
         @show_version = false
       end
 
+      # Parses options, renders the requested template, and returns an exit code.
       def run : Int32
         parser = build_parser
 
