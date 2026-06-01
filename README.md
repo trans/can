@@ -416,7 +416,7 @@ The host stays scoped; the slot side doesn't require the attribute.
 
 ## How it works
 
-`Can.use`, `Can.view`, and `Can.template` are macros. At compile time:
+`Can.use` and `Can.view` are macros. At compile time:
 
 1. Crystal's `{{ run }}` invokes `src/can/cli/compile_template.cr` with the
    template path.
@@ -427,10 +427,6 @@ The host stays scoped; the slot side doesn't require the attribute.
 So the template fully compiles into your binary. The macro is the only
 piece that touches Crystal's macro system; parser, codegen, and CSS scoper
 are plain Crystal modules with regular unit tests.
-
-`Can.template` is the lower-level macro: at class scope it emits component
-methods, and inside a method it emits render statements into the local
-`io`. `Can.template_inline "…"` does the same with an inline source string.
 
 ## Use with Kemal (or any IO-based server)
 

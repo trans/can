@@ -38,18 +38,16 @@ comments (and writing a tiny error rewriter that maps them back) would
 turn "error on line 47 of `__macro_run__`" into "error on line 12 of
 `page.can`." Big adoption win, mostly plumbing.
 
-### Interpreter mode / standalone CLI
+### Static workflow beyond single-file rendering
 
-Today the only way to render a template is to write a Crystal program
-that calls `Can.template` and compile it. A `can-render` CLI that takes
-a `.can` file + component library and emits HTML at runtime — no Crystal
-build needed by the user — would unlock a static-site-generator usage
-pattern.
+`can-render` can render one `.can` file from the command line, which is
+enough for static experiments. A broader static workflow would handle
+multiple input pages, shared component libraries, output directories,
+asset copying, and eventually watch/live-reload behavior.
 
-Parser, codegen, and scoper are reusable. The new piece is an
-interpreter that walks the AST and emits HTML directly, instead of
-generating Crystal source. ~100-200 lines. Also makes live-reload
-trivial.
+The current CLI still compiles a generated Crystal program under the
+hood. A future interpreter mode could walk the AST directly for faster
+feedback, but that is separate from the public CLI shape.
 
 ### Template-include directive
 

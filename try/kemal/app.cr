@@ -1,21 +1,38 @@
 require "kemal"
 require "../../src/can"
 
-# Pages collects render methods. Layout-component defs (with slots) live in
-# layout.can and load at class scope; per-page templates load inside each
-# method, where their content is rendered inside the layout via slot fills.
-class Pages
-  Can.template "try/kemal/layout.can"
+module LayoutComponents
+  Can.use "try/kemal/layout.can"
+end
 
+class HomePage
+  include LayoutComponents
+
+  getter name : String
+  getter todos : Array(String)
+
+  def initialize(@name : String, @todos : Array(String))
+  end
+
+  Can.view "try/kemal/home.can"
+end
+
+class AboutPage
+  include LayoutComponents
+
+  Can.view "try/kemal/about.can"
+end
+
+class Pages
   def home(name : String, todos : Array(String)) : String
     String.build do |io|
-      Can.template "try/kemal/home.can"
+      HomePage.new(name, todos).render(io)
     end
   end
 
   def about : String
     String.build do |io|
-      Can.template "try/kemal/about.can"
+      AboutPage.new.render(io)
     end
   end
 end
