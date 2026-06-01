@@ -141,6 +141,19 @@ describe Can::Parser do
     end
   end
 
+  describe "<.use>" do
+    it "parses a template dependency directive" do
+      u = single(%(<.use from="components.can"/>)).as(Can::AST::Use)
+      u.from.should eq("components.can")
+    end
+
+    it "requires a literal from attribute" do
+      expect_raises(Can::ParseError, /<\.use> requires 'from'/) do
+        parse(%(<.use from={path}/>))
+      end
+    end
+  end
+
   describe "<.def>" do
     it "parses a minimal def" do
       d = single(%(<.def tag="hello">Hello</.def>)).as(Can::AST::Def)

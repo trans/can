@@ -1,4 +1,5 @@
 require "digest/crc32"
+require "set"
 require "./ast"
 require "./parser"
 require "./css_scope"
@@ -72,6 +73,7 @@ module Can
     @in_raw : Bool = false
     @current_component_attr : String? = nil
     @source_name : String?
+    @used_templates : Set(String)
 
     # Compiles a parsed template to Crystal source. When `source_name` is
     # provided, generated code includes `# can: source:line:column` markers
@@ -85,7 +87,8 @@ module Can
       compile(Parser.parse(source), scope, source_name)
     end
 
-    def initialize(@out : IO, @scope : Symbol = :class, @source_name : String? = nil)
+    def initialize(@out : IO, @scope : Symbol = :class, @source_name : String? = nil,
+                   @used_templates : Set(String) = Set(String).new)
       @inline_def_scopes = [Hash(String, Array(String)).new]
     end
 
@@ -107,6 +110,8 @@ module Can
           emit_top_level_def(n)
         when AST::Require
           emit_require(n)
+        when AST::Use
+          emit_use(n)
         when AST::Text
           next if n.content.blank?
           raise_at(n, "top-level render content is not allowed in Can.use")
@@ -127,6 +132,11 @@ module Can
           emit_top_level_def(n)
         when AST::Require
           emit_require(n)
+        when AST::Use
+          emit_use(n)
+        when AST::Element
+          emit_top_level_head_uses(n)
+          render_nodes << n
         else
           render_nodes << n
         end
@@ -148,6 +158,9 @@ module Can
         # error clearly when met in method scope.
         @scope == :method ? emit_inline_def(n) : emit_top_level_def(n)
       when AST::Require then emit_require(n)
+      when AST::Use
+        raise_at(n, "<.use/> must be loaded at class/module scope") if @scope == :method
+        emit_use(n)
       when AST::Text
         # At class scope there's no `io` to write to, so dropping
         # whitespace between top-level defs lets a components-only file
@@ -181,6 +194,8 @@ module Can
         raise_at(n, "<:#{n.name}> slot-fill is only valid as a child of a component invocation")
       when AST::Require
         raise_at(n, "<.require/> is only allowed at the top level of a template")
+      when AST::Use
+        raise_at(n, "<.use/> is only allowed at the top level of a template or as a direct child of <head>")
       when AST::ElseMark
         raise_at(n, "<.else/> can only appear inside a <.if> body")
       when AST::ElseIfMark
@@ -451,6 +466,8 @@ module Can
           sb << "!:" << n.content
         when AST::Require
           sb << "M:" << n.from
+        when AST::Use
+          sb << "U:" << n.from
         end
       end
     end
@@ -509,6 +526,50 @@ module Can
       @out << "require "
       n.from.inspect(@out)
       @out << '\n'
+    end
+
+    private def emit_use(n : AST::Use) : Nil
+      emit_source_marker(n)
+      path = resolve_use_path(n)
+      return if @used_templates.includes?(path)
+
+      @used_templates << path
+
+      source = begin
+        File.read(path)
+      rescue ex
+        raise_at(n, "cannot read <.use> file #{n.from.inspect}: #{ex.message}")
+      end
+
+      template = begin
+        Parser.parse(source)
+      rescue ex : ParseError
+        message = ex.message.to_s.sub(/ \(line \d+, col \d+\)\z/, "")
+        raise "#{path}:#{ex.line}:#{ex.column}: #{message}"
+      end
+
+      self.class.new(@out, :use, path, @used_templates).emit_template(template)
+    end
+
+    private def emit_top_level_head_uses(n : AST::Element) : Nil
+      if n.tag == "head"
+        emit_head_uses(n)
+      elsif n.tag == "html"
+        n.children.each do |c|
+          emit_head_uses(c) if c.is_a?(AST::Element) && c.tag == "head"
+        end
+      end
+    end
+
+    private def emit_head_uses(n : AST::Element) : Nil
+      n.children.reject! do |c|
+        if c.is_a?(AST::Use)
+          emit_use(c)
+          true
+        else
+          false
+        end
+      end
     end
 
     private def emit_if(n : AST::If) : Nil
@@ -660,6 +721,18 @@ module Can
 
     private def escape_static_attr(value : String) : String
       value.gsub('"', "&quot;")
+    end
+
+    private def resolve_use_path(n : AST::Use) : String
+      File.expand_path(n.from, template_base_dir)
+    end
+
+    private def template_base_dir : String
+      if source = @source_name
+        return File.dirname(source) unless source == "inline template"
+      end
+
+      Dir.current
     end
 
     private def visit_nodes(nodes : Array(AST::Node), descend_into_defs : Bool = false, &block : AST::Node ->) : Nil

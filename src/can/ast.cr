@@ -160,6 +160,13 @@ module Can
       end
     end
 
+    class Use < Node
+      property from : String
+
+      def initialize(@from : String, @line = 0, @column = 0)
+      end
+    end
+
     # <.raw>…</.raw> — every {expr} interpolation directly inside this body
     # is emitted verbatim (no HTML escape). Doesn't penetrate into <.def>
     # bodies nested within (those have their own escape context).

@@ -129,6 +129,7 @@ Dotted tags are language built-ins:
 | `<.let name="x" value={…}>…</.let>` | Local binding for the body. |
 | `<.slot/>` / `<.slot name="…"/>` | Slot placeholder in a component body. |
 | `<.require from="…"/>` | `require` another Crystal file. |
+| `<.use from="…"/>` | Load another `.can` component file. |
 | `<.raw>…</.raw>` | No-escape zone. |
 
 `:if` and `:for` are attribute-form shortcuts:
@@ -153,6 +154,30 @@ When both are present, `:if` is outer (same as Vue 3).
 ```
 
 Codegen collapses these into a Crystal `if/elsif/elsif/else/end` chain.
+
+`<.use>` is a template dependency directive. It loads another `.can` file
+as component definitions, using the same component-only rules as
+`Can.use`. Paths resolve relative to the file that contains the directive:
+
+```html
+<.use from="../components/cards.can"/>
+
+<card title="Hello">Welcome.</card>
+```
+
+For full HTML pages, `<.use>` can also appear as a direct child of the
+top-level `<head>` or the `<head>` inside a top-level `<html>` element. It
+doesn't render anything:
+
+```html
+<html>
+  <head>
+    <.use from="../components/layout.can"/>
+    <title>Home</title>
+  </head>
+  <body><layout title="Home">...</layout></body>
+</html>
+```
 
 ## Components
 
@@ -223,7 +248,8 @@ local variables.
 become real methods on the surrounding class/module, and top-level render
 content is rejected. `Can.view` loads a renderable `.can` file: top-level
 defs become methods and the remaining top-level content becomes
-`render(io : IO)`.
+`render(io : IO)`. A renderable file can also declare its component
+dependencies with top-level `<.use from="…"/>` directives.
 
 A `<.def>` inside another element — or inside a template loaded inside a
 method with the lower-level `Can.template` macro — becomes a local `Proc`

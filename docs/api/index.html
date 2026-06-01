@@ -172,6 +172,11 @@
 
     </li>
 
+  <li class=" " data-id="can/Can/AST/Use" data-name="can::ast::use">
+      <a href="Can/AST/Use.html">Use</a>
+
+    </li>
+
 </ul>
 
 
@@ -323,6 +328,7 @@ to the component and escapes when the receiving component renders it.</p>
 | <code>&lt;.let name=&quot;x&quot; value={…}&gt;…&lt;/.let&gt;</code> | Local binding for the body. |
 | <code>&lt;.slot/&gt;</code> / <code>&lt;.slot name=&quot;…&quot;/&gt;</code> | Slot placeholder in a component body. |
 | <code>&lt;.require from=&quot;…&quot;/&gt;</code> | <code>require</code> another Crystal file. |
+| <code>&lt;.use from=&quot;…&quot;/&gt;</code> | Load another <code>.can</code> component file. |
 | <code>&lt;.raw&gt;…&lt;/.raw&gt;</code> | No-escape zone. |</p>
 <p><code>:if</code> and <code>:for</code> are attribute-form shortcuts:</p>
 <pre><code class="language-html">&lt;p :if={admin?}&gt;secret&lt;/p&gt;
@@ -337,6 +343,22 @@ to the component and escapes when the receiving component renders it.</p>
   large
 &lt;/.if&gt;</code></pre>
 <p>Codegen collapses these into a Crystal <code>if/elsif/elsif/else/end</code> chain.</p>
+<p><code>&lt;.use&gt;</code> is a template dependency directive. It loads another <code>.can</code> file
+as component definitions, using the same component-only rules as
+<code>Can.use</code>. Paths resolve relative to the file that contains the directive:</p>
+<pre><code class="language-html">&lt;.use from=&quot;../components/cards.can&quot;/&gt;
+
+&lt;card title=&quot;Hello&quot;&gt;Welcome.&lt;/card&gt;</code></pre>
+<p>For full HTML pages, <code>&lt;.use&gt;</code> can also appear as a direct child of the
+top-level <code>&lt;head&gt;</code> or the <code>&lt;head&gt;</code> inside a top-level <code>&lt;html&gt;</code> element. It
+doesn't render anything:</p>
+<pre><code class="language-html">&lt;html&gt;
+  &lt;head&gt;
+    &lt;.use from=&quot;../components/layout.can&quot;/&gt;
+    &lt;title&gt;Home&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;&lt;layout title=&quot;Home&quot;&gt;...&lt;/layout&gt;&lt;/body&gt;
+&lt;/html&gt;</code></pre>
 <h2><a id="components" class="anchor" href="#components">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>
@@ -405,7 +427,8 @@ local variables.</p>
 become real methods on the surrounding class/module, and top-level render
 content is rejected. <code>Can.view</code> loads a renderable <code>.can</code> file: top-level
 defs become methods and the remaining top-level content becomes
-<code>render(io : IO)</code>.</p>
+<code>render(io : IO)</code>. A renderable file can also declare its component
+dependencies with top-level <code>&lt;.use from=&quot;…&quot;/&gt;</code> directives.</p>
 <p>A <code>&lt;.def&gt;</code> inside another element — or inside a template loaded inside a
 method with the lower-level <code>Can.template</code> macro — becomes a local <code>Proc</code>
 that captures surrounding bindings:</p>

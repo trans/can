@@ -333,6 +333,7 @@ module Can
       when "let"     then build_let(attrs, body, l, c)
       when "slot"    then build_slot(attrs, l, c)
       when "require" then build_require(attrs, l, c)
+      when "use"     then build_use(attrs, body, l, c)
       when "raw"     then build_raw(attrs, body, l, c)
       else                raise_at "unknown special form <.#{name}>", l, c
       end
@@ -449,6 +450,19 @@ module Can
       from_attr = attrs.find { |a| a.name == "from" }
       raise_at "<.require> requires 'from'", l, c unless from_attr.is_a?(AST::StringAttr)
       AST::Require.new(from_attr.value, l, c)
+    end
+
+    private def build_use(attrs, body, l, c) : AST::Use
+      raise_at "<.use/> must be self-closing", l, c unless body.empty?
+
+      from_attr = attrs.find { |a| a.name == "from" }
+      raise_at "<.use> requires 'from'", l, c unless from_attr.is_a?(AST::StringAttr)
+
+      attrs.each do |a|
+        raise_at "unknown attribute on <.use>: #{a.name}", a.line, a.column unless a.name == "from"
+      end
+
+      AST::Use.new(from_attr.value, l, c)
     end
 
     private def required_expr(attrs : Array(AST::Attribute), aname : String, ctx : String, l : Int32, c : Int32) : String

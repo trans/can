@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../../js/doc.js"></script>
 
   <meta name="repository-name" content="can">
-  <title>Can::AST::Def - can 0.3.0</title>
+  <title>Can::AST::Use - can 0.3.0</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../../";
   </script>
@@ -77,7 +77,7 @@
 
     </li>
 
-  <li class=" current" data-id="can/Can/AST/Def" data-name="can::ast::def">
+  <li class=" " data-id="can/Can/AST/Def" data-name="can::ast::def">
       <a href="../../Can/AST/Def.html">Def</a>
 
     </li>
@@ -172,7 +172,7 @@
 
     </li>
 
-  <li class=" " data-id="can/Can/AST/Use" data-name="can::ast::use">
+  <li class=" current" data-id="can/Can/AST/Use" data-name="can::ast::use">
       <a href="../../Can/AST/Use.html">Use</a>
 
     </li>
@@ -223,26 +223,15 @@
 
   <span class="kind">
     class
-  </span> Can::<wbr>AST::<wbr>Def
+  </span> Can::<wbr>AST::<wbr>Use
 
 </h1>
 
 
-  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../Can/AST/Def.html">Can::AST::Def</a></li><li class="superclass"><a href="../../Can/AST/Node.html">Can::AST::Node</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
+  <ul class="superclass-hierarchy"><li class="superclass"><a href="../../Can/AST/Use.html">Can::AST::Use</a></li><li class="superclass"><a href="../../Can/AST/Node.html">Can::AST::Node</a></li><li class="superclass">Reference</li><li class="superclass">Object</li></ul>
 
 
 
-
-  <h2>
-    <a id="overview" class="anchor" href="#overview">
-  <svg class="octicon-link" aria-hidden="true">
-    <use href="#octicon-link"/>
-  </svg>
-</a>
-    Overview
-  </h2>
-
-  <p>&lt;.def tag=&quot;card&quot; param:title=&quot;String&quot;&gt;…&lt;/.def&gt;</p>
 
 
 
@@ -269,7 +258,7 @@
   </h2>
 
 
-      <a href="https://github.com/trans/can/blob/v0.3.0/src/can/ast.cr#L82" target="_blank">
+      <a href="https://github.com/trans/can/blob/v0.3.0/src/can/ast.cr#L163" target="_blank">
         can/ast.cr
       </a>
 
@@ -292,7 +281,7 @@
   <ul class="list-summary">
 
       <li class="entry-summary">
-        <a href="#new%28tag%3AString%2Cparams%3AArray%28Can%3A%3AAST%3A%3AParam%29%3D%5B%5DofParam%2Cbody%3AArray%28Can%3A%3AAST%3A%3ANode%29%3D%5B%5DofNode%2Cline%3D0%2Ccolumn%3D0%29-class-method" class="signature"><strong>.new</strong>(tag : String, params : Array(Can::AST::Param) = <span class="o">[]</span> <span class="k">of</span> <span class="t">Param</span>, body : Array(Can::AST::Node) = <span class="o">[]</span> <span class="k">of</span> <span class="t">Node</span>, line = <span class="n">0</span>, column = <span class="n">0</span>)</a>
+        <a href="#new%28from%3AString%2Cline%3D0%2Ccolumn%3D0%29-class-method" class="signature"><strong>.new</strong>(from : String, line = <span class="n">0</span>, column = <span class="n">0</span>)</a>
 
       </li>
 
@@ -315,32 +304,12 @@
   <ul class="list-summary">
 
       <li class="entry-summary">
-        <a href="#body%3AArray%28Node%29-instance-method" class="signature"><strong>#body</strong> : Array(Node)</a>
+        <a href="#from%3AString-instance-method" class="signature"><strong>#from</strong> : String</a>
 
       </li>
 
       <li class="entry-summary">
-        <a href="#body%3D%28body%3AArray%28Node%29%29-instance-method" class="signature"><strong>#body=</strong>(body : Array(Node))</a>
-
-      </li>
-
-      <li class="entry-summary">
-        <a href="#params%3AArray%28Param%29-instance-method" class="signature"><strong>#params</strong> : Array(Param)</a>
-
-      </li>
-
-      <li class="entry-summary">
-        <a href="#params%3D%28params%3AArray%28Param%29%29-instance-method" class="signature"><strong>#params=</strong>(params : Array(Param))</a>
-
-      </li>
-
-      <li class="entry-summary">
-        <a href="#tag%3AString-instance-method" class="signature"><strong>#tag</strong> : String</a>
-
-      </li>
-
-      <li class="entry-summary">
-        <a href="#tag%3D%28tag%3AString%29-instance-method" class="signature"><strong>#tag=</strong>(tag : String)</a>
+        <a href="#from%3D%28from%3AString%29-instance-method" class="signature"><strong>#from=</strong>(from : String)</a>
 
       </li>
 
@@ -434,18 +403,18 @@
     Constructor Detail
   </h2>
 
-    <div class="entry-detail" id="new(tag:String,params:Array(Can::AST::Param)=[]ofParam,body:Array(Can::AST::Node)=[]ofNode,line=0,column=0)-class-method">
+    <div class="entry-detail" id="new(from:String,line=0,column=0)-class-method">
       <div class="signature">
 
-        def self.<strong>new</strong>(tag : String, params : Array(<a href="../../Can/AST/Param.html">Can::AST::Param</a>) = <span class="o">[]</span> <span class="k">of</span> <span class="t">Param</span>, body : Array(<a href="../../Can/AST/Node.html">Can::AST::Node</a>) = <span class="o">[]</span> <span class="k">of</span> <span class="t">Node</span>, line = <span class="n">0</span>, column = <span class="n">0</span>)
+        def self.<strong>new</strong>(from : String, line = <span class="n">0</span>, column = <span class="n">0</span>)
 
-        <a class="method-permalink" href="#new%28tag%3AString%2Cparams%3AArray%28Can%3A%3AAST%3A%3AParam%29%3D%5B%5DofParam%2Cbody%3AArray%28Can%3A%3AAST%3A%3ANode%29%3D%5B%5DofNode%2Cline%3D0%2Ccolumn%3D0%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28from%3AString%2Cline%3D0%2Ccolumn%3D0%29-class-method">#</a>
       </div>
 
       <br/>
       <div>
 
-          [<a href="https://github.com/trans/can/blob/v0.3.0/src/can/ast.cr#L87" target="_blank">View source</a>]
+          [<a href="https://github.com/trans/can/blob/v0.3.0/src/can/ast.cr#L166" target="_blank">View source</a>]
 
       </div>
     </div>
@@ -466,98 +435,34 @@
     Instance Method Detail
   </h2>
 
-    <div class="entry-detail" id="body:Array(Node)-instance-method">
+    <div class="entry-detail" id="from:String-instance-method">
       <div class="signature">
 
-        def <strong>body</strong> : Array(<a href="../../Can/AST/Node.html">Node</a>)
+        def <strong>from</strong> : String
 
-        <a class="method-permalink" href="#body%3AArray%28Node%29-instance-method">#</a>
+        <a class="method-permalink" href="#from%3AString-instance-method">#</a>
       </div>
 
       <br/>
       <div>
 
-          [<a href="https://github.com/trans/can/blob/v0.3.0/src/can/ast.cr#L85" target="_blank">View source</a>]
+          [<a href="https://github.com/trans/can/blob/v0.3.0/src/can/ast.cr#L164" target="_blank">View source</a>]
 
       </div>
     </div>
 
-    <div class="entry-detail" id="body=(body:Array(Node))-instance-method">
+    <div class="entry-detail" id="from=(from:String)-instance-method">
       <div class="signature">
 
-        def <strong>body=</strong>(body : Array(<a href="../../Can/AST/Node.html">Node</a>))
+        def <strong>from=</strong>(from : String)
 
-        <a class="method-permalink" href="#body%3D%28body%3AArray%28Node%29%29-instance-method">#</a>
+        <a class="method-permalink" href="#from%3D%28from%3AString%29-instance-method">#</a>
       </div>
 
       <br/>
       <div>
 
-          [<a href="https://github.com/trans/can/blob/v0.3.0/src/can/ast.cr#L85" target="_blank">View source</a>]
-
-      </div>
-    </div>
-
-    <div class="entry-detail" id="params:Array(Param)-instance-method">
-      <div class="signature">
-
-        def <strong>params</strong> : Array(<a href="../../Can/AST/Param.html">Param</a>)
-
-        <a class="method-permalink" href="#params%3AArray%28Param%29-instance-method">#</a>
-      </div>
-
-      <br/>
-      <div>
-
-          [<a href="https://github.com/trans/can/blob/v0.3.0/src/can/ast.cr#L84" target="_blank">View source</a>]
-
-      </div>
-    </div>
-
-    <div class="entry-detail" id="params=(params:Array(Param))-instance-method">
-      <div class="signature">
-
-        def <strong>params=</strong>(params : Array(<a href="../../Can/AST/Param.html">Param</a>))
-
-        <a class="method-permalink" href="#params%3D%28params%3AArray%28Param%29%29-instance-method">#</a>
-      </div>
-
-      <br/>
-      <div>
-
-          [<a href="https://github.com/trans/can/blob/v0.3.0/src/can/ast.cr#L84" target="_blank">View source</a>]
-
-      </div>
-    </div>
-
-    <div class="entry-detail" id="tag:String-instance-method">
-      <div class="signature">
-
-        def <strong>tag</strong> : String
-
-        <a class="method-permalink" href="#tag%3AString-instance-method">#</a>
-      </div>
-
-      <br/>
-      <div>
-
-          [<a href="https://github.com/trans/can/blob/v0.3.0/src/can/ast.cr#L83" target="_blank">View source</a>]
-
-      </div>
-    </div>
-
-    <div class="entry-detail" id="tag=(tag:String)-instance-method">
-      <div class="signature">
-
-        def <strong>tag=</strong>(tag : String)
-
-        <a class="method-permalink" href="#tag%3D%28tag%3AString%29-instance-method">#</a>
-      </div>
-
-      <br/>
-      <div>
-
-          [<a href="https://github.com/trans/can/blob/v0.3.0/src/can/ast.cr#L83" target="_blank">View source</a>]
+          [<a href="https://github.com/trans/can/blob/v0.3.0/src/can/ast.cr#L164" target="_blank">View source</a>]
 
       </div>
     </div>

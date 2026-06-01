@@ -304,6 +304,58 @@ describe "Can.use / Can.view" do
     end
   end
 
+  it "loads component defs declared by top-level <.use>" do
+    component = File.tempfile("can_used_component", ".can") do |f|
+      f.print %(<.def tag="badge" param:label="String"><span>{label}</span></.def>)
+    end
+    page = File.tempfile("can_page_with_use", ".can") do |f|
+      f.print %(<.use from="#{File.basename(component.path)}"/><main><badge label="new"/></main>)
+    end
+
+    begin
+      out = render_with_macro <<-CR
+        class PageWithUse
+          Can.view #{page.path.inspect}
+        end
+
+        PageWithUse.new.render(io)
+        CR
+
+      out.should eq(%(<main><span>new</span></main>))
+    ensure
+      component.delete
+      page.delete
+    end
+  end
+
+  it "loads component defs declared by <.use> inside a top-level <head>" do
+    component = File.tempfile("can_head_used_component", ".can") do |f|
+      f.print %(<.def tag="badge" param:label="String"><span>{label}</span></.def>)
+    end
+    page = File.tempfile("can_page_with_head_use", ".can") do |f|
+      f.print <<-CAN
+        <html><head><.use from="#{File.basename(component.path)}"/><title>Home</title></head><body><badge label="ok"/></body></html>
+        CAN
+    end
+
+    begin
+      out = render_with_macro <<-CR
+        class PageWithHeadUse
+          Can.view #{page.path.inspect}
+        end
+
+        PageWithHeadUse.new.render(io)
+        CR
+
+      out.should contain(%(<head><title>Home</title></head>))
+      out.should contain(%(<body><span>ok</span></body>))
+      out.should_not contain("<.use")
+    ensure
+      component.delete
+      page.delete
+    end
+  end
+
   it "rejects top-level render content in Can.use" do
     component = File.tempfile("can_bad_component", ".can") do |f|
       f.print %(<p>not component-only</p>)
@@ -319,6 +371,29 @@ describe "Can.use / Can.view" do
       err.should contain(component.path)
     ensure
       component.delete
+    end
+  end
+
+  it "rejects render content in files loaded by <.use>" do
+    component = File.tempfile("can_bad_used_component", ".can") do |f|
+      f.print %(<p>not component-only</p>)
+    end
+    page = File.tempfile("can_page_with_bad_use", ".can") do |f|
+      f.print %(<.use from="#{File.basename(component.path)}"/><main>body</main>)
+    end
+
+    begin
+      err = compile_macro_error <<-CR
+        class BadPageWithUse
+          Can.view #{page.path.inspect}
+        end
+        CR
+
+      err.should contain("top-level render content is not allowed in Can.use")
+      err.should contain(component.path)
+    ensure
+      component.delete
+      page.delete
     end
   end
 end

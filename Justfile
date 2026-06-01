@@ -26,12 +26,16 @@ site:
 # Generate Crystal API docs → docs/api/
 api:
     crystal docs --output=docs/api
+    find docs/api -name '*.html' -print0 | xargs -0 perl -pi -e 's/[ \t]+$//'
 
 # Build everything served by GitHub Pages (marketing + API).
 docs: site api
 
 # Rebuild generated docs for a release.
-release-docs: docs
+release-docs:
+    just site
+    version="$(crystal eval 'require "./src/can"; print Can::VERSION')"; crystal docs --output=docs/api --project-version="$version" --source-refname="v$version"
+    find docs/api -name '*.html' -print0 | xargs -0 perl -pi -e 's/[ \t]+$//'
 
 # Run the small portfolio-style example (prints HTML to stdout).
 try:
