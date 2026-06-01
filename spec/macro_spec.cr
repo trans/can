@@ -304,6 +304,103 @@ describe "Can.use / Can.view" do
     end
   end
 
+  it "passes through custom elements when no matching component exists" do
+    page = File.tempfile("can_custom_element_page", ".can") do |f|
+      f.print %(<main><my-widget data-kind="demo"><span>ok</span></my-widget></main>)
+    end
+
+    begin
+      out = render_with_macro <<-CR
+        class CustomElementPage
+          Can.view #{page.path.inspect}
+        end
+
+        CustomElementPage.new.render(io)
+        CR
+
+      out.should eq(%(<main><my-widget data-kind="demo"><span>ok</span></my-widget></main>))
+    ensure
+      page.delete
+    end
+  end
+
+  it "calls a manually defined component-shaped method when one matches the tag" do
+    page = File.tempfile("can_manual_component_page", ".can") do |f|
+      f.print %(<main><fancy-box title="Manual"><p>body</p></fancy-box></main>)
+    end
+
+    begin
+      out = render_with_macro <<-CR
+        class ManualComponentPage
+          def fancy_box(io : IO, title : String, __slot : Proc(IO, Nil) = ->(io : IO) {}) : Nil
+            io << %(<section class="manual"><h2>)
+            Can.write_escaped(io, title)
+            io << %(</h2>)
+            __slot.call(io)
+            io << %(</section>)
+          end
+
+          Can.view #{page.path.inspect}
+        end
+
+        ManualComponentPage.new.render(io)
+        CR
+
+      out.should eq(%(<main><section class="manual"><h2>Manual</h2><p>body</p></section></main>))
+    ensure
+      page.delete
+    end
+  end
+
+  it "does not treat ordinary getters as component methods for platform tags" do
+    page = File.tempfile("can_title_getter_page", ".can") do |f|
+      f.print %(<html><head><title>Home</title></head><body>ok</body></html>)
+    end
+
+    begin
+      out = render_with_macro <<-CR
+        class TitleGetterPage
+          def title : String
+            "Getter value"
+          end
+
+          Can.view #{page.path.inspect}
+        end
+
+        TitleGetterPage.new.render(io)
+        CR
+
+      out.should contain(%(<title>Home</title>))
+      out.should contain(%(<body>ok</body>))
+    ensure
+      page.delete
+    end
+  end
+
+  it "lets explicit component defs shadow platform tags" do
+    page = File.tempfile("can_shadow_platform_page", ".can") do |f|
+      f.print <<-CAN
+        <.def tag="button" param:label="String"><button class="fancy">{label}</button></.def>
+        <button label="Save"/>
+        CAN
+    end
+
+    begin
+      out = render_with_macro <<-CR
+        class ShadowPlatformPage
+          Can.view #{page.path.inspect}
+        end
+
+        ShadowPlatformPage.new.render(io)
+        CR
+
+      out.should contain(%(<button class="fancy">Save</button>))
+      out.should_not contain(%(label="Save"))
+    ensure
+      page.delete
+    end
+  end
+
   it "loads component defs declared by top-level <.use>" do
     component = File.tempfile("can_used_component", ".can") do |f|
       f.print %(<.def tag="badge" param:label="String"><span>{label}</span></.def>)

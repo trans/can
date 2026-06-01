@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.1 - 2026-06-01
+
+- Changed tag dispatch to HTML-first: tags now render as literal HTML unless
+  Can can resolve them to a component method.
+- Custom elements such as `<my-widget>` now pass through naturally.
+- Explicit component defs can intentionally shadow platform tags such as
+  `<button>`, while the same platform tag remains literal inside the
+  shadowing component body for wrapper components.
+
 ## 0.4.0 - 2026-06-01
 
 - Added template-level `<.use from="..."/>` directives for loading `.can`

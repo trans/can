@@ -65,8 +65,10 @@ module Can
       end
     end
 
-    # Standard HTML tag OR user-defined component invocation.
-    # Resolution happens at codegen time against the in-scope def registry.
+    # HTML element or component invocation.
+    #
+    # Codegen resolves the tag as a component when a matching component method
+    # is known; otherwise the tag passes through as literal HTML.
     class Element < Node
       property tag : String
       property attributes : Array(Attribute)

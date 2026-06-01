@@ -146,23 +146,25 @@ describe Can::Codegen do
       out = gen(%(<svg><path d="M0 0"/><linearGradient id="g"/></svg>))
       out.should contain(%(io << "<path"))
       out.should contain(%(io << "<linearGradient"))
-      out.should_not contain("path(io")
-      out.should_not contain("linear_gradient(io")
+      out.should contain(%(m.name == "path"))
+      out.should contain(%(m.name == "linear_gradient"))
     end
 
-    it "emits an unknown tag as a component method call" do
-      out = gen(%(<Card title="Hi"/>))
-      out.should contain("card(io")
-      out.should contain(%(title: "Hi"))
+    it "emits an unknown tag as literal HTML with a manual-component guard" do
+      out = gen(%(<my-widget title="Hi"/>))
+      out.should contain(%({% if @type.methods.any?))
+      out.should contain(%(m.name == "my_widget"))
+      out.should contain("my_widget(io")
+      out.should contain(%(io << "<my-widget"))
     end
 
-    it "lowercases and underscores hyphenated component tags" do
-      out = gen(%(<my-card/>))
+    it "lowercases and underscores defined hyphenated component tags" do
+      out = gen(%(<.def tag="my-card"></.def><my-card/>))
       out.should contain("my_card(io")
     end
 
     it "passes expression attribute as raw Crystal in component call" do
-      out = gen(%(<Card level={2}/>))
+      out = gen(%(<.def tag="Card" param:level="Int32"></.def><Card level={2}/>))
       out.should contain("level: (2)")
     end
   end

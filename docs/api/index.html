@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.20.1">
-<meta name="crystal_docs.project_version" content="0.4.0">
+<meta name="crystal_docs.project_version" content="0.4.1">
 <meta name="crystal_docs.project_name" content="can">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="js/doc.js"></script>
 
   <meta name="repository-name" content="can">
-  <title>can 0.4.0</title>
+  <title>can 0.4.1</title>
   <script type="text/javascript">
   CrystalDocs.base_path = "";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        0.4.0
+        0.4.1
       </span>
     </div>
   </div>
@@ -439,7 +439,12 @@ a Crystal method:</p>
 <ul>
 <li><code>&lt;Card&gt;</code>, <code>&lt;my-card&gt;</code>, and <code>&lt;card&gt;</code> all map to method <code>card</code>.</li>
 <li>Hyphens become underscores; PascalCase becomes snake_case.</li>
-<li>Real HTML element names (<code>a</code>, <code>div</code>, <code>h1</code>, …) render literally.</li>
+<li>Tags render as literal HTML unless Can can resolve them to a component
+method. That means custom elements such as <code>&lt;my-widget&gt;</code> pass through
+naturally.</li>
+<li>Component defs can intentionally shadow platform tags such as <code>&lt;button&gt;</code>,
+but use that sparingly. Inside that component's own body, the same platform
+tag remains literal so wrapper components can render real HTML.</li>
 </ul>
 <pre><code class="language-html">&lt;.def tag=&quot;badge&quot; param:label=&quot;String&quot; param:emoji={&quot;✨&quot;}&gt;
   &lt;span&gt;{emoji} {label}&lt;/span&gt;
@@ -447,6 +452,7 @@ a Crystal method:</p>
 
 &lt;badge label=&quot;crystal&quot;/&gt;
 &lt;badge label=&quot;ruby&quot; emoji=&quot;💎&quot;/&gt;</code></pre>
+<pre><code class="language-html">&lt;my-widget data-kind=&quot;demo&quot;&gt;&lt;/my-widget&gt; &lt;!-- literal custom element --&gt;</code></pre>
 <h3><a id="params" class="anchor" href="#params">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>

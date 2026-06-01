@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Crystal Docs 1.20.1">
-<meta name="crystal_docs.project_version" content="0.4.0">
+<meta name="crystal_docs.project_version" content="0.4.1">
 <meta name="crystal_docs.project_name" content="can">
 
 
@@ -14,7 +14,7 @@
 <script type="text/javascript" src="../js/doc.js"></script>
 
   <meta name="repository-name" content="can">
-  <title>Can::Codegen - can 0.4.0</title>
+  <title>Can::Codegen - can 0.4.1</title>
   <script type="text/javascript">
     CrystalDocs.base_path = "../";
   </script>
@@ -45,7 +45,7 @@
       </h1>
 
       <span class="project-version">
-        0.4.0
+        0.4.1
       </span>
     </div>
   </div>
@@ -263,10 +263,11 @@ responsibility to write valid HTML (e.g. <code>&amp;lt;</code> for literal <code
 Interpolated <code>{expr}</code> values in text and expression attributes are
 HTML-escaped at runtime via stdlib <code>::HTML.escape</code>. Quoted attributes
 are literal text.</p>
-<p>An element whose tag is in <code><a href="../Can/Codegen.html#HTML_ELEMENTS">HTML_ELEMENTS</a></code> renders as literal HTML.
-Any other tag is treated as a component invocation: <code>&lt;Card title=&quot;…&quot;&gt;…&lt;/Card&gt;</code>
-becomes <code>card(io, title: &quot;…&quot;, __slot: -&gt;(io : IO) { … })</code>. The tag is
-mapped to a method name via <code>tag.gsub('-', '_').underscore</code>.</p>
+<p>Tags render as literal HTML unless Can can resolve them to a component
+method. <code>&lt;.def tag=&quot;Card&quot;&gt;</code> defines <code>card(io, ...)</code>, and <code>&lt;Card&gt;</code> calls it.
+Manually written methods can also be used as components when their first
+argument is named <code>io</code>; otherwise unknown tags pass through as literal HTML.
+The tag is mapped to a method name via <code>tag.gsub('-', '_').underscore</code>.</p>
 <p><code>&lt;.def&gt;</code> at the top level becomes a method (with optional named-slot
 <code>Proc</code> params and a default-slot <code>__slot</code> proc). <code>&lt;.def&gt;</code> inside a body
 becomes a local <code>Proc</code> that closes over surrounding bindings; v1
@@ -298,7 +299,7 @@ with slot content.</p>
   </h2>
 
 
-      <a href="https://github.com/trans/can/blob/v0.4.0/src/can/codegen.cr#L26" target="_blank">
+      <a href="https://github.com/trans/can/blob/v0.4.1/src/can/codegen.cr#L27" target="_blank">
         can/codegen.cr
       </a>
 
@@ -345,7 +346,7 @@ with slot content.</p>
   <ul class="list-summary">
 
       <li class="entry-summary">
-        <a href="#new%28out__arg0%3AIO%2Cscope%3ASymbol%3D%3Aclass%2Csource_name%3AString%7CNil%3Dnil%2Cused_templates%3ASet%28String%29%3DSet%28String%29.new%29-class-method" class="signature"><strong>.new</strong>(out __arg0 : IO, scope : Symbol = <span class="n">:class</span>, source_name : String | Nil = <span class="n">nil</span>, used_templates : Set(String) = <span class="t">Set</span>(<span class="t">String</span>).new)</a>
+        <a href="#new%28out__arg0%3AIO%2Cscope%3ASymbol%3D%3Aclass%2Csource_name%3AString%7CNil%3Dnil%2Cused_templates%3ASet%28String%29%3DSet%28String%29.new%2Ccomponent_methods%3ASet%28String%29%3DSet%28String%29.new%29-class-method" class="signature"><strong>.new</strong>(out __arg0 : IO, scope : Symbol = <span class="n">:class</span>, source_name : String | Nil = <span class="n">nil</span>, used_templates : Set(String) = <span class="t">Set</span>(<span class="t">String</span>).new, component_methods : Set(String) = <span class="t">Set</span>(<span class="t">String</span>).new)</a>
 
       </li>
 
@@ -442,18 +443,18 @@ with slot content.</p>
     Constructor Detail
   </h2>
 
-    <div class="entry-detail" id="new(out__arg0:IO,scope:Symbol=:class,source_name:String|Nil=nil,used_templates:Set(String)=Set(String).new)-class-method">
+    <div class="entry-detail" id="new(out__arg0:IO,scope:Symbol=:class,source_name:String|Nil=nil,used_templates:Set(String)=Set(String).new,component_methods:Set(String)=Set(String).new)-class-method">
       <div class="signature">
 
-        def self.<strong>new</strong>(out __arg0 : IO, scope : Symbol = <span class="n">:class</span>, source_name : String | Nil = <span class="n">nil</span>, used_templates : Set(String) = <span class="t">Set</span>(<span class="t">String</span>).new)
+        def self.<strong>new</strong>(out __arg0 : IO, scope : Symbol = <span class="n">:class</span>, source_name : String | Nil = <span class="n">nil</span>, used_templates : Set(String) = <span class="t">Set</span>(<span class="t">String</span>).new, component_methods : Set(String) = <span class="t">Set</span>(<span class="t">String</span>).new)
 
-        <a class="method-permalink" href="#new%28out__arg0%3AIO%2Cscope%3ASymbol%3D%3Aclass%2Csource_name%3AString%7CNil%3Dnil%2Cused_templates%3ASet%28String%29%3DSet%28String%29.new%29-class-method">#</a>
+        <a class="method-permalink" href="#new%28out__arg0%3AIO%2Cscope%3ASymbol%3D%3Aclass%2Csource_name%3AString%7CNil%3Dnil%2Cused_templates%3ASet%28String%29%3DSet%28String%29.new%2Ccomponent_methods%3ASet%28String%29%3DSet%28String%29.new%29-class-method">#</a>
       </div>
 
       <br/>
       <div>
 
-          [<a href="https://github.com/trans/can/blob/v0.4.0/src/can/codegen.cr#L90" target="_blank">View source</a>]
+          [<a href="https://github.com/trans/can/blob/v0.4.1/src/can/codegen.cr#L93" target="_blank">View source</a>]
 
       </div>
     </div>
@@ -488,7 +489,7 @@ that make macro-expansion errors easier to map back to the template.</p>
       <br/>
       <div>
 
-          [<a href="https://github.com/trans/can/blob/v0.4.0/src/can/codegen.cr#L81" target="_blank">View source</a>]
+          [<a href="https://github.com/trans/can/blob/v0.4.1/src/can/codegen.cr#L84" target="_blank">View source</a>]
 
       </div>
     </div>
@@ -509,7 +510,7 @@ that make macro-expansion errors easier to map back to the template.</p>
       <br/>
       <div>
 
-          [<a href="https://github.com/trans/can/blob/v0.4.0/src/can/codegen.cr#L86" target="_blank">View source</a>]
+          [<a href="https://github.com/trans/can/blob/v0.4.1/src/can/codegen.cr#L89" target="_blank">View source</a>]
 
       </div>
     </div>
@@ -539,7 +540,7 @@ that make macro-expansion errors easier to map back to the template.</p>
       <br/>
       <div>
 
-          [<a href="https://github.com/trans/can/blob/v0.4.0/src/can/codegen.cr#L95" target="_blank">View source</a>]
+          [<a href="https://github.com/trans/can/blob/v0.4.1/src/can/codegen.cr#L100" target="_blank">View source</a>]
 
       </div>
     </div>

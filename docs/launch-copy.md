@@ -16,8 +16,9 @@ Short repo description:
 
 ## GitHub Release Notes
 
-Can v0.4.0 adds template-level `<.use>` and `can-render`, a small CLI for
-rendering a single `.can` file in static experiments.
+Can v0.4.1 adds HTML-first tag dispatch on top of the v0.4 template-level
+`<.use>` and `can-render` work: tags render as literal HTML unless Can can
+resolve them to a component method.
 
 Can is a pre-1.0 server-side HTML component system for Crystal. Templates are
 written as `.can` HTML files and compiled to Crystal before runtime, so there
@@ -31,6 +32,11 @@ Highlights:
 
 - Template-level `<.use from="..."/>` for loading `.can` component files from
   renderable templates.
+- HTML-first tag dispatch, so custom elements such as `<my-widget>` pass
+  through naturally.
+- Explicit component defs can intentionally shadow platform tags such as
+  `<button>`, while wrapper component bodies can still render the real HTML
+  element.
 - Relative `.can` dependency resolution from the containing template file.
 - `can-render`, a small command-line renderer for one `.can` file.
 - CLI support for `-o`, `-D name=value`, and `--require`.
@@ -71,7 +77,7 @@ Post:
 
 Title:
 
-> Can v0.4.0 - server-side HTML components for Crystal
+> Can v0.4.1 - server-side HTML components for Crystal
 
 Post:
 
@@ -83,7 +89,8 @@ Post:
 > - write components as HTML in `.can` files
 > - compile templates to Crystal before runtime
 > - use component defs, slots, scoped CSS, literal and expression attributes
-> - v0.4.0 adds template-level `<.use>` and a small `can-render` CLI
+> - v0.4.1 adds HTML-first tag dispatch for custom elements and components
+> - v0.4 also added template-level `<.use>` and a small `can-render` CLI
 >
 > It is not a JavaScript framework, and `can-render` is not a full static site
 > generator yet. The current sweet spot is experiments and small Crystal SSR

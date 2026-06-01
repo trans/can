@@ -13,10 +13,11 @@ module Can
   # HTML-escaped at runtime via stdlib `::HTML.escape`. Quoted attributes
   # are literal text.
   #
-  # An element whose tag is in `HTML_ELEMENTS` renders as literal HTML.
-  # Any other tag is treated as a component invocation: `<Card title="…">…</Card>`
-  # becomes `card(io, title: "…", __slot: ->(io : IO) { … })`. The tag is
-  # mapped to a method name via `tag.gsub('-', '_').underscore`.
+  # Tags render as literal HTML unless Can can resolve them to a component
+  # method. `<.def tag="Card">` defines `card(io, ...)`, and `<Card>` calls it.
+  # Manually written methods can also be used as components when their first
+  # argument is named `io`; otherwise unknown tags pass through as literal HTML.
+  # The tag is mapped to a method name via `tag.gsub('-', '_').underscore`.
   #
   # `<.def>` at the top level becomes a method (with optional named-slot
   # `Proc` params and a default-slot `__slot` proc). `<.def>` inside a body
@@ -72,8 +73,10 @@ module Can
     @in_top_level_def : Bool = false
     @in_raw : Bool = false
     @current_component_attr : String? = nil
+    @current_component_methods : Array(String)
     @source_name : String?
     @used_templates : Set(String)
+    @component_methods : Set(String)
 
     # Compiles a parsed template to Crystal source. When `source_name` is
     # provided, generated code includes `# can: source:line:column` markers
@@ -88,8 +91,10 @@ module Can
     end
 
     def initialize(@out : IO, @scope : Symbol = :class, @source_name : String? = nil,
-                   @used_templates : Set(String) = Set(String).new)
+                   @used_templates : Set(String) = Set(String).new,
+                   @component_methods : Set(String) = Set(String).new)
       @inline_def_scopes = [Hash(String, Array(String)).new]
+      @current_component_methods = [] of String
     end
 
     def emit_template(t : AST::Template) : Nil
@@ -217,10 +222,13 @@ module Can
 
     private def emit_element(n : AST::Element) : Nil
       emit_source_marker(n)
-      if html_tag?(n.tag)
+      method = tag_to_method_name(n.tag)
+      if self_shadowing_platform_tag?(n, method)
         emit_html_element(n)
-      else
+      elsif component_method?(method)
         emit_component_call(n)
+      else
+        emit_manual_component_or_html(n, method)
       end
     end
 
@@ -298,6 +306,43 @@ module Can
       else
         emit_method_call(n, method, default_children, named_fills)
       end
+    end
+
+    private def emit_manual_component_or_html(n : AST::Element, method : String) : Nil
+      if n.children.any? { |c| c.is_a?(AST::SlotFill) }
+        emit_manual_component_call(n, method)
+      else
+        emit_manual_component_check(method)
+        @out << "  "
+        emit_method_call(n, method, n.children, {} of String => Array(AST::Node))
+        @out << "{% else %}\n"
+        emit_html_element(n)
+        @out << "{% end %}\n"
+      end
+    end
+
+    private def emit_manual_component_call(n : AST::Element, method : String) : Nil
+      emit_manual_component_check(method)
+      @out << "  "
+      emit_component_call(n)
+      @out << "{% else %}\n"
+      emit_macro_raise(format_error(n, "slot fills require a component method for <#{n.tag}>"))
+      @out << "{% end %}\n"
+    end
+
+    private def emit_manual_component_check(method : String) : Nil
+      @out << "{% if @type.methods.any? { |m| m.name == "
+      method.inspect(@out)
+      @out << " && m.args.size > 0 && m.args[0].name == \"io\" } || "
+      @out << "@type.ancestors.any? { |a| a.has_method?(:"
+      @out << method
+      @out << ") } %}\n"
+    end
+
+    private def emit_macro_raise(message : String) : Nil
+      @out << "  {% raise "
+      message.inspect(@out)
+      @out << " %}\n"
     end
 
     private def emit_inline_proc_call(n : AST::Element, method : String, params : Array(String)) : Nil
@@ -378,6 +423,7 @@ module Can
     private def emit_top_level_def(n : AST::Def) : Nil
       emit_source_marker(n)
       method = tag_to_method_name(n.tag)
+      @component_methods << method
       named_slots = collect_named_slot_names(n.body)
       attr = has_style_block?(n.body) ? component_attr(n) : nil
 
@@ -398,6 +444,7 @@ module Can
       @out << ", __slot : Proc(IO, Nil) = ->(io : IO) {}) : Nil\n"
 
       @in_top_level_def = true
+      @current_component_methods << method
       previous_attr = @current_component_attr
       @current_component_attr = attr
       prev_raw = @in_raw
@@ -407,6 +454,7 @@ module Can
       end
       @in_raw = prev_raw
       @current_component_attr = previous_attr
+      @current_component_methods.pop
       @in_top_level_def = false
 
       @out << "end\n"
@@ -548,7 +596,7 @@ module Can
         raise "#{path}:#{ex.line}:#{ex.column}: #{message}"
       end
 
-      self.class.new(@out, :use, path, @used_templates).emit_template(template)
+      self.class.new(@out, :use, path, @used_templates, @component_methods).emit_template(template)
     end
 
     private def emit_top_level_head_uses(n : AST::Element) : Nil
@@ -681,6 +729,14 @@ module Can
 
     private def tag_to_method_name(tag : String) : String
       tag.gsub('-', '_').underscore
+    end
+
+    private def component_method?(method : String) : Bool
+      @component_methods.includes?(method) || inline_def_params(method) != nil
+    end
+
+    private def self_shadowing_platform_tag?(n : AST::Element, method : String) : Bool
+      html_tag?(n.tag) && @current_component_methods.last? == method
     end
 
     private def html_tag?(tag : String) : Bool

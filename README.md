@@ -255,7 +255,12 @@ a Crystal method:
 
 - `<Card>`, `<my-card>`, and `<card>` all map to method `card`.
 - Hyphens become underscores; PascalCase becomes snake_case.
-- Real HTML element names (`a`, `div`, `h1`, …) render literally.
+- Tags render as literal HTML unless Can can resolve them to a component
+  method. That means custom elements such as `<my-widget>` pass through
+  naturally.
+- Component defs can intentionally shadow platform tags such as `<button>`,
+  but use that sparingly. Inside that component's own body, the same platform
+  tag remains literal so wrapper components can render real HTML.
 
 ```html
 <.def tag="badge" param:label="String" param:emoji={"✨"}>
@@ -264,6 +269,10 @@ a Crystal method:
 
 <badge label="crystal"/>
 <badge label="ruby" emoji="💎"/>
+```
+
+```html
+<my-widget data-kind="demo"></my-widget> <!-- literal custom element -->
 ```
 
 ### Params
