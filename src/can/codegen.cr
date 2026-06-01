@@ -19,11 +19,11 @@ module Can
   # argument is named `io`; otherwise unknown tags pass through as literal HTML.
   # The tag is mapped to a method name via `tag.gsub('-', '_').underscore`.
   #
-  # `<.def>` at the top level becomes a method (with optional named-slot
-  # `Proc` params and a default-slot `__slot` proc). `<.def>` inside a body
-  # becomes a local `Proc` that closes over surrounding bindings; v1
-  # restriction: inline defs can't host `<.slot/>` and can't be invoked
-  # with slot content.
+  # Top-level `<.def>` blocks become methods with optional named-slot `Proc`
+  # params and a default-slot `__slot` proc. `<.def>` inside a render body
+  # becomes a local `Proc` that closes over surrounding bindings. Inline defs
+  # can't host `<.slot/>`, can't have param defaults, and can't be invoked
+  # with child or slot content.
   class Codegen
     RAW_TEXT_TAGS = {"style", "script"}
 

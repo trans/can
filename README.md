@@ -329,9 +329,8 @@ defs become methods and the remaining top-level content becomes
 `render(io : IO)`. A renderable file can also declare its component
 dependencies with top-level `<.use from="…"/>` directives.
 
-A `<.def>` inside another element — or inside a template loaded inside a
-method with the lower-level `Can.template` macro — becomes a local `Proc`
-that captures surrounding bindings:
+A `<.def>` inside another element becomes a local `Proc` that captures
+surrounding bindings:
 
 ```html
 <div>
