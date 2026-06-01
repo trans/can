@@ -67,6 +67,50 @@ Run with `crystal run`. The template is parsed and compiled to Crystal
 source at compile time — there's no runtime parsing, and template errors
 surface as compile errors.
 
+## CLI rendering
+
+For static experiments, the `can-render` target renders one `.can` file to
+stdout:
+
+```sh
+shards build can-render
+bin/can-render pages/home.can > public/index.html
+```
+
+It invokes the Crystal compiler under the hood, so `crystal` must be on
+`PATH`.
+
+Use `-o` to write a file directly:
+
+```sh
+bin/can-render -o public/index.html pages/home.can
+```
+
+String assigns become getters on the generated page class:
+
+```sh
+bin/can-render -D title=Home pages/home.can
+```
+
+```html
+<h1>{title}</h1>
+```
+
+For richer data or helper methods, require a Crystal file before rendering.
+The helper can reopen the generated `CanRenderPage` class:
+
+```sh
+bin/can-render -r site_context.cr pages/home.can
+```
+
+```crystal
+class CanRenderPage
+  def posts
+    ["Intro", "Release notes"]
+  end
+end
+```
+
 ## Interpolation
 
 `{expr}` evaluates a Crystal expression and HTML-escapes the result:

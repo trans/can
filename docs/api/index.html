@@ -182,6 +182,21 @@
 
     </li>
 
+  <li class="parent " data-id="can/Can/CLI" data-name="can::cli">
+      <a href="Can/CLI.html">CLI</a>
+
+        <ul>
+
+  <li class=" " data-id="can/Can/CLI/Render" data-name="can::cli::render">
+      <a href="Can/CLI/Render.html">Render</a>
+
+    </li>
+
+</ul>
+
+
+    </li>
+
   <li class=" " data-id="can/Can/Codegen" data-name="can::codegen">
       <a href="Can/Codegen.html">Codegen</a>
 
@@ -280,6 +295,30 @@ puts io.to_s</code></pre>
 <p>Run with <code>crystal run</code>. The template is parsed and compiled to Crystal
 source at compile time — there's no runtime parsing, and template errors
 surface as compile errors.</p>
+<h2><a id="cli-rendering" class="anchor" href="#cli-rendering">
+  <svg class="octicon-link" aria-hidden="true">
+    <use href="#octicon-link"/>
+  </svg>
+</a>CLI rendering</h2>
+<p>For static experiments, the <code>can-render</code> target renders one <code>.can</code> file to
+stdout:</p>
+<pre><code class="language-sh">shards build can-render
+bin/can-render pages/home.can &gt; public/index.html</code></pre>
+<p>It invokes the Crystal compiler under the hood, so <code>crystal</code> must be on
+<code>PATH</code>.</p>
+<p>Use <code>-o</code> to write a file directly:</p>
+<pre><code class="language-sh">bin/can-render -o public/index.html pages/home.can</code></pre>
+<p>String assigns become getters on the generated page class:</p>
+<pre><code class="language-sh">bin/can-render -D title=Home pages/home.can</code></pre>
+<pre><code class="language-html">&lt;h1&gt;{title}&lt;/h1&gt;</code></pre>
+<p>For richer data or helper methods, require a Crystal file before rendering.
+The helper can reopen the generated <code>CanRenderPage</code> class:</p>
+<pre><code class="language-sh">bin/can-render -r site_context.cr pages/home.can</code></pre>
+<pre><code class="language-crystal"><span class="k">class</span> <span class="t">CanRenderPage</span>
+  <span class="k">def</span> <span class="m">posts</span>
+    [<span class="s">&quot;Intro&quot;</span>, <span class="s">&quot;Release notes&quot;</span>]
+  <span class="k">end</span>
+<span class="k">end</span></code></pre>
 <h2><a id="interpolation" class="anchor" href="#interpolation">
   <svg class="octicon-link" aria-hidden="true">
     <use href="#octicon-link"/>

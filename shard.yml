@@ -8,6 +8,10 @@ crystal: '>= 1.19.1'
 
 license: MIT
 
+targets:
+  can-render:
+    main: src/can-render.cr
+
 development_dependencies:
   kemal:
     github: kemalcr/kemal

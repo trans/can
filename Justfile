@@ -41,6 +41,10 @@ release-docs:
 try:
     crystal run try/main.cr
 
+# Render a .can file with the CLI.
+render file:
+    crystal run src/can-render.cr -- {{file}}
+
 # Run the Kemal demo server at http://localhost:3000
 try-kemal:
     crystal run try/kemal/app.cr
