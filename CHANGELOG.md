@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.4.2 - 2026-06-04
 
 - HTML expression attributes now handle boolean/nil values naturally:
   `checked={true}` renders `checked`, while `checked={false}` and
