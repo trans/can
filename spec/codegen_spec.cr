@@ -62,11 +62,20 @@ describe Can::Codegen do
     it "emits expression attributes wrapped in escape" do
       out = gen(%(<input value={x}/>))
       out.should contain(%(io << " value=\\""))
-      out.should contain("::Can.write_escaped(io, (x))")
+      out.should contain("__can_attr_value_1 = (x)")
+      out.should contain("::Can.write_escaped(io, (__can_attr_value_1))")
     end
 
     it "emits boolean attribute as bare name" do
       gen(%(<input disabled/>)).should contain(%(io << " disabled"))
+    end
+
+    it "emits expression attributes with HTML boolean handling" do
+      out = gen(%(<input checked={remote_checked}/>))
+      out.should contain("__can_attr_value_1 = (remote_checked)")
+      out.should contain("when true")
+      out.should contain(%(io << " checked"))
+      out.should contain("when false, nil")
     end
 
     it "emits <.if> as a Crystal if/end" do
@@ -210,6 +219,22 @@ describe Can::Codegen do
         .should eq(%(<a title="&lt;bad&gt;">x</a>))
     end
 
+    it "renders an expression attribute as a bare attribute when true" do
+      render(%(<input type="checkbox" checked={remote_checked}/>), prelude: %(remote_checked = true))
+        .should eq(%(<input type="checkbox" checked/>))
+    end
+
+    it "omits an expression attribute when false or nil" do
+      render(%(<input checked={remote_checked}/><option selected={selected}></option>),
+        prelude: %(remote_checked = false; selected = nil))
+        .should eq(%(<input/><option></option>))
+    end
+
+    it "still passes boolean expression attributes as component args" do
+      out = render(%(<.def tag="badge" param:active="Bool">{active}</.def><badge active={false}/>))
+      out.should eq("false")
+    end
+
     it "renders <.if> taking the true branch" do
       render(%(<.if cond={true}><p>yes</p></.if>)).should eq("<p>yes</p>")
     end
@@ -297,6 +322,19 @@ describe Can::Codegen do
         <.raw><echo s={html}/></.raw>
         CAN
       out.should contain("<p>&lt;i&gt;i&lt;/i&gt;</p>")
+    end
+
+    it "trims def body boundary newlines from rendered output" do
+      out = render <<-CAN
+        <.def tag="layout">
+          <!DOCTYPE html>
+          <html></html>
+        </.def>
+        <layout/>
+        CAN
+
+      out.should start_with("<!DOCTYPE html>")
+      out.should eq("<!DOCTYPE html>\n  <html></html>")
     end
   end
 

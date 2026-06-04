@@ -162,6 +162,15 @@ describe Can::Parser do
       d.body[0].as(Can::AST::Text).content.should eq("Hello")
     end
 
+    it "trims block-boundary whitespace around def bodies" do
+      d = single(%(<.def tag="hello">
+        <!DOCTYPE html>
+      </.def>)).as(Can::AST::Def)
+
+      d.body[0].as(Can::AST::Doctype).content.should eq("DOCTYPE html")
+      d.body.size.should eq(1)
+    end
+
     it "parses params" do
       d = single(%(<.def tag="card" param:title="String" param:level="Int32"><h2>{title}</h2></.def>)).as(Can::AST::Def)
       d.params.map(&.name).should eq(["title", "level"])

@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+- HTML expression attributes now handle boolean/nil values naturally:
+  `checked={true}` renders `checked`, while `checked={false}` and
+  `checked={nil}` omit the attribute. Component arguments keep passing the
+  expression value unchanged.
+- `<.def>` bodies now trim a single leading newline+indent after the open tag
+  and trailing whitespace before the close tag, avoiding accidental blank
+  output around component bodies.
+
 ## 0.4.1 - 2026-06-01
 
 - Changed tag dispatch to HTML-first: tags now render as literal HTML unless

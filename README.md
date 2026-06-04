@@ -180,11 +180,21 @@ the value should come from Crystal:
 <button hx-post="/items" hx-vals='{"kind":"book"}'>Save</button>
 <input value={user.name}/>
 <input title={"Hello #{name}"}/>
+<input type="checkbox" checked={remote_checked}/>
 ```
 
 Expression attributes are HTML-escaped in the rendered output, just like
-text interpolations. For component calls, the expression value is passed
-to the component and escapes when the receiving component renders it.
+text interpolations. On HTML tags, expression attributes follow HTML
+boolean-attribute rules: `true` renders the bare attribute, while `false`
+and `nil` omit the attribute.
+
+```html
+<input required={true}/>  <!-- <input required/> -->
+<input required={false}/> <!-- <input/> -->
+```
+
+For component calls, the expression value is passed to the component and
+escapes when the receiving component renders it.
 
 ## Special forms
 

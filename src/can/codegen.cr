@@ -10,8 +10,9 @@ module Can
   # Static text from the source template is emitted verbatim — author
   # responsibility to write valid HTML (e.g. `&lt;` for literal `<`).
   # Interpolated `{expr}` values in text and expression attributes are
-  # HTML-escaped at runtime via stdlib `::HTML.escape`. Quoted attributes
-  # are literal text.
+  # HTML-escaped at runtime via stdlib `::HTML.escape`. On HTML tags,
+  # expression attributes render true as a bare attribute and omit false/nil.
+  # Quoted attributes are literal text.
   #
   # Tags render as literal HTML unless Can can resolve them to a component
   # method. `<.def tag="Card">` defines `card(io, ...)`, and `<Card>` calls it.
@@ -77,6 +78,7 @@ module Can
     @source_name : String?
     @used_templates : Set(String)
     @component_methods : Set(String)
+    @tmp_counter : Int32 = 0
 
     # Compiles a parsed template to Crystal source. When `source_name` is
     # provided, generated code includes `# can: source:line:column` markers
@@ -397,9 +399,19 @@ module Can
           emit_static(%( #{a.name}="#{escape_static_attr(a.value)}"))
         end
       when AST::ExprAttr
+        tmp = next_temp_name("attr_value")
+        @out << tmp << " = ("
+        @out << a.expression
+        @out << ")\n"
+        @out << "case " << tmp << "\n"
+        @out << "when true\n"
+        emit_static(" #{a.name}")
+        @out << "when false, nil\n"
+        @out << "else\n"
         emit_static(%( #{a.name}="))
-        emit_escaped_expr(a.expression)
+        emit_escaped_expr(tmp)
         emit_static(%("))
+        @out << "end\n"
       end
     end
 
@@ -745,6 +757,11 @@ module Can
 
     private def inline_proc_name(method : String) : String
       "__can_#{method}"
+    end
+
+    private def next_temp_name(prefix : String) : String
+      @tmp_counter += 1
+      "__can_#{prefix}_#{@tmp_counter}"
     end
 
     private def push_scope : Nil

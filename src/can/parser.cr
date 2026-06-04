@@ -368,7 +368,7 @@ module Can
         end
       end
 
-      AST::Def.new(tag, params, body, l, c)
+      AST::Def.new(tag, params, trim_def_body(body), l, c)
     end
 
     private def build_if(attrs, body, l, c) : AST::If
@@ -507,6 +507,26 @@ module Can
       end
 
       result
+    end
+
+    private def trim_def_body(body : Array(AST::Node)) : Array(AST::Node)
+      trimmed = body.dup
+
+      if first = trimmed.first?
+        if first.is_a?(AST::Text)
+          first.content = first.content.sub(/\A\r?\n[ \t]*/, "")
+          trimmed.shift if first.content.empty?
+        end
+      end
+
+      if last = trimmed.last?
+        if last.is_a?(AST::Text)
+          last.content = last.content.sub(/[ \t]*\r?\n[ \t]*\z/, "")
+          trimmed.pop if last.content.empty?
+        end
+      end
+
+      trimmed
     end
 
     # =====================================================================
